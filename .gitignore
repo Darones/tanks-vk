@@ -2,3 +2,8 @@
 Лишнее/
 *.py
 __pycache__/
+*.backup.*
+logotank.png
+_CONTEXT.md
+_SESSION_*.md
+memory_*.txt

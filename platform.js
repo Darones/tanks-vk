@@ -1,5 +1,9 @@
 'use strict';
 (function(){
+  const withTimeout = (ms, promise, tag) => Promise.race([
+    promise,
+    new Promise((_, rej) => setTimeout(() => rej(new Error('timeout:' + tag)), ms))
+  ]);
   const SAVE_KEY = 'tanks-vk-1';
   const mode = (typeof vkBridge !== 'undefined') ? 'vk' : 'local';
   let vkLang = null;
@@ -49,24 +53,37 @@
     cb && cb();
   }
 
-  async function save(dataObj){
+  async function save(dataObj, onResult){
     const json = JSON.stringify(dataObj);
     if(json.length > 4000) console.warn('[Platform] Save size', json.length, 'bytes (>4000)');
     if(mode === 'vk'){
-      try{ await vkBridge.send('VKWebAppStorageSet', { key: SAVE_KEY, value: json }); }
-      catch(e){ console.warn('[Platform] save', e); }
+      let ok = false;
+      for(let attempt = 1; attempt <= 3 && !ok; attempt++){
+        try{
+          await withTimeout(3000,
+            vkBridge.send('VKWebAppStorageSet', { key: SAVE_KEY, value: json }),
+            'save#' + attempt);
+          ok = true;
+        }catch(e){
+          console.warn('[Platform] save attempt', attempt, 'failed:', e);
+        }
+      }
+      if(onResult) onResult(ok);
     } else {
-      try{ localStorage.setItem(SAVE_KEY, json); }catch(e){}
+      try{ localStorage.setItem(SAVE_KEY, json); if(onResult) onResult(true); }
+      catch(e){ if(onResult) onResult(false); }
     }
   }
 
   async function load(){
     if(mode === 'vk'){
       try{
-        const res = await vkBridge.send('VKWebAppStorageGet', { keys: [SAVE_KEY] });
+        const res = await withTimeout(1500,
+          vkBridge.send('VKWebAppStorageGet', { keys: [SAVE_KEY] }),
+          'load');
         const v = res && res.keys && res.keys[0] && res.keys[0].value;
         return v ? JSON.parse(v) : null;
-      }catch(e){ return null; }
+      }catch(e){ console.warn('[Platform] load failed:', e); return null; }
     } else {
       try{ const s = localStorage.getItem(SAVE_KEY); return s ? JSON.parse(s) : null; }
       catch(e){ return null; }
@@ -77,6 +94,9 @@
     if(mode === 'vk' && vkLang) return vkLang;
     return navigator.language || 'ru';
   }
+
+  function isVK(){ return mode === 'vk'; }
+  function isOK(){ return mode === 'ok'; }
 
   function onPause(cb){
     document.addEventListener('visibilitychange', ()=>{ if(document.hidden) cb && cb(); });
@@ -93,7 +113,7 @@
 
   window.Platform = {
     mode, init, adsAvailable, showRewarded, showInterstitial,
-    save, load, getLang, onPause, onResume,
+    save, load, getLang, isVK, isOK, onPause, onResume,
     gameplayStart, gameplayStop, rateGame, SAVE_KEY
   };
 })();
