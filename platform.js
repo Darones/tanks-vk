@@ -5,7 +5,7 @@
     new Promise((_, rej) => setTimeout(() => rej(new Error('timeout:' + tag)), ms))
   ]);
   const SAVE_KEY = 'tanks-vk-1';
-  const mode = (typeof vkBridge !== 'undefined') ? 'vk' : 'local';
+  let mode = (typeof vkBridge !== 'undefined') ? 'vk' : 'local';
   let vkLang = null;
   let vkReady = false;
   let inited = false;
@@ -16,7 +16,7 @@
         promise,
         new Promise((_, rej) => setTimeout(() => rej(new Error('vk timeout')), ms))
       ]);
-      try{ await timeout(1500, vkBridge.send('VKWebAppInit')); vkReady = true; }catch(e){ console.warn('[Platform] init timeout/fail:', e); }
+      try{ await timeout(1500, vkBridge.send('VKWebAppInit')); vkReady = true; }catch(e){ console.warn('[Platform] init timeout/fail:', e); mode = 'local'; }
       try{
         const lp = await timeout(1500, vkBridge.send('VKWebAppGetLaunchParams'));
         if(lp && lp.vk_language) vkLang = lp.vk_language;
