@@ -455,11 +455,12 @@ function saveProgress(d){
   try{ localStorage.setItem(SAVE_KEY, JSON.stringify(d)); }catch(e){}
   _pendingCloudData = d;
   if(_cloudSaveTimer) return;
-  _cloudSaveTimer = setTimeout(flushCloudNow, 400);
+  _cloudSaveTimer = setTimeout(flushCloudNow, 4000);
 }
 function flushCloudNow(){
   if(_cloudSaveTimer){ clearTimeout(_cloudSaveTimer); _cloudSaveTimer = null; }
   if(!_pendingCloudData) return;
+  if(!Platform.isVK || !Platform.isVK()){ _pendingCloudData = null; return; }
   const data = _pendingCloudData;
   _pendingCloudData = null;
   try{
@@ -470,7 +471,14 @@ function flushCloudNow(){
   }catch(e){ log('Platform.save error:', e); }
 }
 let _cloudToastTimer = null;
+let _lastCloudToastTime = 0;
+const CLOUD_TOAST_MIN_INTERVAL = 15000;
 function showCloudStatus(ok){
+  if(ok){
+    const now = Date.now();
+    if(now - _lastCloudToastTime < CLOUD_TOAST_MIN_INTERVAL) return;
+    _lastCloudToastTime = now;
+  }
   let el = document.getElementById('cloudStatus');
   if(!el){
     el = document.createElement('div');
@@ -580,7 +588,7 @@ tipContinue:'Нажми, чтобы продолжить',
 },
 en:{
 cloudSaved:'\u2705 Saved to VK', cloudFail:'\u26A0\uFE0F Save failed', cloudOffline:'Offline mode: progress is not synced',
-title:'🎯 Little Tanks 2D: Defense',
+title:'🎯 Tank Frontier',
 hud_kills:'Kills:', hud_level:'Lv.', hud_wave:'Wave', hud_hp:'HP:', langLbl:'Language:',
 easy:'Easy', normal:'Normal', hard:'Hard',
 langAuto:'Auto', langRu:'Russian', langEn:'English',
