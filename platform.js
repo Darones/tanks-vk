@@ -54,11 +54,15 @@
   }
 
   function showOrderBox(itemData, cb){
+    cb = cb || function(){};
     if(!(window.vkBridge && typeof isVK === 'function' && isVK())){
-      cb(false, {error:'not_vk'});
-      return;
+      cb(false, {error:'not_vk'}); return;
     }
-    vkBridge.send('VKWebAppShowOrderBox', { item: JSON.stringify(itemData) })
+    const itemId = (typeof itemData === 'string')
+      ? itemData
+      : (itemData && itemData.id);
+    if(!itemId){ cb(false, {error:'missing_item_id'}); return; }
+    vkBridge.send('VKWebAppShowOrderBox', { type: 'item', item: itemId })
       .then(res => cb(true, res))
       .catch(err => cb(false, err));
   }
