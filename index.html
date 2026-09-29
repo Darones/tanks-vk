@@ -22,6 +22,13 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .record-box .rec-item{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
 .record-box .rec-item b{color:#fff;font-weight:bold}
 .menu-btns{display:flex;flex-direction:column;gap:8px;align-items:center;justify-content:center;width:100%;max-width:380px}
+@media (orientation:landscape) and (max-height:600px){
+  .menu-btns{flex-direction:row;flex-wrap:wrap;justify-content:center;
+    max-width:520px}
+  .menu-btns .bigBtn,
+  .menu-btns .smallBtn{flex:0 0 calc(50% - 4px);min-width:0;
+    padding:10px 12px;font-size:15px}
+}
 .menu-btns.row{flex-direction:row;flex-wrap:wrap}
 .bigBtn{background:linear-gradient(180deg,#4caf50,#2e7d32);border:none;padding:12px 32px;font-size:18px;border-radius:10px;cursor:pointer;color:#fff;font-weight:bold;box-shadow:0 4px 0 #1b5e20;transition:transform .1s;min-width:280px}
 .bigBtn.cont{background:linear-gradient(180deg,#ff9800,#e65100);box-shadow:0 4px 0 #bf360c}
@@ -35,7 +42,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
 #ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;flex-wrap:wrap;gap:6px;max-width:96vw}
 @media (pointer:coarse){
-  #ui{top:6px;bottom:auto;max-width:55vw;gap:4px;font-size:11px}
+  #ui{bottom:2px;max-width:70vw;gap:4px;font-size:11px}
   #ui>div{padding:3px 8px;gap:6px}
 }
 #ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08)}
@@ -298,10 +305,6 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <input type="range" id="volMasterSlider" min="0" max="100" value="100">
 </div>
 <div class="vol-row">
-<label><span data-i18n="volEngine">🚜 Звук двигателя:</span> <b id="volEngineLabel">35%</b></label>
-<input type="range" id="volEngineSlider" min="0" max="100" value="35">
-</div>
-<div class="vol-row">
 <label><span data-i18n="volStreak">🔥 Серии убийств:</span> <b id="volStreakLabel">70%</b></label>
 <input type="range" id="volStreakSlider" min="0" max="100" value="70">
 </div>
@@ -392,19 +395,14 @@ function resetLiveInput(){
   keys = {}; mouseFireHeld = false;
   for(const p of players){ if(!p) continue; p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false; }
 }
-function canResumeEngine(){
-  return gameRunning && !gamePaused && !shopOpen && !levelCompleteOpen && !adPlaying && !platformPaused;
-}
 function setPlatformPaused(v){
   platformPaused = !!v;
-  if(platformPaused){ stopEngineSound(); resetLiveInput(); flushCloudNow(); }
-  else if(canResumeEngine()) startEngineSound();
+  if(platformPaused){ resetLiveInput(); flushCloudNow(); }
 }
 function setupPlatformPauseHandlers(){
   document.addEventListener('visibilitychange', () => setPlatformPaused(document.hidden));
   /* blur НЕ ставит паузу (в iframe это замораживает игру без индикации), только сбрасывает ввод */
-  window.addEventListener('blur', () => { resetLiveInput(); stopEngineSound(); });
-  window.addEventListener('focus', () => { if(canResumeEngine()) startEngineSound(); });
+  window.addEventListener('blur', () => { resetLiveInput(); });
   Platform.onPause(() => setPlatformPaused(true));
   Platform.onResume(() => setPlatformPaused(false));
 }
@@ -412,14 +410,14 @@ function setupPlatformPauseHandlers(){
 function adsAvailable(){ return Platform.adsAvailable(); }
 function beginAd(){
   adPlaying = true;
-  stopEngineSound(); resetLiveInput(); updateMasterGain();
+  resetLiveInput(); updateMasterGain();
   gameplayStop();
 }
 function finishAd(){
   adPlaying = false;
   gamepadCooldown = 22;
   updateMasterGain();
-  if(canResumeEngine()){ startEngineSound(); gameplayStart(); }
+  gameplayStart();
 }
 
 function showRewarded(cb){
@@ -452,6 +450,7 @@ function tryFullscreen(){
 }
 function tryRateGame(){ if(Platform.mode !== 'vk') Platform.rateGame(); }
 function supportURL(){
+  if(Platform.isOK && Platform.isOK()) return 'https://ok.ru/group/70000058575088';
   if(Platform.isVK && Platform.isVK()) return 'https://vk.ru/club241697263';
   return null;
 }
@@ -473,27 +472,22 @@ function gameplayStart(){ Platform.gameplayStart(); }
 function gameplayStop(){ Platform.gameplayStop(); }
 
 /* ================= SAVE (debounced cloud) ================= */
-const SAVE_KEY = 'tanks-vk-1';
 let _cloudSaveTimer = null;
-let _pendingCloudData = null;
+function getSaveKey(){
+  return (Platform.isOK && Platform.isOK()) ? 'tanks-ok-1' : 'tanks-vk-1';
+}
 
 function saveProgress(d){
-  try{ localStorage.setItem(SAVE_KEY, JSON.stringify(d)); }catch(e){}
-  _pendingCloudData = d;
-  if(_cloudSaveTimer) return;
-  _cloudSaveTimer = setTimeout(flushCloudNow, 4000);
+  try{ localStorage.setItem(getSaveKey(), JSON.stringify(d)); }catch(e){}
 }
 function flushCloudNow(){
   if(_cloudSaveTimer){ clearTimeout(_cloudSaveTimer); _cloudSaveTimer = null; }
-  if(!_pendingCloudData) return;
-  if(!Platform.isVK || !Platform.isVK()){ _pendingCloudData = null; return; }
-  const data = _pendingCloudData;
-  _pendingCloudData = null;
+  if(!Platform.isVK || !Platform.isVK()) return;
+  let data = null;
+  try{ const s = localStorage.getItem(getSaveKey()); if(s) data = JSON.parse(s); }catch(e){}
+  if(!data) return;
   try{
-    Platform.save(data, (ok) => {
-      if(Platform.mode !== 'vk') return;
-      showCloudStatus(ok);
-    });
+    Platform.save(data, () => {});
   }catch(e){ log('Platform.save error:', e); }
 }
 let _cloudToastTimer = null;
@@ -518,7 +512,7 @@ function showCloudStatus(ok){
 }
 async function loadProgress(){
   let local = null;
-  try{ const s = localStorage.getItem(SAVE_KEY); if(s) local = JSON.parse(s); }catch(e){}
+  try{ const s = localStorage.getItem(getSaveKey()); if(s) local = JSON.parse(s); }catch(e){}
   try{
     const cloud = await Platform.load();
     if(cloud) return local ? ({...local, ...cloud}) : cloud;
@@ -545,7 +539,7 @@ owned:'КУПЛЕНО', lvlShort:'Ур.', maxLbl:'МАКС',
 achTitle:'🏆 ДОСТИЖЕНИЯ',
 close:'ЗАКРЫТЬ',
 settingsTitle:'⚙️ НАСТРОЙКИ', tabControls:'🎮 Управление', tabSound:'🔊 Звук',
-volMaster:'🔊 Общая громкость:', volEngine:'🚜 Звук двигателя:', volStreak:'🔥 Серии убийств:',
+volMaster:'🔊 Общая громкость:', volStreak:'🔥 Серии убийств:',
 ctrl_up:'Вверх', ctrl_down:'Вниз', ctrl_left:'Влево', ctrl_right:'Вправо', ctrl_fire:'Огонь',
 lvlDone:'🏆 УРОВЕНЬ ПРОЙДЕН!', chooseRelic:'Выбери реликвию:',
 nextLvl:'Следующий уровень:',
@@ -632,7 +626,7 @@ owned:'OWNED', lvlShort:'Lv.', maxLbl:'MAX',
 achTitle:'🏆 ACHIEVEMENTS',
 close:'CLOSE',
 settingsTitle:'⚙️ SETTINGS', tabControls:'🎮 Controls', tabSound:'🔊 Sound',
-volMaster:'🔊 Master volume:', volEngine:'🚜 Engine sound:', volStreak:'🔥 Kill streak:',
+volMaster:'🔊 Master volume:', volStreak:'🔥 Kill streak:',
 ctrl_up:'Up', ctrl_down:'Down', ctrl_left:'Left', ctrl_right:'Right', ctrl_fire:'Fire',
 lvlDone:'🏆 LEVEL COMPLETE!', chooseRelic:'Choose a relic:',
 nextLvl:'Next level:',
@@ -757,7 +751,7 @@ function applyLang(){
 
 /* ================= AUDIO ================= */
 let audioCtx=null, soundMuted=false, masterGain=null;
-let volMaster=1.0, volEngine=0.35, volStreak=0.7;
+let volMaster=1.0, volStreak=0.7;
 function initAudio(){ try{
   if(!audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     masterGain=audioCtx.createGain(); masterGain.gain.value=(soundMuted||adPlaying)?0:volMaster; masterGain.connect(audioCtx.destination); }
@@ -947,27 +941,6 @@ function playLevelJingle(){
     }
   }catch(e){}
 }
-let engineOsc=null, engineGain=null, engineFilter=null;
-const ENGINE_BASE_VOL=0.18;
-function startEngineSound(){ if(engineOsc||_audioBlocked()) return;
-  try{
-    engineOsc=audioCtx.createOscillator(); engineOsc.type='sawtooth'; engineOsc.frequency.value=42;
-    engineFilter=audioCtx.createBiquadFilter(); engineFilter.type='lowpass'; engineFilter.frequency.value=200; engineFilter.Q.value=4;
-    engineGain=audioCtx.createGain(); engineGain.gain.value=ENGINE_BASE_VOL*volEngine;
-    engineOsc.connect(engineFilter).connect(engineGain).connect(masterGain||audioCtx.destination);
-    engineOsc.start();
-  }catch(e){ engineOsc=null; }
-}
-function stopEngineSound(){ if(engineOsc){ try{engineOsc.stop();}catch(e){} try{engineOsc.disconnect();}catch(e){} engineOsc=null; engineGain=null; engineFilter=null; } }
-function updateEngineSound(){
-  if(!engineOsc||!audioCtx||!players.length) return;
-  let moving=0,total=0;
-  for(const p of players){ if(!p||!p.alive) continue; total++; if(p.input.left||p.input.right||p.input.up||p.input.down) moving++; }
-  const target = (total>0 && moving>0) ? 64 : 42;
-  try{ engineOsc.frequency.linearRampToValueAtTime(target,audioCtx.currentTime+0.15); }catch(e){}
-  try{ engineGain.gain.value = ENGINE_BASE_VOL*volEngine; }catch(e){}
-}
-
 /* ================= CONSTANTS ================= */
 const W=1000,H=700,TILE_SIZE=50,COLS=20,ROWS=14;
 const TILE={EMPTY:0,BRICK:1,STEEL:2,WATER:3,TREE:4,CONCRETE:5};
@@ -2265,7 +2238,6 @@ function addKill(){
     trainingKillTipShown = true;
     showTrainingTip('\u{1F4A3}', t('tipBonusTitle'), t('tipBonusText'), ()=>{
       gamePaused = false; lastFrameTs = 0;
-      if(!platformPaused && !adPlaying) startEngineSound();
     });
     return;
   }
@@ -2563,7 +2535,7 @@ function drawTreeTile(x,y){
 /* ================= UI ================= */
 const UI={};
 function cacheUI(){
-  ['hpDisplay','waveNum','waveTotal','levelNum','baseHealthDisplay','coinsDisplay','killsDisplay','bossWarning','shopPanel','shopCoins','shopStats','continueBtn','shopExitBtn','gameOver','gameOverReason','statsContainer','flash','menu','levelComplete','relicGrid','lcNext','musicBtn','tabContent','shopTabs','weaponBar','recordBox','recLevel','recCoins','recKills','continueGameBtn','startBtn','achBtn','ctrlBtn','achList','controlsList','winOverlay','killStreak','upgradeFlash','achievementPanel','settingsPanel','stabControls','stabSound','volMasterSlider','volEngineSlider','volMasterLabel','volEngineLabel','volStreakSlider','volStreakLabel','adReviveBtn','restartBtn','menuTitle','lvlDoneH1','gameOverTitle','exitConfirm','exitConfirmTitle','exitConfirmText','exitConfirmYes','exitConfirmNo','levelIntro','introLbl','introNum','introWave','introHint',
+  ['hpDisplay','waveNum','waveTotal','levelNum','baseHealthDisplay','coinsDisplay','killsDisplay','bossWarning','shopPanel','shopCoins','shopStats','continueBtn','shopExitBtn','gameOver','gameOverReason','statsContainer','flash','menu','levelComplete','relicGrid','lcNext','musicBtn','tabContent','shopTabs','weaponBar','recordBox','recLevel','recCoins','recKills','continueGameBtn','startBtn','achBtn','ctrlBtn','achList','controlsList','winOverlay','killStreak','upgradeFlash','achievementPanel','settingsPanel','stabControls','stabSound','volMasterSlider','volStreakSlider','volMasterLabel','volStreakLabel','adReviveBtn','restartBtn','menuTitle','lvlDoneH1','gameOverTitle','exitConfirm','exitConfirmTitle','exitConfirmText','exitConfirmYes','exitConfirmNo','levelIntro','introLbl','introNum','introWave','introHint',
    'diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','buyCoinsBtn','buyCoinsPanel','buyCoinsCloseBtn','trainBtn','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu','statsToggle']
    .forEach(id => { UI[id] = document.getElementById(id); });
 }
@@ -2591,7 +2563,7 @@ function checkGameOver(){ if(!gameRunning)return; if(baseHealth<=0)endGame('base
 function endGame(reason){
   if(trainingMode) return;
   if(!gameRunning)return;
-  gameRunning=false; gamePaused=false; stopEngineSound(); sfxDefeat(); gameplayStop();
+  gameRunning=false; gamePaused=false; sfxDefeat(); gameplayStop();
   canvas.classList.add('grayscale'); UI.gameOver.classList.add('gray-bg'); UI.gameOver.style.display='flex';
   if(UI.gameOverTitle) UI.gameOverTitle.textContent = t('gameOverTitle');
   if(UI.gameOverReason){
@@ -2648,7 +2620,7 @@ function showLevelIntro(callback){
 }
 function showTrainingTip(icon, title, text, cb){
   gamePaused = true;
-  stopEngineSound(); mouseFireHeld = false; keys = {};
+  mouseFireHeld = false; keys = {};
   if(players) players.forEach(p=>{
     p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false;
   });
@@ -2692,7 +2664,7 @@ function toggleShop(force, ownerPlayer){
   gamePaused=shopOpen;
   UI.shopPanel.style.display=shopOpen?'flex':'none';
   if(shopOpen){
-    stopEngineSound(); mouseFireHeld=false; keys={};
+    mouseFireHeld=false; keys={};
     players.forEach(p=>{ p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false; });
     currentShopOwner = (typeof ownerPlayer==='number' && ownerPlayer>=0) ? ownerPlayer : 0;
     statsOpen=false;
@@ -2709,7 +2681,7 @@ function toggleShop(force, ownerPlayer){
   } else {
     mouseFireHeld=false; keys={};
     players.forEach(p=>{ p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false; });
-    clearGamepadFocus(); gameplayStart(); startEngineSound();
+    clearGamepadFocus(); gameplayStart();
     closeExitConfirm();
     gamepadCooldown=22;
     const pads=getPads();
@@ -2897,10 +2869,8 @@ function renderControls(){
 }
 function updateVolumeSliders(){
   if(UI.volMasterSlider)UI.volMasterSlider.value=Math.round(volMaster*100);
-  if(UI.volEngineSlider)UI.volEngineSlider.value=Math.round(volEngine*100);
   if(UI.volStreakSlider)UI.volStreakSlider.value=Math.round(volStreak*100);
   if(UI.volMasterLabel)UI.volMasterLabel.textContent=Math.round(volMaster*100)+'%';
-  if(UI.volEngineLabel)UI.volEngineLabel.textContent=Math.round(volEngine*100)+'%';
   if(UI.volStreakLabel)UI.volStreakLabel.textContent=Math.round(volStreak*100)+'%';
 }
 
@@ -2952,9 +2922,13 @@ function saveAll(){
   saveProgress({
     achievements, stats, daily, metaCoins, savedRun,
     unlockedWeapons, currentWeaponIds, p1Control, lastDifficulty, selectedDifficulty,
-    keyCfg, padCfg, volMaster, volEngine, volStreak, langSetting,
+    keyCfg, padCfg, volMaster, volStreak, langSetting,
     maxLevel:stats.maxLevel, totalCoins:coins, totalKills:stats.totalKills
   });
+}
+function cloudSync(){
+  saveAll();
+  flushCloudNow();
 }
 function updateContinueBtn(){ if(savedRun && savedRun.level>=1 && savedRun.wave>=1)UI.continueGameBtn.style.display='inline-block'; else UI.continueGameBtn.style.display='none'; }
 function updateRecordBox(){
@@ -2963,15 +2937,15 @@ function updateRecordBox(){
   UI.recCoins.textContent=(stats.totalCoinsEarned||0).toLocaleString(loc);
   UI.recKills.textContent=(stats.totalKills||0).toLocaleString(loc);
 }
-function openExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.add('show'); gamePaused=true; stopEngineSound(); gamepadCooldown = 15; }
-function closeExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.remove('show'); gamePaused=shopOpen; if(gameRunning&&!gamePaused&&!shopOpen&&!adPlaying)startEngineSound(); gamepadCooldown = 15; }
+function openExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.add('show'); gamePaused=true; gamepadCooldown = 15; }
+function closeExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.remove('show'); gamePaused=shopOpen; gamepadCooldown = 15; }
 function doExitToMenu(){
   trainingMode = false;
   trainingKillTipShown = false;
   if(UI.trainingComplete) UI.trainingComplete.style.display = 'none';
   if(UI.exitConfirm)UI.exitConfirm.classList.remove('show');
   savedRun=null; saveAll(); flushCloudNow(); shopOpen=false; gamePaused=false;
-  UI.shopPanel.style.display='none'; gameRunning=false; stopEngineSound(); gameplayStop();
+  UI.shopPanel.style.display='none'; gameRunning=false; gameplayStop();
   keys={}; mouseFireHeld=false;
   players.forEach(p=>{ p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false; });
   enemies=[]; bullets=[]; enemyBullets=[]; particles=[]; floaters=[];
@@ -3380,7 +3354,7 @@ function bindWeaponBars(){
 /* ================= UPDATE ================= */
 function update(dt){
   if(!gameRunning||gamePaused)return;
-  updateStreak(dt); updateEngineSound();
+  updateStreak(dt);
   for(const p of players)p.update(dt);
   if(botAlly)botAlly.update(dt);
   if(helicopter){ const dead=helicopter.update(dt); if(dead)helicopter=null; }
@@ -3403,7 +3377,7 @@ function update(dt){
         if(trainingMode){
           trainingMode = false;
           gameRunning = false; gamePaused = false;
-          stopEngineSound(); gameplayStop();
+          gameplayStop();
           showTrainingComplete();
           return;
         }
@@ -3412,6 +3386,7 @@ function update(dt){
       } else {
         coins+=40+wave*8; stats.totalCoinsEarned+=40+wave*8;
         waveTimer=6;
+        cloudSync();
       }
     }
   }
@@ -3694,7 +3669,7 @@ function drawMobileUI(){
 
 /* ================= LEVEL FLOW ================= */
 function showLevelComplete(){
-  levelCompleteOpen=true; gameRunning=false; gamePaused=true; stopEngineSound(); helicopter=null;
+  levelCompleteOpen=true; gameRunning=false; gamePaused=true; helicopter=null;
   UI.bossWarning.style.display='none';
   gameplayStop();
   mouseFireHeld=false;
@@ -3776,6 +3751,7 @@ function startWave(){
   }
   if(willSpawnArtillery && spawnArtillery()) artillerySpawnedThisLevel++;
   spawning=true; spawnTimer=0; updateUI();
+  cloudSync();
 }
 function spawnEnemy(){
   if(trainingMode){
@@ -3872,7 +3848,6 @@ function startLevel(resumeWave=false){
   const introFn = trainingMode ? showTrainingIntro : showLevelIntro;
   introFn(()=>{
     gamePaused=false; lastFrameTs=0;
-    if(!platformPaused&&!adPlaying)startEngineSound();
     gameplayStart(); saveRun();
   });
 }
@@ -3989,7 +3964,7 @@ function handleBuy(packKey, btn){
     if(ok){
       coins += pack.amount;
       stats.totalCoinsEarned += pack.amount;
-      saveAll(); updateUI();
+      cloudSync(); updateUI();
       showToast(t('buySuccess'), true);
       if(UI.buyCoinsPanel) UI.buyCoinsPanel.style.display = 'none';
     } else {
@@ -4067,7 +4042,7 @@ function bindUI(){
   UI.exitConfirmNo.addEventListener('click', ()=>{ initAudio(); closeExitConfirm(); });
   document.getElementById('restartBtn').addEventListener('click', ()=>{
     hideGameOver(); UI.menu.style.display='flex';
-    gameRunning=false; gamePaused=false; stopEngineSound();
+    gameRunning=false; gamePaused=false;
     updateContinueBtn(); updateRecordBox();
   });
   UI.adReviveBtn.addEventListener('click', ()=>{
@@ -4115,7 +4090,6 @@ function bindUI(){
       gamePaused  = false;
       updateUI();
       updateWeaponBar();
-      if(canResumeEngine()) startEngineSound();
       gameplayStart();
       saveRun();
     });
@@ -4126,8 +4100,6 @@ function bindUI(){
     document.getElementById('musicBtn').classList.toggle('off',soundMuted);
     document.getElementById('musicBtn').textContent=soundMuted?'🔇':'🔊';
     updateMasterGain();
-    if(soundMuted)stopEngineSound();
-    else if(gameRunning&&!gamePaused)startEngineSound();
   });
 
   UI.shopTabs.querySelectorAll('.tab').forEach(tab=>{
@@ -4146,9 +4118,6 @@ function bindUI(){
   });
   UI.volMasterSlider.addEventListener('input',()=>{ volMaster=parseInt(UI.volMasterSlider.value,10)/100;
     UI.volMasterLabel.textContent=Math.round(volMaster*100)+'%'; updateMasterGain(); saveAll(); });
-  UI.volEngineSlider.addEventListener('input',()=>{ volEngine=parseInt(UI.volEngineSlider.value,10)/100;
-    UI.volEngineLabel.textContent=Math.round(volEngine*100)+'%';
-    if(engineGain)engineGain.gain.value=ENGINE_BASE_VOL*volEngine; saveAll(); });
   UI.volStreakSlider.addEventListener('input',()=>{ volStreak=parseInt(UI.volStreakSlider.value,10)/100;
     UI.volStreakLabel.textContent=Math.round(volStreak*100)+'%'; saveAll(); });
 
@@ -4202,7 +4171,6 @@ window.addEventListener('load', async ()=>{
   window.addEventListener('gamepadconnected',e=>log('🎮 connected:',e.gamepad.id));
   window.addEventListener('gamepaddisconnected',()=>clearGamepadFocus());
 
-  setInterval(()=>{ if(gameRunning&&!gamePaused)saveRun(); },30000);
   window.addEventListener('beforeunload',()=>{ try{ saveAll(); flushCloudNow(); }catch(e){} });
 
   gameStartTime=Date.now();
@@ -4229,7 +4197,6 @@ window.addEventListener('load', async ()=>{
     if(saved.keyCfg){ keyCfg.p1={...keyCfg.p1,...(saved.keyCfg.p1||{})}; }
     if(saved.padCfg){ padCfg.gp1={...padCfg.gp1,...(saved.padCfg.gp1||{})}; }
     if(typeof saved.volMaster==='number')volMaster=saved.volMaster;
-    if(typeof saved.volEngine==='number')volEngine=saved.volEngine;
     if(typeof saved.volStreak==='number')volStreak=saved.volStreak;
     if(saved.langSetting)langSetting=saved.langSetting;
     updateContinueBtn();

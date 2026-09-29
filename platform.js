@@ -10,18 +10,35 @@
   let vkReady = false;
   let inited = false;
 
+  async function detectPlatform(){
+    if(typeof vkBridge === 'undefined') return 'local';
+    try{
+      const lp = await vkBridge.send('VKWebAppGetLaunchParams');
+      const p = (lp && lp.vk_platform) || '';
+      if(p.includes('ok')) return 'ok';
+      return 'vk';
+    }catch(e){ return 'vk'; }
+  }
+
   async function init(){
     if(mode === 'vk'){
       const timeout = (ms, promise) => Promise.race([
         promise,
         new Promise((_, rej) => setTimeout(() => rej(new Error('vk timeout')), ms))
       ]);
-      try{ await timeout(1500, vkBridge.send('VKWebAppInit')); vkReady = true; }catch(e){ console.warn('[Platform] init timeout/fail:', e); mode = 'local'; }
       try{
-        const lp = await timeout(1500, vkBridge.send('VKWebAppGetLaunchParams'));
-        if(lp && lp.vk_language) vkLang = lp.vk_language;
-      }catch(e){}
+        await timeout(1500, vkBridge.send('VKWebAppInit'));
+        vkReady = true;
+        mode = await detectPlatform();
+      }catch(e){ console.warn('[Platform] init timeout/fail:', e); mode = 'local'; }
+      if(mode === 'vk' || mode === 'ok'){
+        try{
+          const lp = await timeout(1500, vkBridge.send('VKWebAppGetLaunchParams'));
+          if(lp && lp.vk_language) vkLang = lp.vk_language;
+        }catch(e){}
+      }
     }
+    if(window.Platform) window.Platform.mode = mode;
     inited = true;
     return true;
   }
@@ -55,8 +72,8 @@
 
   function showOrderBox(itemData, cb){
     cb = cb || function(){};
-    if(!(window.vkBridge && typeof isVK === 'function' && isVK())){
-      cb(false, {error:'not_vk'}); return;
+    if(!(window.vkBridge && ((typeof isVK === 'function' && isVK()) || (typeof isOK === 'function' && isOK())))){
+      cb(false, {error:'not_platform'}); return;
     }
     const itemId = (typeof itemData === 'string')
       ? itemData
