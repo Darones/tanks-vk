@@ -178,6 +178,10 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .rateBtn{position:absolute;top:8px;right:70px;background:rgba(255,215,0,0.15);border:1px solid #ffd700;border-radius:20px;color:#ffd700;font-size:12px;padding:6px 12px;cursor:pointer;font-weight:bold;z-index:31}
 .rateBtn:hover{background:rgba(255,215,0,0.3)}
 @media (max-width:520px){.bigBtn{min-width:240px;font-size:16px;padding:10px 24px}.smallBtn,.dailyBtn{min-width:200px}.langRow{font-size:13px;padding:5px 10px}.rateBtn{right:62px;font-size:11px;padding:5px 10px}.shopTabs .tab{font-size:10px;min-width:56px}}
+#buyCoinsPanel{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:200}
+.buyCoinsBox{background:#1e2a38;color:#fff;padding:18px 20px;border-radius:14px;min-width:260px;max-width:92vw;display:flex;flex-direction:column;gap:10px;position:relative}
+.coinPacks{display:flex;flex-direction:column;gap:8px}
+#buyCoinsCloseBtn{position:absolute;top:8px;right:8px;min-width:auto;padding:4px 8px}
 </style>
 </head>
 <body>
@@ -309,6 +313,18 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 </div>
 </div>
 
+<div id="buyCoinsPanel" style="display:none">
+<div class="buyCoinsBox">
+<button id="buyCoinsCloseBtn" class="smallBtn">✖</button>
+<h3 data-i18n="shopCoinsTitle">Пополнение монет</h3>
+<div class="coinPacks">
+<button class="bigBtn coinPack" data-pack="small" data-i18n="coinsPackSmall">10 000 монет — 5 голосов</button>
+<button class="bigBtn coinPack" data-pack="medium" data-i18n="coinsPackMedium">25 000 монет — 10 голосов</button>
+<button class="bigBtn coinPack" data-pack="large" data-i18n="coinsPackLarge">60 000 монет — 20 голосов</button>
+</div>
+</div>
+</div>
+
 <div id="menu">
 <div id="menuLoading" style="font-size:14px;color:#ffd700;padding:6px 14px;background:rgba(0,0,0,0.5);border-radius:8px;margin-bottom:6px">Загрузка…</div>
 <h1 id="menuTitle">🎯 Танковый Рубеж</h1>
@@ -336,6 +352,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <button class="smallBtn" id="achBtn" data-i18n="achBtn">🏆 Достижения</button>
 <button class="smallBtn" id="ctrlBtn" data-i18n="settingsBtn">⚙️ Настройки</button>
 <button class="smallBtn" id="supportBtn" data-i18n="supportBtn">🆘 Поддержка</button>
+<button class="smallBtn" id="buyCoinsBtn" data-i18n="buyCoinsBtn">💰 Купить монеты</button>
 </div>
 
 <div class="langRow" id="langRow">
@@ -569,6 +586,9 @@ introLabel:'УРОВЕНЬ', introWaveLbl:'Волн:', introHint:'Пригото
 ngTitle:'▶ НОВАЯ ИГРА',
 ngDiffLbl:'⚔️ Сложность:',
 rateBtn:'⭐ Оценить',
+buyCoinsBtn:'\u{1F4B0} Купить монеты', shopCoinsTitle:'Пополнение монет',
+coinsPackSmall:'10 000 монет — 5 голосов', coinsPackMedium:'25 000 монет — 10 голосов', coinsPackLarge:'60 000 монет — 20 голосов',
+buySuccess:'Монеты зачислены!', buyFail:'Не удалось выполнить покупку', buyCancel:'Покупка отменена', buyOnlyVK:'Покупка доступна только в VK',
 supportBtn:'\u{1F198} Поддержка',
 trainBtn:'\u{1F393} Обучение',
 trainCompleteTitle:'\u{1F3AF} ОБУЧЕНИЕ ПРОЙДЕНО!',
@@ -653,6 +673,9 @@ introLabel:'LEVEL', introWaveLbl:'Waves:', introHint:'Get ready!',
 ngTitle:'▶ NEW GAME',
 ngDiffLbl:'⚔️ Сложность:',
 rateBtn:'⭐ Rate',
+buyCoinsBtn:'\u{1F4B0} Buy coins', shopCoinsTitle:'Buy coins',
+coinsPackSmall:'10,000 coins — 5 votes', coinsPackMedium:'25,000 coins — 10 votes', coinsPackLarge:'60,000 coins — 20 votes',
+buySuccess:'Coins added!', buyFail:'Purchase failed', buyCancel:'Purchase cancelled', buyOnlyVK:'Purchase is available only in VK',
 supportBtn:'\u{1F198} Support',
 trainBtn:'\u{1F393} Training',
 trainCompleteTitle:'\u{1F3AF} TRAINING COMPLETE!',
@@ -2531,7 +2554,7 @@ function drawTreeTile(x,y){
 const UI={};
 function cacheUI(){
   ['hpDisplay','waveNum','waveTotal','levelNum','baseHealthDisplay','coinsDisplay','killsDisplay','bossWarning','shopPanel','shopCoins','shopStats','continueBtn','shopExitBtn','gameOver','gameOverReason','statsContainer','flash','menu','levelComplete','relicGrid','lcNext','musicBtn','tabContent','shopTabs','weaponBar','recordBox','recLevel','recCoins','recKills','continueGameBtn','startBtn','achBtn','ctrlBtn','achList','controlsList','winOverlay','killStreak','upgradeFlash','achievementPanel','settingsPanel','stabControls','stabSound','volMasterSlider','volEngineSlider','volMasterLabel','volEngineLabel','volStreakSlider','volStreakLabel','adReviveBtn','restartBtn','menuTitle','lvlDoneH1','gameOverTitle','exitConfirm','exitConfirmTitle','exitConfirmText','exitConfirmYes','exitConfirmNo','levelIntro','introLbl','introNum','introWave','introHint',
-   'diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','trainBtn','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu']
+   'diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','buyCoinsBtn','buyCoinsPanel','buyCoinsCloseBtn','trainBtn','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu']
    .forEach(id => { UI[id] = document.getElementById(id); });
 }
 function updateUI(){
@@ -3917,7 +3940,55 @@ function cycleDiff(dir){
 }
 
 /* ================= BIND UI ================= */
+const COIN_PACKS = {
+  small:  { id:'tanks_coins_small',  title:'10 000 монет', description:'Пакет монет для Танкового Рубежа', price:5,  amount:10000, photo_url:'https://raw.githubusercontent.com/Darones/assets/main/coin.png' },
+  medium: { id:'tanks_coins_medium', title:'25 000 монет', description:'Пакет монет для Танкового Рубежа', price:10, amount:25000, photo_url:'https://raw.githubusercontent.com/Darones/assets/main/coin.png' },
+  large:  { id:'tanks_coins_large',  title:'60 000 монет', description:'Пакет монет для Танкового Рубежа', price:20, amount:60000, photo_url:'https://raw.githubusercontent.com/Darones/assets/main/coin.png' }
+};
+function handleBuy(packKey, btn){
+  const pack = COIN_PACKS[packKey];
+  if(!pack) return;
+  if(!Platform.isVK || !Platform.isVK()){
+    floaters.push(new Floater(W/2, 200, t('buyOnlyVK'), '#ff9800'));
+    return;
+  }
+  if(btn) btn.disabled = true;
+  Platform.showOrderBox(pack, (ok, res) => {
+    if(btn) btn.disabled = false;
+    if(ok){
+      coins += pack.amount;
+      stats.totalCoinsEarned += pack.amount;
+      saveAll(); updateUI();
+      floaters.push(new Floater(W/2, 200, t('buySuccess'), '#4caf50'));
+      if(UI.buyCoinsPanel) UI.buyCoinsPanel.style.display = 'none';
+    } else {
+      const msg = res && res.error && res.error.error_msg ? res.error.error_msg : '';
+      floaters.push(new Floater(W/2, 200, msg && /cancel/i.test(msg) ? t('buyCancel') : t('buyFail'), '#ff9800'));
+    }
+  });
+}
 function bindUI(){
+  if(UI.buyCoinsBtn){
+    UI.buyCoinsBtn.addEventListener('click', e=>{
+      e.preventDefault();
+      if(UI.buyCoinsPanel) UI.buyCoinsPanel.style.display = 'flex';
+    });
+  }
+  if(UI.buyCoinsCloseBtn){
+    UI.buyCoinsCloseBtn.addEventListener('click', e=>{
+      e.preventDefault();
+      if(UI.buyCoinsPanel) UI.buyCoinsPanel.style.display = 'none';
+    });
+  }
+  document.querySelectorAll('.coinPack').forEach(b=>{
+    b.addEventListener('click', e=>{ e.preventDefault(); handleBuy(b.dataset.pack, b); });
+  });
+  if(UI.buyCoinsPanel){
+    UI.buyCoinsPanel.addEventListener('click', e=>{
+      if(e.target === UI.buyCoinsPanel) UI.buyCoinsPanel.style.display = 'none';
+    });
+  }
+
   UI.startBtn.addEventListener('click', e=>{
     trainingMode = false;
     e.preventDefault(); initAudio();

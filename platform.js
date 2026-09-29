@@ -53,6 +53,16 @@
     cb && cb();
   }
 
+  function showOrderBox(itemData, cb){
+    if(!(window.vkBridge && typeof isVK === 'function' && isVK())){
+      cb(false, {error:'not_vk'});
+      return;
+    }
+    vkBridge.send('VKWebAppShowOrderBox', { item: JSON.stringify(itemData) })
+      .then(res => cb(true, res))
+      .catch(err => cb(false, err));
+  }
+
   async function save(dataObj, onResult){
     const json = JSON.stringify(dataObj);
     if(json.length > 4000) console.warn('[Platform] Save size', json.length, 'bytes (>4000)');
@@ -116,4 +126,5 @@
     save, load, getLang, isVK, isOK, onPause, onResume,
     gameplayStart, gameplayStop, rateGame, SAVE_KEY
   };
+  window.Platform.showOrderBox = showOrderBox;
 })();
