@@ -40,12 +40,12 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .dailyBtn,#dailyPanel{display:none!important}
 .dailyBtn.ready::after{content:'';position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#ff2222;animation:pulse 0.8s infinite alternate}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
-#ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;flex-wrap:wrap;gap:6px;max-width:96vw}
+#ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
 @media (pointer:coarse){
-  #ui{bottom:2px;max-width:70vw;gap:4px;font-size:11px}
+  #ui{bottom:2px;max-width:96vw;gap:4px;font-size:11px}
   #ui>div{padding:3px 8px;gap:6px}
 }
-#ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08)}
+#ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08);white-space:nowrap;max-width:100%}
 #ui>div>span{padding-right:2px;white-space:nowrap}
 
 
@@ -534,7 +534,7 @@ hintText:'🖱️ Мышь — башня · ЛКМ — огонь · WASD — �
 shop:'🏗️ МАГАЗИН', statsBtn:' Статистика', statsBtnHide:' Скрыть',
 tabTank:'🚜 Танк', tabBase:'🏰 База', tabWeapons:'🔫 Пушки',
 btnContinue:'▶ ПРОДОЛЖИТЬ', btnExit:'🚪 В МЕНЮ',
-buyOnce:'Купить один раз — доступно обоим',
+buyOnce:'Купить один раз',
 owned:'КУПЛЕНО', lvlShort:'Ур.', maxLbl:'МАКС',
 achTitle:'🏆 ДОСТИЖЕНИЯ',
 close:'ЗАКРЫТЬ',
@@ -621,7 +621,7 @@ hintText:'🖱️ Mouse — turret · LMB — fire · WASD — move · Tab — s
 shop:'🏗️ SHOP', statsBtn:' Stats', statsBtnHide:' Hide',
 tabTank:'🚜 Tank', tabBase:'🏰 Base', tabWeapons:'🔫 Weapons',
 btnContinue:'▶ CONTINUE', btnExit:'🚪 TO MENU',
-buyOnce:'Buy once — available for both',
+buyOnce:'Buy once',
 owned:'OWNED', lvlShort:'Lv.', maxLbl:'MAX',
 achTitle:'🏆 ACHIEVEMENTS',
 close:'CLOSE',
@@ -3502,7 +3502,7 @@ function updateMobileCenters(){
   const stickX=blackBarW/2;
   MOBILE_MOVE_CENTER={x:stickX,y:overlayH-100};
   MOBILE_AIM_CENTER={x:overlayW-stickX,y:overlayH-100};
-  MOBILE_FIRE_CENTER={x:overlayW-95,y:overlayH-194};
+  MOBILE_FIRE_CENTER={x:overlayW-95,y:overlayH-240};
 }
 function resizeOverlay(){
   const dpr=window.devicePixelRatio||1;
