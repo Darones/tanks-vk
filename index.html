@@ -1147,7 +1147,7 @@ let achievements={};
 let stats={totalKills:0,totalCoins:1000,totalCoinsEarned:0,totalBossKills:0,maxLevel:1,weaponKills:{cannon:0,mg:0,sniper:0,flame:0,rocket:0,laser:0},noDamageWins:0,noDeathWins:0,bestStreak:0};
 let daily={lastClaim:0,streak:0};
 let metaCoins=0;
-let save={tutorialDone:false,pendingBonus:0,money:0};
+let save={tutorialDone:false,pendingBonus:0,money:0,lastFreeBonusDay:''};
 let bonusTimerInterval=null;
 let savedRun=null;
 let helicopter=null;
@@ -2630,6 +2630,16 @@ function updateUI(){
 function clearBonusTimer(){
   if(bonusTimerInterval){ clearInterval(bonusTimerInterval); bonusTimerInterval=null; }
 }
+function todayStr(){
+  const d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function isDailyFreeUsedToday(){ return save.lastFreeBonusDay===todayStr(); }
+function grantDailyFreeBonus(){
+  save.lastFreeBonusDay=todayStr();
+  save.pendingBonus=(Number(save.pendingBonus)||0)+5000;
+  saveAll();
+}
 function updateBonusUI(){
   if(!UI.bonusBtn||!UI.bonusTimer)return;
   const visible=!!save.tutorialDone;
@@ -2639,8 +2649,10 @@ function updateBonusUI(){
   if(!visible){ clearBonusTimer(); return; }
   UI.bonusBtn.textContent='💰 Бонус +5000 (накоплено: '+(Number(save.pendingBonus)||0)+')';
   const refresh=()=>{
-    if(adDailyCount>=AD_DAILY_LIMIT){ UI.bonusTimer.textContent='Приходите завтра'; UI.bonusBtn.disabled=true; clearBonusTimer(); return; }
     const left=Math.max(0,Math.ceil((AD_REWARDED_COOLDOWN-(Date.now()-lastRewardedAt))/1000));
+    const adLimitReached=adDailyCount>=AD_DAILY_LIMIT;
+    const dailyUsed=isDailyFreeUsedToday();
+    if(adLimitReached&&dailyUsed){ UI.bonusTimer.textContent='Приходите завтра'; UI.bonusBtn.disabled=true; clearBonusTimer(); return; }
     if(left>0){ UI.bonusTimer.textContent='Можно будет через '+left+' сек'; UI.bonusBtn.disabled=true; }
     else { UI.bonusTimer.textContent='Можете получить за просмотр рекламы'; UI.bonusBtn.disabled=false; clearBonusTimer(); }
   };
@@ -3021,6 +3033,7 @@ function saveAll(){
   saveProgress({
     achievements, stats, daily, metaCoins, savedRun,
     tutorialDone:!!save.tutorialDone, pendingBonus:Number(save.pendingBonus)||0, money:Number(save.money)||coins,
+    lastFreeBonusDay:save.lastFreeBonusDay||'',
     unlockedWeapons, currentWeaponIds, p1Control, lastDifficulty, selectedDifficulty,
     keyCfg, padCfg, volMaster, volStreak, langSetting,
     maxLevel:stats.maxLevel, totalCoins:coins, totalKills:stats.totalKills
@@ -4125,11 +4138,21 @@ function bindUI(){
   });
   UI.achCloseX.addEventListener('click', ()=>closePanel('achievementPanel'));
   UI.bonusBtn.addEventListener('click', async ()=>{
-    if(adDailyCount>=AD_DAILY_LIMIT){ updateBonusUI(); return; }
-    if(!adCanShow('rewarded').ok){ updateBonusUI(); return; }
+    const adLimitReached=adDailyCount>=AD_DAILY_LIMIT;
+    const adReady=!adLimitReached&&adCanShow('rewarded').ok;
+    const dailyReady=!isDailyFreeUsedToday();
+    if(!adReady&&!dailyReady){ updateBonusUI(); return; }
     UI.bonusBtn.disabled=true;
-    const ok=await adShow('rewarded');
-    if(ok){ save.pendingBonus=(Number(save.pendingBonus)||0)+5000; saveAll(); }
+    if(adReady){
+      const ok=await adShow('rewarded');
+      if(ok){
+        save.pendingBonus=(Number(save.pendingBonus)||0)+5000;
+        saveAll();
+        updateBonusUI();
+        return;
+      }
+    }
+    if(dailyReady) grantDailyFreeBonus();
     updateBonusUI();
   });
   const btl = document.getElementById('btnTrainToLevels');
@@ -4307,6 +4330,7 @@ window.addEventListener('load', async ()=>{
     if(typeof saved.tutorialDone==='boolean')save.tutorialDone=saved.tutorialDone;
     if(typeof saved.pendingBonus==='number')save.pendingBonus=saved.pendingBonus;
     if(typeof saved.money==='number')save.money=saved.money;
+    if(typeof saved.lastFreeBonusDay==='string')save.lastFreeBonusDay=saved.lastFreeBonusDay;
     if(typeof saved.metaCoins==='number')metaCoins=saved.metaCoins;
     if(saved.savedRun)savedRun=saved.savedRun;
     if(saved.p1Control)p1Control=saved.p1Control;
