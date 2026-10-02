@@ -33,6 +33,9 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .bigBtn{background:linear-gradient(180deg,#4caf50,#2e7d32);border:none;padding:12px 32px;font-size:18px;border-radius:10px;cursor:pointer;color:#fff;font-weight:bold;box-shadow:0 4px 0 #1b5e20;transition:transform .1s;min-width:280px}
 .bigBtn.cont{background:linear-gradient(180deg,#ff9800,#e65100);box-shadow:0 4px 0 #bf360c}
 #trainBtn{background:linear-gradient(180deg,#ffd700,#c9a000);box-shadow:0 4px 0 #8a6a00;color:#000}
+#achievementPanel{position:relative}
+#achCloseX{position:absolute;top:6px;right:8px;width:32px;height:32px;padding:0;border:0;background:transparent;color:#ffd700;font-size:28px;line-height:28px;cursor:pointer}
+#bonusTimer{min-height:18px;font-size:12px;color:#ffd700;text-align:center;margin-top:-5px}
 .bigBtn:disabled{opacity:.45;cursor:not-allowed}
 .smallBtn{background:linear-gradient(180deg,#4a5a7a,#2e3a52);border:none;padding:10px 22px;font-size:14px;border-radius:8px;cursor:pointer;color:#fff;font-weight:bold;box-shadow:0 3px 0 #1a2438;min-width:220px}
 #supportBtn{display:inline-block !important}
@@ -285,6 +288,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 </div>
 
 <div id="achievementPanel">
+<button id="achCloseX" aria-label="Закрыть">×</button>
 <div class="title" data-i18n="achTitle">🏆 ДОСТИЖЕНИЯ</div>
 <div id="achList"></div>
 <button class="bigBtn" data-i18n="close" onclick="closePanel('achievementPanel')" style="margin-top:8px">ЗАКРЫТЬ</button>
@@ -349,6 +353,8 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <div id="cloudOffline" data-i18n="cloudOffline" style="display:none;font-size:11px;color:#999;padding:4px 10px;background:rgba(0,0,0,0.4);border-radius:6px;margin:4px 0"></div>
 <div class="menu-btns">
 <button class="bigBtn" id="trainBtn" data-i18n="trainBtn">🎓 Обучение</button>
+<button class="bigBtn" id="bonusBtn" style="display:none">💰 Бонус +5000</button>
+<div id="bonusTimer" style="display:none"></div>
 <button class="bigBtn" id="startBtn" data-i18n="newGame">▶ НОВАЯ ИГРА</button>
 <button class="bigBtn cont" id="continueGameBtn" style="display:none" data-i18n="continueGame">▶ ПРОДОЛЖИТЬ</button>
 </div>
@@ -408,6 +414,80 @@ function setupPlatformPauseHandlers(){
 }
 
 function adsAvailable(){ return Platform.adsAvailable(); }
+const AD_INTERSTITIAL_COOLDOWN = 60 * 1000;
+const AD_REWARDED_COOLDOWN = 30 * 1000;
+const AD_DAILY_LIMIT = 15;
+const AD_CHECK_TIMEOUT = 1500;
+const AD_SHOW_TIMEOUT = 15000;
+let lastRewardedAt = 0;
+let lastInterstitialAt = 0;
+let adDailyCount = 0;
+let adDailyResetAt = Date.now() + 24 * 60 * 60 * 1000;
+let adRequestPending = false;
+
+function adCanShow(kind){
+  const now = Date.now();
+  if(now >= adDailyResetAt){ adDailyCount = 0; adDailyResetAt = now + 24 * 60 * 60 * 1000; }
+  if(adDailyCount >= AD_DAILY_LIMIT) return {ok:false, reason:'daily_limit'};
+  if(kind === 'interstitial' && now - lastInterstitialAt < AD_INTERSTITIAL_COOLDOWN)
+    return {ok:false, reason:'cooldown'};
+  if(kind === 'rewarded' && now - lastRewardedAt < AD_REWARDED_COOLDOWN)
+    return {ok:false, reason:'cooldown'};
+  if(adRequestPending) return {ok:false, reason:'pending'};
+  return {ok:true};
+}
+
+async function adCheckAvailable(kind){
+  if(!adsAvailable() || !window.vkBridge) return false;
+  try{
+    const fmt = kind === 'rewarded' ? 'reward' : 'interstitial';
+    const r = await Promise.race([
+      vkBridge.send('VKWebAppCheckNativeAds', {ad_format: fmt}),
+      new Promise((_,rj)=>setTimeout(()=>rj(new Error('check timeout')), AD_CHECK_TIMEOUT))
+    ]);
+    return !!(r?.result || r?.success);
+  }catch(e){ log('[Ads] check failed:', e?.message || e); return false; }
+}
+
+function preloadRewarded(){
+  if(!adsAvailable() || !window.vkBridge) return;
+  try{
+    vkBridge.send('VKWebAppCheckNativeAds', {ad_format:'reward'})
+      .then(r=>log('[Ads] preload reward:', JSON.stringify(r)))
+      .catch(e=>log('[Ads] preload failed:', e?.message || e));
+  }catch(e){}
+}
+
+async function adShow(kind){
+  if(!adsAvailable() || !window.vkBridge) return false;
+  const gate = adCanShow(kind);
+  if(!gate.ok){ log('[Ads] blocked:', gate.reason); return false; }
+  adRequestPending = true;
+  try{
+    const fmt = kind === 'rewarded' ? 'reward' : 'interstitial';
+    const r = await Promise.race([
+      vkBridge.send('VKWebAppShowNativeAds', {ad_format: fmt}),
+      new Promise((_,rj)=>setTimeout(()=>rj(new Error('show timeout')), AD_SHOW_TIMEOUT))
+    ]);
+    const shown = !!(r?.result || r?.success);
+    if(shown){
+      adDailyCount++;
+      if(kind === 'interstitial') lastInterstitialAt = Date.now();
+      if(kind === 'rewarded') lastRewardedAt = Date.now();
+    }
+    return shown;
+  }catch(e){
+    if(e?.message === 'show timeout'){
+      log('[Ads] show timeout — optimistically reward');
+      adDailyCount++;
+      if(kind === 'interstitial') lastInterstitialAt = Date.now();
+      if(kind === 'rewarded') lastRewardedAt = Date.now();
+      return true;
+    }
+    log('[Ads] show failed:', e?.message || e);
+    return false;
+  }finally{ adRequestPending = false; }
+}
 function beginAd(){
   adPlaying = true;
   resetLiveInput(); updateMasterGain();
@@ -421,11 +501,9 @@ function finishAd(){
 }
 
 function showRewarded(cb){
-  if(!adsAvailable() || platformPaused || adPlaying){ cb && cb(false); return; }
-  try{
-    beginAd();
-    Platform.showRewarded((ok) => { finishAd(); cb && cb(ok); });
-  }catch(e){ log('Rewarded ad exception:', e); finishAd(); cb && cb(false); }
+  if(platformPaused || adPlaying){ cb && cb(false); return; }
+  beginAd();
+  adShow('rewarded').then(ok=>{ finishAd(); cb && cb(ok); });
 }
 
 const INTERSTITIAL_MIN_INTERVAL = 180000;
@@ -438,10 +516,8 @@ function tryInterstitial(cb){
   if(now - gameStartTime < 65000){ cb && cb(); return; }
   if(now - lastInterstitialTime < INTERSTITIAL_MIN_INTERVAL){ cb && cb(); return; }
   lastInterstitialTime = now;
-  try{
-    beginAd();
-    Platform.showInterstitial(() => { finishAd(); cb && cb(); });
-  }catch(e){ log('Interstitial exception:', e); finishAd(); cb && cb(); }
+  beginAd();
+  adShow('interstitial').then(()=>{ finishAd(); cb && cb(); });
 }
 
 function tryFullscreen(){
@@ -1071,6 +1147,8 @@ let achievements={};
 let stats={totalKills:0,totalCoins:1000,totalCoinsEarned:0,totalBossKills:0,maxLevel:1,weaponKills:{cannon:0,mg:0,sniper:0,flame:0,rocket:0,laser:0},noDamageWins:0,noDeathWins:0,bestStreak:0};
 let daily={lastClaim:0,streak:0};
 let metaCoins=0;
+let save={tutorialDone:false,pendingBonus:0,money:0};
+let bonusTimerInterval=null;
 let savedRun=null;
 let helicopter=null;
 let botAlly = null;
@@ -2536,7 +2614,7 @@ function drawTreeTile(x,y){
 const UI={};
 function cacheUI(){
   ['hpDisplay','waveNum','waveTotal','levelNum','baseHealthDisplay','coinsDisplay','killsDisplay','bossWarning','shopPanel','shopCoins','shopStats','continueBtn','shopExitBtn','gameOver','gameOverReason','statsContainer','flash','menu','levelComplete','relicGrid','lcNext','musicBtn','tabContent','shopTabs','weaponBar','recordBox','recLevel','recCoins','recKills','continueGameBtn','startBtn','achBtn','ctrlBtn','achList','controlsList','winOverlay','killStreak','upgradeFlash','achievementPanel','settingsPanel','stabControls','stabSound','volMasterSlider','volStreakSlider','volMasterLabel','volStreakLabel','adReviveBtn','restartBtn','menuTitle','lvlDoneH1','gameOverTitle','exitConfirm','exitConfirmTitle','exitConfirmText','exitConfirmYes','exitConfirmNo','levelIntro','introLbl','introNum','introWave','introHint',
-   'diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','buyCoinsBtn','buyCoinsPanel','buyCoinsCloseBtn','trainBtn','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu','statsToggle']
+   'diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','buyCoinsBtn','buyCoinsPanel','buyCoinsCloseBtn','trainBtn','bonusBtn','bonusTimer','achCloseX','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu','statsToggle']
    .forEach(id => { UI[id] = document.getElementById(id); });
 }
 function updateUI(){
@@ -2548,6 +2626,26 @@ function updateUI(){
   UI.hpDisplay.textContent = (p1 && p1.alive) ? Math.max(0,Math.round(p1.hp)) : '0';
   if(shopOpen)UI.shopCoins.textContent=coins;
   updateWeaponBar();
+}
+function clearBonusTimer(){
+  if(bonusTimerInterval){ clearInterval(bonusTimerInterval); bonusTimerInterval=null; }
+}
+function updateBonusUI(){
+  if(!UI.bonusBtn||!UI.bonusTimer)return;
+  const visible=!!save.tutorialDone;
+  UI.trainBtn.style.display=visible?'none':'';
+  UI.bonusBtn.style.display=visible?'block':'none';
+  UI.bonusTimer.style.display=visible?'block':'none';
+  if(!visible){ clearBonusTimer(); return; }
+  UI.bonusBtn.textContent='💰 Бонус +5000 (накоплено: '+(Number(save.pendingBonus)||0)+')';
+  const refresh=()=>{
+    if(adDailyCount>=AD_DAILY_LIMIT){ UI.bonusTimer.textContent='Приходите завтра'; UI.bonusBtn.disabled=true; clearBonusTimer(); return; }
+    const left=Math.max(0,Math.ceil((AD_REWARDED_COOLDOWN-(Date.now()-lastRewardedAt))/1000));
+    if(left>0){ UI.bonusTimer.textContent='Можно будет через '+left+' сек'; UI.bonusBtn.disabled=true; }
+    else { UI.bonusTimer.textContent='Можете получить за просмотр рекламы'; UI.bonusBtn.disabled=false; clearBonusTimer(); }
+  };
+  clearBonusTimer(); refresh();
+  if(Date.now()-lastRewardedAt < AD_REWARDED_COOLDOWN) bonusTimerInterval=setInterval(refresh,1000);
 }
 function updateWeaponBar(){
   if(UI.weaponBar)UI.weaponBar.querySelectorAll('.wslot').forEach(slot=>{
@@ -2653,9 +2751,10 @@ function showTrainingIntro(cb){
   });
 }
 function showTrainingComplete(){
+  if(!save.tutorialDone){ save.tutorialDone=true; saveAll(); }
   UI.trainingComplete.style.display = 'flex';
   sfxVictory();
-  updateContinueBtn(); updateRecordBox();
+  updateContinueBtn(); updateRecordBox(); updateBonusUI();
 }
 function toggleShop(force, ownerPlayer){
   if(!gameRunning||levelCompleteOpen||adPlaying)return;
@@ -2921,6 +3020,7 @@ function saveRun(){
 function saveAll(){
   saveProgress({
     achievements, stats, daily, metaCoins, savedRun,
+    tutorialDone:!!save.tutorialDone, pendingBonus:Number(save.pendingBonus)||0, money:Number(save.money)||coins,
     unlockedWeapons, currentWeaponIds, p1Control, lastDifficulty, selectedDifficulty,
     keyCfg, padCfg, volMaster, volStreak, langSetting,
     maxLevel:stats.maxLevel, totalCoins:coins, totalKills:stats.totalKills
@@ -2952,7 +3052,7 @@ function doExitToMenu(){
   powerups=[]; laserBeams=[]; damageNumbers=[]; artilleryShells=[]; helicopter=null;
   pruneInputCaches();
   UI.menu.style.display='flex'; clearGamepadFocus();
-  updateContinueBtn(); updateRecordBox(); updateMetaCoinsDisplay();
+  updateContinueBtn(); updateRecordBox(); updateMetaCoinsDisplay(); updateBonusUI();
   gamepadCooldown = 20;
 }
 
@@ -3807,6 +3907,7 @@ function spawnEnemy(){
   return true;
 }
 function startLevel(resumeWave=false){
+  preloadRewarded();
   // При продолжении сохраняем уровень и номер волны, но создаём новую карту
   // и новый набор врагов.
   wave=resumeWave?Math.max(0,wave-1):0; waveTotal=10;
@@ -3917,7 +4018,7 @@ function trainToMenu(){
   UI.trainingComplete.style.display = 'none';
   trainingMode = false; trainingKillTipShown = false;
   UI.menu.style.display = 'flex';
-  updateContinueBtn(); updateRecordBox(); saveAll();
+  updateContinueBtn(); updateRecordBox(); saveAll(); updateBonusUI();
 }
 
 /* ================= GAME LOOP ================= */
@@ -3998,7 +4099,9 @@ function bindUI(){
 
   UI.startBtn.addEventListener('click', e=>{
     trainingMode = false;
+    clearBonusTimer();
     e.preventDefault(); initAudio();
+    if(save.pendingBonus>0){ const bonus=Number(save.pendingBonus)||0; save.money += bonus; metaCoins += bonus; save.pendingBonus=0; saveAll(); }
     lastDifficulty=selectedDifficulty; p1Control='kb';
     unlockedWeapons={cannon:true}; currentWeaponIds=['cannon','cannon'];
     savedRun=null; saveAll(); updateContinueBtn(); initGame(1,false);
@@ -4006,8 +4109,10 @@ function bindUI(){
   });
   UI.continueGameBtn.addEventListener('click', e=>{
     trainingMode = false;
+    clearBonusTimer();
     e.preventDefault(); initAudio();
     if(!savedRun)return;
+    if(save.pendingBonus>0){ const bonus=Number(save.pendingBonus)||0; save.money += bonus; savedRun.coins=(Number(savedRun.coins)||0)+bonus; save.pendingBonus=0; saveAll(); }
     p1Control='kb';
     initGame(1,true);
     UI.menu.style.display='none';
@@ -4017,6 +4122,15 @@ function bindUI(){
   const tb = document.getElementById('trainBtn');
   if(tb) tb.addEventListener('click', e=>{
     e.preventDefault(); startTraining();
+  });
+  UI.achCloseX.addEventListener('click', ()=>closePanel('achievementPanel'));
+  UI.bonusBtn.addEventListener('click', async ()=>{
+    if(adDailyCount>=AD_DAILY_LIMIT){ updateBonusUI(); return; }
+    if(!adCanShow('rewarded').ok){ updateBonusUI(); return; }
+    UI.bonusBtn.disabled=true;
+    const ok=await adShow('rewarded');
+    if(ok){ save.pendingBonus=(Number(save.pendingBonus)||0)+5000; saveAll(); }
+    updateBonusUI();
   });
   const btl = document.getElementById('btnTrainToLevels');
   if(btl) btl.addEventListener('click', e=>{ e.preventDefault(); trainToLevels(); });
@@ -4043,7 +4157,7 @@ function bindUI(){
   document.getElementById('restartBtn').addEventListener('click', ()=>{
     hideGameOver(); UI.menu.style.display='flex';
     gameRunning=false; gamePaused=false;
-    updateContinueBtn(); updateRecordBox();
+    updateContinueBtn(); updateRecordBox(); updateBonusUI();
   });
   UI.adReviveBtn.addEventListener('click', ()=>{
     if(adPlaying)return;
@@ -4179,6 +4293,7 @@ window.addEventListener('load', async ()=>{
 
   // === 2. АСИНХРОННАЯ ИНИЦИАЛИЗАЦИЯ VK — не блокирует UI ===
   try{ await Platform.init(); }catch(e){ log('Platform.init error:', e); }
+  preloadRewarded();
   setupPlatformPauseHandlers();
   updatePlatformUI();
 
@@ -4189,6 +4304,9 @@ window.addEventListener('load', async ()=>{
     if(saved.achievements)achievements=saved.achievements;
     if(saved.stats)Object.assign(stats,saved.stats);
     if(saved.daily)daily=saved.daily;
+    if(typeof saved.tutorialDone==='boolean')save.tutorialDone=saved.tutorialDone;
+    if(typeof saved.pendingBonus==='number')save.pendingBonus=saved.pendingBonus;
+    if(typeof saved.money==='number')save.money=saved.money;
     if(typeof saved.metaCoins==='number')metaCoins=saved.metaCoins;
     if(saved.savedRun)savedRun=saved.savedRun;
     if(saved.p1Control)p1Control=saved.p1Control;
@@ -4200,7 +4318,9 @@ window.addEventListener('load', async ()=>{
     if(typeof saved.volStreak==='number')volStreak=saved.volStreak;
     if(saved.langSetting)langSetting=saved.langSetting;
     updateContinueBtn();
+    updateBonusUI();
   }
+  updateBonusUI();
 
   const ml = document.getElementById('menuLoading');
   if(ml) ml.remove();
