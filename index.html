@@ -198,12 +198,17 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .buyCoinsBox{background:#1e2a38;color:#fff;padding:18px 20px;border-radius:14px;min-width:260px;max-width:92vw;display:flex;flex-direction:column;gap:10px;position:relative}
 .coinPacks{display:flex;flex-direction:column;gap:8px}
 #buyCoinsCloseBtn{position:absolute;top:8px;right:8px;min-width:auto;padding:4px 8px}
+#shopOpenBtn{position:fixed;left:20px;top:20px;width:44px;height:44px;border-radius:50%;background:linear-gradient(180deg,#ffd700,#c9a000);border:2px solid #ffe066;color:#000;font-size:22px;font-weight:bold;cursor:pointer;z-index:200;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #8a6a00;transition:transform .1s;padding:0;line-height:1;font-family:'Segoe UI',Arial,sans-serif}
+#shopOpenBtn:hover{transform:scale(1.08);background:linear-gradient(180deg,#ffe066,#d9b000)}
+#shopOpenBtn:active{transform:scale(0.95);box-shadow:0 1px 0 #8a6a00;top:22px}
+#shopOpenBtn b{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.78);color:#ffd700;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:9px;font-weight:bold;line-height:1}
 </style>
 </head>
 <body>
 <div id="gameContainer">
 <canvas id="gameCanvas" width="1000" height="700" tabindex="0"></canvas>
 <canvas id="uiOverlay"></canvas>
+<button id="shopOpenBtn" style="display:none">🏪 <b>Tab</b></button>
 
 <div id="ui">
 <div>
@@ -2660,6 +2665,7 @@ function updateUI(){
   UI.hpDisplay.textContent = (p1 && p1.alive) ? Math.max(0,Math.round(p1.hp)) : '0';
   if(shopOpen)UI.shopCoins.textContent=coins;
   updateWeaponBar();
+  updateShopOpenBtnVisibility();
 }
 function clearBonusTimer(){
   if(bonusTimerInterval){ clearInterval(bonusTimerInterval); bonusTimerInterval=null; }
@@ -2698,6 +2704,13 @@ function updateBonusUI(){
   };
   clearBonusTimer(); refresh();
   if(Date.now()-lastRewardedAt < AD_REWARDED_COOLDOWN) bonusTimerInterval=setInterval(refresh,1000);
+}
+function updateShopOpenBtnVisibility(){
+  const btn=document.getElementById('shopOpenBtn');
+  if(!btn) return;
+  if(IS_TOUCH){ btn.style.display='none'; return; }
+  const visible = gameRunning && !shopOpen && !levelCompleteOpen && !adPlaying;
+  btn.style.display = visible ? 'flex' : 'none';
 }
 function updateWeaponBar(){
   if(UI.weaponBar)UI.weaponBar.querySelectorAll('.wslot').forEach(slot=>{
@@ -3771,6 +3784,7 @@ function setupMobileTouch(){
   if(!IS_TOUCH)return;
   document.documentElement.style.cursor='none'; document.body.style.cursor='none'; canvas.style.cursor='none';
   if(UI.weaponBar)UI.weaponBar.style.display='none';
+  const _sob=document.getElementById('shopOpenBtn'); if(_sob) _sob.style.display='none';
   uiOverlay.addEventListener('touchstart',mobileTouchStart,{passive:false});
   uiOverlay.addEventListener('touchmove',mobileTouchMove,{passive:false});
   uiOverlay.addEventListener('touchend',mobileTouchEnd,{passive:false});
@@ -4129,6 +4143,15 @@ function handleBuy(packKey, btn){
   });
 }
 function bindUI(){
+  const _shopOpenBtn=document.getElementById('shopOpenBtn');
+  if(_shopOpenBtn){
+    _shopOpenBtn.addEventListener('click', e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(!gameRunning||levelCompleteOpen||adPlaying) return;
+      toggleShop(true, 0);
+    });
+  }
   if(UI.buyCoinsBtn){
     UI.buyCoinsBtn.addEventListener('click', e=>{
       e.preventDefault();
