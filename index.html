@@ -392,6 +392,20 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 const DEBUG = new URLSearchParams(location.search).has('debug');
 function log(...a){ if(DEBUG) console.log('[TANK]', ...a); }
 
+function isOK(){
+  if(window.Platform && Platform.isOK && Platform.isOK()) return true;
+  try{
+    const p = new URLSearchParams(location.search);
+    if(p.get('vk_client') === 'ok') return true;
+    if(/_ok$/i.test(p.get('vk_platform') || '')) return true;
+  }catch(e){}
+  return false;
+}
+function isVK(){
+  if(window.Platform && Platform.isVK && Platform.isVK()) return true;
+  return false;
+}
+
 /* ================= PLATFORM ================= */
 let adPlaying = false;
 let platformPaused = false;
@@ -581,7 +595,7 @@ function showCloudStatus(ok){
     el.id = 'cloudStatus';
     document.body.appendChild(el);
   }
-  el.textContent = ok ? t('cloudSaved') : t('cloudFail');
+  el.textContent = ok ? (isOK() ? t('cloudSavedOK') : t('cloudSaved')) : t('cloudFail');
   el.className = 'show' + (ok ? '' : ' fail');
   if(_cloudToastTimer) clearTimeout(_cloudToastTimer);
   _cloudToastTimer = setTimeout(()=>{ el.classList.remove('show'); }, 1500);
@@ -599,7 +613,7 @@ async function loadProgress(){
 /* ================= LOCALIZATION ================= */
 const L = {
 ru:{
-cloudSaved:'\u2705 Сохранено в VK', cloudFail:'\u26A0\uFE0F Не удалось сохранить', cloudOffline:'Автономный режим: прогресс не синхронизируется',
+cloudSaved:'\u2705 Сохранено в VK', cloudSavedOK:'\u2705 \u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e \u0432 OK', cloudFail:'\u26A0\uFE0F Не удалось сохранить', cloudOffline:'Автономный режим: прогресс не синхронизируется',
 title:'🎯 Танковый Рубеж',
 hud_kills:'Убийств:', hud_level:'Ур.', hud_wave:'Волна', hud_hp:'HP:', langLbl:'Язык:',
 easy:'Легкий', normal:'Средний', hard:'Тяжелый',
@@ -686,7 +700,7 @@ tipBonusText:'Подбирай бонусы: 💰 монеты, ❤️ лече�
 tipContinue:'Нажми, чтобы продолжить',
 },
 en:{
-cloudSaved:'\u2705 Saved to VK', cloudFail:'\u26A0\uFE0F Save failed', cloudOffline:'Offline mode: progress is not synced',
+cloudSaved:'\u2705 Saved to VK', cloudSavedOK:'\u2705 Saved to OK', cloudFail:'\u26A0\uFE0F Save failed', cloudOffline:'Offline mode: progress is not synced',
 title:'🎯 Tank Frontier',
 hud_kills:'Kills:', hud_level:'Lv.', hud_wave:'Wave', hud_hp:'HP:', langLbl:'Language:',
 easy:'Easy', normal:'Normal', hard:'Hard',
@@ -799,6 +813,21 @@ function langDisplayName(setting){
 function getLocale(){
   return lang==='en'?'en-US':'ru-RU';
 }
+function updateOKTexts(){
+  const titleEl = document.querySelector('#buyCoinsPanel h3');
+  if(titleEl){
+    titleEl.textContent = isOK() ? '\u041f\u043e\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u0435 \u043c\u043e\u043d\u0435\u0442 \u0437\u0430 \u041e\u041a\u0438' : t('shopCoinsTitle');
+  }
+  document.querySelectorAll('.coinPack').forEach(b=>{
+    const k = b.dataset.pack;
+    const amounts = {small:10000, medium:25000, large:60000};
+    const prices  = {small:5,     medium:10,     large:20};
+    if(amounts[k] && prices[k]){
+      const suffix = isOK() ? '\u041e\u041a\u043e\u0432' : '\u0433\u043e\u043b\u043e\u0441\u043e\u0432';
+      b.textContent = amounts[k].toLocaleString('ru-RU') + ' \u043c\u043e\u043d\u0435\u0442 \u2014 ' + prices[k] + ' ' + suffix;
+    }
+  });
+}
 function applyLang(){
   lang = pickLang();
   document.documentElement.lang = lang;
@@ -809,6 +838,7 @@ function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = t(el.dataset.i18nHtml); });
   updateRecordBox();
+  updateOKTexts();
   updateMetaCoinsDisplay();
   if(UI.exitConfirmTitle) UI.exitConfirmTitle.textContent = t('exitConfirmTitle');
   if(UI.exitConfirmText) UI.exitConfirmText.innerHTML = t('exitConfirmText');
@@ -4068,7 +4098,7 @@ const COIN_PACKS = {
 function handleBuy(packKey, btn){
   const pack = COIN_PACKS[packKey];
   if(!pack) return;
-  if(!Platform.isVK || !Platform.isVK()){
+  if(!isVK() && !isOK()){
     showToast(t('buyOnlyVK'), false);
     return;
   }
@@ -4351,7 +4381,7 @@ window.addEventListener('load', async ()=>{
   UI.menu.querySelectorAll('.menu-btns,.langRow,button')
     .forEach(el => el.style.pointerEvents = '');
   UI.menu.style.opacity = '';
-  if(Platform.mode !== 'vk'){
+  if(!isVK() && !isOK()){
     const co = document.getElementById('cloudOffline');
     if(co) co.style.display = 'inline-block';
   }

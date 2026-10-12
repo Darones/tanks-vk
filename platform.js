@@ -11,6 +11,11 @@
   let inited = false;
 
   async function detectPlatform(){
+    try{
+      const p = new URLSearchParams(location.search);
+      if(p.get('vk_client') === 'ok') return 'ok';
+      if(/_ok$/i.test(p.get('vk_platform') || '')) return 'ok';
+    }catch(e){}
     if(typeof vkBridge === 'undefined') return 'local';
     try{
       const lp = await vkBridge.send('VKWebAppGetLaunchParams');
@@ -43,10 +48,10 @@
     return true;
   }
 
-  function adsAvailable(){ return mode === 'vk' && inited && vkReady; }
+  function adsAvailable(){ return (mode === 'vk' || mode === 'ok') && inited && vkReady; }
 
   async function showRewarded(cb){
-    if(mode !== 'vk' || !inited){ cb && cb(false); return; }
+    if((mode !== 'vk' && mode !== 'ok') || !inited){ cb && cb(false); return; }
     try{
       const res = await vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'reward' });
       cb && cb(!!(res && res.result));
@@ -59,7 +64,7 @@
   }
 
   async function showInterstitial(cb){
-    if(mode !== 'vk' || !inited){ cb && cb(); return; }
+    if((mode !== 'vk' && mode !== 'ok') || !inited){ cb && cb(); return; }
     try{
       await vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' });
     }catch(e){
@@ -87,7 +92,7 @@
   async function save(dataObj, onResult){
     const json = JSON.stringify(dataObj);
     if(json.length > 4000) console.warn('[Platform] Save size', json.length, 'bytes (>4000)');
-    if(mode === 'vk'){
+    if(mode === 'vk' || mode === 'ok'){
       let ok = false;
       for(let attempt = 1; attempt <= 3 && !ok; attempt++){
         try{
@@ -107,7 +112,7 @@
   }
 
   async function load(){
-    if(mode === 'vk'){
+    if(mode === 'vk' || mode === 'ok'){
       try{
         const res = await withTimeout(1500,
           vkBridge.send('VKWebAppStorageGet', { keys: [SAVE_KEY] }),
@@ -122,7 +127,7 @@
   }
 
   function getLang(){
-    if(mode === 'vk' && vkLang) return vkLang;
+    if((mode === 'vk' || mode === 'ok') && vkLang) return vkLang;
     return navigator.language || 'ru';
   }
 
@@ -131,11 +136,11 @@
 
   function onPause(cb){
     document.addEventListener('visibilitychange', ()=>{ if(document.hidden) cb && cb(); });
-    if(mode === 'vk'){ try{ vkBridge.subscribe(ev => { if(ev.detail.type === 'VKWebAppViewHide') cb && cb(); }); }catch(e){} }
+    if(mode === 'vk' || mode === 'ok'){ try{ vkBridge.subscribe(ev => { if(ev.detail.type === 'VKWebAppViewHide') cb && cb(); }); }catch(e){} }
   }
   function onResume(cb){
     document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) cb && cb(); });
-    if(mode === 'vk'){ try{ vkBridge.subscribe(ev => { if(ev.detail.type === 'VKWebAppViewRestore') cb && cb(); }); }catch(e){} }
+    if(mode === 'vk' || mode === 'ok'){ try{ vkBridge.subscribe(ev => { if(ev.detail.type === 'VKWebAppViewRestore') cb && cb(); }); }catch(e){} }
   }
 
   function gameplayStart(){ if(mode === 'android'){ /* stub для ЭТАПА 6 */ } }
