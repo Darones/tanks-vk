@@ -4193,6 +4193,7 @@ function handleBuy(packKey, btn){
     if(btn) btn.disabled = false;
     if(ok){
       coins += pack.amount;
+      metaCoins += pack.amount;
       stats.totalCoinsEarned += pack.amount;
       cloudSync(); updateUI();
       showToast(t('buySuccess'), true);

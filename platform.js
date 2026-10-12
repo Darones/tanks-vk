@@ -85,7 +85,10 @@
       : (itemData && itemData.id);
     if(!itemId){ cb(false, {error:'missing_item_id'}); return; }
     vkBridge.send('VKWebAppShowOrderBox', { type: 'item', item: itemId })
-      .then(res => cb(true, res))
+      .then(res => {
+        const success = !!(res && (res.success === true || res.result === true || res.result === 'ok'));
+        cb(success, res);
+      })
       .catch(err => cb(false, err));
   }
 
