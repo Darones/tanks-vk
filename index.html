@@ -392,6 +392,10 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 const DEBUG = new URLSearchParams(location.search).has('debug');
 function log(...a){ if(DEBUG) console.log('[TANK]', ...a); }
 
+  // Пока игра на модерации — кнопка бонуса +5000 скрыта.
+  // Чтобы включить обратно — поставить false.
+  const BONUS_DISABLED = true;
+
 function isOK(){
   if(window.Platform && Platform.isOK && Platform.isOK()) return true;
   try{
@@ -2672,6 +2676,12 @@ function grantDailyFreeBonus(){
 }
 function updateBonusUI(){
   if(!UI.bonusBtn||!UI.bonusTimer)return;
+  if(BONUS_DISABLED){
+    UI.bonusBtn.style.display='none';
+    UI.bonusTimer.style.display='none';
+    clearBonusTimer();
+    return;
+  }
   const visible=!!save.tutorialDone;
   UI.trainBtn.style.display=visible?'none':'';
   UI.bonusBtn.style.display=visible?'block':'none';
