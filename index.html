@@ -397,6 +397,64 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 const DEBUG = new URLSearchParams(location.search).has('debug');
 function log(...a){ if(DEBUG) console.log('[TANK]', ...a); }
 
+const STATS_URL = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000/stats/event'
+  : 'https://antivirus-duel-server.relaxdev.ru/stats/event';
+
+const Stats = (() => {
+  const queue = [];
+  const sessionId = Math.random().toString(36).slice(2, 10);
+  const sessionStart = Math.floor(Date.now() / 1000);
+  function playerId(){
+    try {
+      const p = new URLSearchParams(location.search);
+      const uid = p.get('vk_user_id');
+      if(uid){
+        const isOk = (p.get('vk_client') === 'ok') || /_ok$/i.test(p.get('vk_platform') || '');
+        return isOk ? 'ok_' + uid : String(uid);
+      }
+    } catch(e){}
+    return 'anon_' + sessionId;
+  }
+  function platform(){
+    try {
+      if(window.Platform && Platform.mode) return Platform.mode;
+      const p = new URLSearchParams(location.search);
+      if(p.get('vk_client') === 'ok') return 'ok';
+      if(/_ok$/i.test(p.get('vk_platform') || '')) return 'ok';
+    } catch(e){}
+    return 'local';
+  }
+  function track(ev, props){
+    queue.push(Object.assign({
+      t: Math.floor(Date.now() / 1000),
+      app: 'tanks',
+      sessionId,
+      playerId: playerId(),
+      platform: platform(),
+      ev
+    }, props || {}));
+    if(queue.length >= 40) flush();
+  }
+  function flush(beacon){
+    if(queue.length === 0) return;
+    const body = JSON.stringify({ events: queue.slice() });
+    queue.length = 0;
+    if(beacon && navigator.sendBeacon){
+      try { if(navigator.sendBeacon(STATS_URL, body)) return; } catch(e){}
+    }
+    try {
+      fetch(STATS_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(()=>{});
+    } catch(e){}
+  }
+  function endSession(){
+    track('session_end', { duration: Math.floor(Date.now()/1000) - sessionStart });
+    flush(true);
+  }
+  setInterval(flush, 20000);
+  return { track, flush, endSession, sessionStart };
+})();
+
   // Пока игра на модерации — кнопка бонуса +5000 скрыта.
   // Чтобы включить обратно — поставить false.
   const BONUS_DISABLED = true;
@@ -493,6 +551,7 @@ async function adShow(kind){
       new Promise((_,rj)=>setTimeout(()=>rj(new Error('show timeout')), AD_SHOW_TIMEOUT))
     ]);
     const shown = !!(r?.result || r?.success);
+    try { Stats.track('ad_watch', { kind, ok: shown }); } catch(e){}
     if(shown){
       adDailyCount++;
       if(kind === 'interstitial') lastInterstitialAt = Date.now();
@@ -2726,6 +2785,7 @@ function checkGameOver(){ if(!gameRunning)return; if(baseHealth<=0)endGame('base
 function endGame(reason){
   if(trainingMode) return;
   if(!gameRunning)return;
+  try { Stats.track('level_end', { level, won: false, reason, kills, coins }); } catch(e){}
   gameRunning=false; gamePaused=false; sfxDefeat(); gameplayStop();
   canvas.classList.add('grayscale'); UI.gameOver.classList.add('gray-bg'); UI.gameOver.style.display='flex';
   if(UI.gameOverTitle) UI.gameOverTitle.textContent = t('gameOverTitle');
@@ -3855,6 +3915,7 @@ function showLevelComplete(){
   gamepadState.relicFocus=0; sfxVictory();
   UI.winOverlay.querySelector('.txt').textContent=t('introLabel')+' '+level;
   UI.winOverlay.classList.add('on'); setTimeout(()=>UI.winOverlay.classList.remove('on'),1800);
+  try { Stats.track('level_end', { level, won: true, kills, coins }); } catch(e){}
   if(!levelBaseDamaged)stats.noDamageWins++;
   if(levelPlayerDeaths===0)stats.noDeathWins++;
   if(level>stats.maxLevel)stats.maxLevel=level;
@@ -4010,6 +4071,7 @@ function startLevel(resumeWave=false){
     p.stunTimer=0; p.burstCount=0; p.burstCooldown=0;
   });
   gameRunning=true; gamePaused=true; shopOpen=false; hideGameOver();
+  try { Stats.track('level_start', { level, waveTotal, training: trainingMode }); } catch(e){}
   UI.shopPanel.style.display='none'; UI.levelComplete.style.display='none'; UI.bossWarning.style.display='none';
   UI.exitConfirm.classList.remove('show'); UI.flash.classList.remove('on');
   updateUI(); updateWeaponBar();
@@ -4134,6 +4196,7 @@ function handleBuy(packKey, btn){
       stats.totalCoinsEarned += pack.amount;
       cloudSync(); updateUI();
       showToast(t('buySuccess'), true);
+      try { Stats.track('purchase', { item: pack.id, currency: isOK() ? 'OK' : 'votes', amount: pack.amount }); } catch(e){}
       if(UI.buyCoinsPanel) UI.buyCoinsPanel.style.display = 'none';
     } else {
       const em = res && res.error_data && res.error_data.error_msg;
@@ -4372,6 +4435,8 @@ window.addEventListener('load', async ()=>{
   window.addEventListener('gamepaddisconnected',()=>clearGamepadFocus());
 
   window.addEventListener('beforeunload',()=>{ try{ saveAll(); flushCloudNow(); }catch(e){} });
+  window.addEventListener('pagehide',()=>{ try{ Stats.track('app_close', { screen: gameRunning ? 'game' : 'menu', level, wave }); Stats.endSession(); }catch(e){} });
+  document.addEventListener('visibilitychange',()=>{ if(document.hidden){ try{ Stats.track('app_close', { screen: gameRunning ? 'game' : 'menu', level, wave }); Stats.endSession(); }catch(e){} } });
 
   gameStartTime=Date.now();
   lastFrameTs=0;
@@ -4419,6 +4484,7 @@ window.addEventListener('load', async ()=>{
     if(co) co.style.display = 'inline-block';
   }
   log('Boot OK — tanks-vk v1 (Platform)');
+  try { Stats.track('session_start'); } catch(e){}
 });
 </script>
 </body>
