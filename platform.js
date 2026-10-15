@@ -5,6 +5,10 @@
     new Promise((_, rej) => setTimeout(() => rej(new Error('timeout:' + tag)), ms))
   ]);
   const SAVE_KEY = 'tanks-vk-1';
+  const SAVE_KEY_OK = 'tanks-ok-1';
+  function getCloudKey(){
+    try { return (mode === 'ok') ? SAVE_KEY_OK : SAVE_KEY; } catch(e){ return SAVE_KEY; }
+  }
   let mode = (typeof vkBridge !== 'undefined') ? 'vk' : 'local';
   let vkLang = null;
   let vkReady = false;
@@ -100,7 +104,7 @@
       for(let attempt = 1; attempt <= 3 && !ok; attempt++){
         try{
           await withTimeout(3000,
-            vkBridge.send('VKWebAppStorageSet', { key: SAVE_KEY, value: json }),
+            vkBridge.send('VKWebAppStorageSet', { key: getCloudKey(), value: json }),
             'save#' + attempt);
           ok = true;
         }catch(e){
@@ -118,7 +122,7 @@
     if(mode === 'vk' || mode === 'ok'){
       try{
         const res = await withTimeout(1500,
-          vkBridge.send('VKWebAppStorageGet', { keys: [SAVE_KEY] }),
+          vkBridge.send('VKWebAppStorageGet', { keys: [getCloudKey()] }),
           'load');
         const v = res && res.keys && res.keys[0] && res.keys[0].value;
         return v ? JSON.parse(v) : null;
