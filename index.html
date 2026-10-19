@@ -319,6 +319,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 </div>
 </div>
 <button class="bigBtn" data-i18n="close" onclick="closePanel('settingsPanel')" style="margin-top:8px">ЗАКРЫТЬ</button>
+<button class="smallBtn" id="resetProgressBtn" style="background:linear-gradient(180deg,#c62828,#7a1a1a); box-shadow:0 3px 0 #4a0a0a; margin-top:8px; border: 1px solid #ff6644; color: #fff;">🗑️ Сбросить прогресс (Dev)</button>
 </div>
 
 <div id="flash"></div>
@@ -4383,6 +4384,22 @@ function bindUI(){
     document.getElementById('musicBtn').textContent=soundMuted?'🔇':'🔊';
     updateMasterGain();
   });
+
+  const resetBtn = document.getElementById('resetProgressBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (!confirm('Сбросить локальный и облачный прогресс?')) return;
+      try {
+        if (window.vkBridge) {
+          await vkBridge.send('VKWebAppStorageSet', { key: 'progress-vk', value: '' });
+          await vkBridge.send('VKWebAppStorageSet', { key: 'progress-ok', value: '' });
+        }
+      } catch(err){ console.log('Cloud reset error:', err); }
+      localStorage.clear();
+      location.reload();
+    });
+  }
 
   UI.shopTabs.querySelectorAll('.tab').forEach(tab=>{
     tab.addEventListener('click',()=>{ currentShopTab=tab.dataset.tab; renderShop(); });
