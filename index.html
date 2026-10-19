@@ -921,6 +921,7 @@ function applyLang(){
   if(UI.settingsPanel && UI.settingsPanel.style.display === 'flex') renderControls();
   if(shopOpen) renderStats();
   refreshDiffLabel();
+  updateBonusUI();
 }
 
 /* ================= AUDIO ================= */
@@ -2740,17 +2741,33 @@ function grantDailyFreeBonus(){
   saveAll();
 }
 function updateBonusUI(){
-  if(!UI.bonusBtn||!UI.bonusTimer)return;
+  const visible = !!save.tutorialDone;
+  if(UI.recordBox) UI.recordBox.style.display = visible ? 'flex' : 'none';
+  if(UI.diffRow) UI.diffRow.style.display = visible ? 'flex' : 'none';
+  if(UI.langRow) UI.langRow.style.display = visible ? 'flex' : 'none';
+  if(UI.rateBtn) UI.rateBtn.style.display = visible ? 'block' : 'none';
+  if(UI.musicBtn) UI.musicBtn.style.display = visible ? 'flex' : 'none';
+  const extraMenus = document.querySelectorAll('#menu .menu-btns');
+  if(extraMenus.length > 1) extraMenus[1].style.display = visible ? 'flex' : 'none';
+  const hint = document.querySelector('.hint-text');
+  if(hint) hint.style.display = visible ? 'block' : 'none';
+  const cloudOffline = document.getElementById('cloudOffline');
+  if(cloudOffline && !visible) cloudOffline.style.display = 'none';
+  if(UI.startBtn) UI.startBtn.style.display = visible ? 'block' : 'none';
+  if(UI.continueGameBtn) UI.continueGameBtn.style.display = (visible && savedRun) ? 'inline-block' : 'none';
+  if(UI.trainBtn) {
+    UI.trainBtn.style.display = visible ? 'none' : 'block';
+    UI.trainBtn.textContent = visible ? t('trainBtn') : (lang === 'en' ? '▶ PLAY' : '▶ ИГРАТЬ');
+  }
+  if(!UI.bonusBtn || !UI.bonusTimer) return;
   if(BONUS_DISABLED){
-    UI.bonusBtn.style.display='none';
-    UI.bonusTimer.style.display='none';
+    UI.bonusBtn.style.display = 'none';
+    UI.bonusTimer.style.display = 'none';
     clearBonusTimer();
     return;
   }
-  const visible=!!save.tutorialDone;
-  UI.trainBtn.style.display=visible?'none':'';
-  UI.bonusBtn.style.display=visible?'block':'none';
-  UI.bonusTimer.style.display=visible?'block':'none';
+  UI.bonusBtn.style.display = visible ? 'block' : 'none';
+  UI.bonusTimer.style.display = visible ? 'block' : 'none';
   if(!visible){ clearBonusTimer(); return; }
   UI.bonusBtn.textContent='💰 Бонус +5000 (накоплено: '+(Number(save.pendingBonus)||0)+')';
   const refresh=()=>{
@@ -2764,6 +2781,7 @@ function updateBonusUI(){
   clearBonusTimer(); refresh();
   if(Date.now()-lastRewardedAt < AD_REWARDED_COOLDOWN) bonusTimerInterval=setInterval(refresh,1000);
 }
+
 function updateShopOpenBtnVisibility(){
   const btn=document.getElementById('shopOpenBtn');
   if(!btn) return;
