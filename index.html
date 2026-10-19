@@ -319,7 +319,6 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 </div>
 </div>
 <button class="bigBtn" data-i18n="close" onclick="closePanel('settingsPanel')" style="margin-top:8px">ЗАКРЫТЬ</button>
-<button class="smallBtn" id="resetProgressBtn" style="background:linear-gradient(180deg,#c62828,#7a1a1a); box-shadow:0 3px 0 #4a0a0a; margin-top:8px; border: 1px solid #ff6644; color: #fff;">🗑️ Сбросить прогресс (Dev)</button>
 </div>
 
 <div id="flash"></div>
@@ -922,7 +921,6 @@ function applyLang(){
   if(UI.settingsPanel && UI.settingsPanel.style.display === 'flex') renderControls();
   if(shopOpen) renderStats();
   refreshDiffLabel();
-  updateBonusUI();
 }
 
 /* ================= AUDIO ================= */
@@ -2742,33 +2740,17 @@ function grantDailyFreeBonus(){
   saveAll();
 }
 function updateBonusUI(){
-  const visible = !!save.tutorialDone;
-  if(UI.recordBox) UI.recordBox.style.display = visible ? 'flex' : 'none';
-  if(UI.diffRow) UI.diffRow.style.display = visible ? 'flex' : 'none';
-  if(UI.langRow) UI.langRow.style.display = visible ? 'flex' : 'none';
-  if(UI.rateBtn) UI.rateBtn.style.display = visible ? 'block' : 'none';
-  if(UI.musicBtn) UI.musicBtn.style.display = visible ? 'flex' : 'none';
-  const extraMenus = document.querySelectorAll('#menu .menu-btns');
-  if(extraMenus.length > 1) extraMenus[1].style.display = visible ? 'flex' : 'none';
-  const hint = document.querySelector('.hint-text');
-  if(hint) hint.style.display = visible ? 'block' : 'none';
-  const cloudOffline = document.getElementById('cloudOffline');
-  if(cloudOffline && !visible) cloudOffline.style.display = 'none';
-  if(UI.startBtn) UI.startBtn.style.display = visible ? 'block' : 'none';
-  if(UI.continueGameBtn) UI.continueGameBtn.style.display = (visible && savedRun) ? 'inline-block' : 'none';
-  if(UI.trainBtn) {
-    UI.trainBtn.style.display = visible ? 'none' : 'block';
-    UI.trainBtn.textContent = visible ? t('trainBtn') : (lang === 'en' ? '▶ PLAY' : '▶ ИГРАТЬ');
-  }
-  if(!UI.bonusBtn || !UI.bonusTimer) return;
+  if(!UI.bonusBtn||!UI.bonusTimer)return;
   if(BONUS_DISABLED){
-    UI.bonusBtn.style.display = 'none';
-    UI.bonusTimer.style.display = 'none';
+    UI.bonusBtn.style.display='none';
+    UI.bonusTimer.style.display='none';
     clearBonusTimer();
     return;
   }
-  UI.bonusBtn.style.display = visible ? 'block' : 'none';
-  UI.bonusTimer.style.display = visible ? 'block' : 'none';
+  const visible=!!save.tutorialDone;
+  UI.trainBtn.style.display=visible?'none':'';
+  UI.bonusBtn.style.display=visible?'block':'none';
+  UI.bonusTimer.style.display=visible?'block':'none';
   if(!visible){ clearBonusTimer(); return; }
   UI.bonusBtn.textContent='💰 Бонус +5000 (накоплено: '+(Number(save.pendingBonus)||0)+')';
   const refresh=()=>{
@@ -2782,7 +2764,6 @@ function updateBonusUI(){
   clearBonusTimer(); refresh();
   if(Date.now()-lastRewardedAt < AD_REWARDED_COOLDOWN) bonusTimerInterval=setInterval(refresh,1000);
 }
-
 function updateShopOpenBtnVisibility(){
   const btn=document.getElementById('shopOpenBtn');
   if(!btn) return;
@@ -4384,22 +4365,6 @@ function bindUI(){
     document.getElementById('musicBtn').textContent=soundMuted?'🔇':'🔊';
     updateMasterGain();
   });
-
-  const resetBtn = document.getElementById('resetProgressBtn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (!confirm('Сбросить локальный и облачный прогресс?')) return;
-      try {
-        if (window.vkBridge) {
-          await vkBridge.send('VKWebAppStorageSet', { key: 'progress-vk', value: '' });
-          await vkBridge.send('VKWebAppStorageSet', { key: 'progress-ok', value: '' });
-        }
-      } catch(err){ console.log('Cloud reset error:', err); }
-      localStorage.clear();
-      location.reload();
-    });
-  }
 
   UI.shopTabs.querySelectorAll('.tab').forEach(tab=>{
     tab.addEventListener('click',()=>{ currentShopTab=tab.dataset.tab; renderShop(); });
