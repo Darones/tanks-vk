@@ -148,6 +148,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 @keyframes winBoom{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
 #levelIntro{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(8,18,38,0.98),rgba(0,0,0,0.99));display:none;justify-content:center;align-items:center;z-index:150;text-align:center}
 #levelIntro.show{display:flex;animation:introFade .4s ease-out}
+#skipTrainingBtn{position:absolute;top:75px;right:15px;z-index:220;display:none;background:#555;color:#eee;border:1px solid #888;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer}
 @keyframes introFade{from{opacity:0}to{opacity:1}}
 .introContent{display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px}
 .introLbl{font-size:22px;color:#4fc3f7;letter-spacing:8px;font-weight:bold;text-shadow:0 0 20px #4fc3f7}
@@ -209,6 +210,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <canvas id="gameCanvas" width="1000" height="700" tabindex="0"></canvas>
 <canvas id="uiOverlay"></canvas>
 <button id="shopOpenBtn" style="display:none">🏪 <b>Tab</b></button>
+<button id="skipTrainingBtn" data-i18n="skipTraining">Пропустить обучение</button>
 
 <div id="ui">
 <div>
@@ -241,6 +243,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
     <div class="introNum" id="introNum">1</div>
     <div class="introWave" id="introWave">Волн: 10</div>
     <div class="introHint" id="introHint">Приготовься!</div>
+    <button class="bigBtn" id="trainingTipOkBtn" data-i18n="gotIt" style="display:none">Понятно</button>
   </div>
 </div>
 
@@ -319,6 +322,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 </div>
 </div>
 <button class="bigBtn" data-i18n="close" onclick="closePanel('settingsPanel')" style="margin-top:8px">ЗАКРЫТЬ</button>
+<button class="bigBtn" id="resetProgressBtn" style="background:linear-gradient(180deg,#c62828,#7a1a1a);margin-top:12px"> СБРОСИТЬ ПРОГРЕСС</button>
 </div>
 
 <div id="flash"></div>
@@ -344,6 +348,15 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <button class="bigBtn coinPack" data-pack="large" data-i18n="coinsPackLarge">60 000 монет — 20 голосов</button>
 </div>
 </div>
+</div>
+
+<div id="welcomeScreen" style="position:fixed;inset:0;z-index:500;display:none;flex-direction:column;justify-content:space-between;align-items:center;background-color:#0a0a14;background-image:radial-gradient(circle at center,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.55) 100%),url('menu-bg.png');background-size:100% 100%,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;padding:10vh 20px;">
+  <div style="text-align:center;margin-top:auto;">
+    <h1 style="font-size:clamp(32px,8vw,60px);color:#ffd700;text-shadow:0 0 30px #ff8800,0 2px 12px #000;letter-spacing:3px;margin:0;">Танковый Рубеж</h1>
+  </div>
+  <div style="margin-bottom:auto;display:flex;flex-direction:column;align-items:center;">
+    <button id="welcomePlayBtn" style="background:linear-gradient(180deg,#ffd700,#c9a000);border:3px solid #ffe066;border-radius:14px;color:#000;font-size:24px;font-weight:900;padding:16px 64px;cursor:pointer;box-shadow:0 8px 0 #8a6a00,0 10px 30px rgba(0,0,0,0.6);text-transform:uppercase;letter-spacing:1px;">▶ Играть</button>
+  </div>
 </div>
 
 <div id="menu">
@@ -631,6 +644,7 @@ function gameplayStop(){ Platform.gameplayStop(); }
 
 /* ================= SAVE (debounced cloud) ================= */
 let _cloudSaveTimer = null;
+let resettingProgress = false;
 function getSaveKey(){
   return (Platform.isOK && Platform.isOK()) ? 'tanks-ok-1' : 'tanks-vk-1';
 }
@@ -752,12 +766,12 @@ coinsPackSmall:'10 000 монет — 5 голосов', coinsPackMedium:'25 000
 buySuccess:'Монеты зачислены!', buyFail:'Не удалось выполнить покупку', buyCancel:'Покупка отменена', buyOnlyVK:'Покупка доступна только в VK',
 supportBtn:'\u{1F198} Поддержка',
 trainBtn:'\u{1F393} Обучение',
-trainCompleteTitle:'\u{1F3AF} ОБУЧЕНИЕ ПРОЙДЕНО!',
+trainCompleteTitle:'ПОЗДРАВЛЯЕМ! ОБУЧЕНИЕ ПРОЙДЕНО!',
 trainCompleteText:'Готов к настоящему бою?',
 btnToLevels:'\u25B6 К УРОВНЯМ',
 btnRetryTraining:'\u{1F501} ЗАНОВО',
 btnTrainToMenu:'\u{1F3E0} В МЕНЮ',
-tipControlsTitle:'1/4 · УПРАВЛЕНИЕ',
+tip_move:'Добро пожаловать! Двигайся с помощью WASD. Эта панель показывает твои жизни, монеты и прогресс.',tip_shoot:'Наведи мышь и нажми ЛКМ, чтобы выстрелить.',tip_base:'Это твоя база. Она защищает тебя и лечит. Подъедь к базе и полечись, если нужно. А это твой напарник-бот (BOT), он поможет защитить базу!',tip_shop:'Открой магазин (Tab) и купи улучшение.',tip_defend:'Враги идут! Защити базу.',skipTraining:'Пропустить обучение',tipControlsTitle:'1/4 · УПРАВЛЕНИЕ',
 tipControlsText:'WASD — движение. Мышь — башня. Клик или ПРОБЕЛ — огонь.',
 tipFireTitle:'2/4 · ОРУЖИЕ',
 tipFireText:'Tab — магазин. 1-6 или колёсико мыши — смена оружия.',
@@ -765,7 +779,13 @@ tipBaseTitle:'3/4 · ЗАЩИТА БАЗЫ',
 tipBaseText:'Защити базу. Враги идут сверху.',
 tipBonusTitle:'\u{1F4A3} БОНУСЫ',
 tipBonusText:'Подбирай бонусы: 💰 монеты, ❤️ лечение, 🛡️ щит, ❄️ заморозка, 💣 бомба.',
-tipContinue:'Нажми, чтобы продолжить',
+tipContinue:'Нажми, чтобы продолжить', gotIt:'Понятно', deathTip:'Вы возродились на базе! Каждое возрождение стоит 1000 монет. Следите за здоровьем, используйте укрытия (стены) и улучшайте свой танк в магазине (Tab), чтобы выживать дольше.',
+enemy_artillery:'Артиллерия', enemy_artillery_d:'У этой пушки непробиваемая защита, пока она не сделает свой первый выстрел! Как только она выстрелит, щит упадёт. Она стреляет мощными снарядами по площади. Не стойте на месте!',
+enemy_spook:'Огнемётный Танк', enemy_spook_d:'Очень быстрый и агрессивный враг. Он охотится лично на вас! Стреляет огнём вблизи. Держите дистанцию!',
+enemy_pt:'ПТ-САУ', enemy_pt_d:'У неё вдвое больше здоровья, и она стреляет снайперскими выстрелами на огромное расстояние. Прячьтесь за стенами!',
+enemy_fast:'Танк-Скороход', enemy_fast_d:'Не стреляет, но несётся к базе с огромной скоростью! Сбейте его как можно быстрее!',
+enemy_flanker:'Танк-Разрушитель', enemy_flanker_d:'Едет по краю и целенаправленно ломает кирпичи, чтобы пробить путь к базе. Остановите его!',
+enemy_boss:'БОСС', enemy_boss_d:'Колоссальный запас здоровья, двойные пушки и разрушительная мощь. Когда его HP упадёт ниже 60%, он выпустит веер снарядов!',
 },
 en:{
 cloudSaved:'\u2705 Saved to VK', cloudSavedOK:'\u2705 Saved to OK', cloudFail:'\u26A0\uFE0F Save failed', cloudOffline:'Offline mode: progress is not synced',
@@ -844,7 +864,7 @@ trainCompleteText:'Ready for the real fight?',
 btnToLevels:'\u25B6 TO LEVELS',
 btnRetryTraining:'\u{1F501} RETRY',
 btnTrainToMenu:'\u{1F3E0} TO MENU',
-tipControlsTitle:'1/4 · CONTROLS',
+tip_move:'Welcome! Move with WASD. This panel shows your health, coins and progress.',tip_shoot:'Aim with mouse and click LMB to fire.',tip_base:'This is your base. It protects and heals you. Drive to the base and heal if needed. And this is your ally bot (BOT), he will help defend the base!',tip_shop:'Open the shop (Tab) and buy an upgrade.',tip_defend:'Enemies are coming! Defend the base.',skipTraining:'Skip tutorial',tipControlsTitle:'1/4 · CONTROLS',
 tipControlsText:'WASD — move. Mouse — turret. Click or SPACE — fire.',
 tipFireTitle:'2/4 · WEAPONS',
 tipFireText:'Tab — shop. 1-6 or mouse wheel — weapon switch.',
@@ -852,7 +872,13 @@ tipBaseTitle:'3/4 · BASE DEFENSE',
 tipBaseText:'Protect the base. Enemies come from above.',
 tipBonusTitle:'\u{1F4A3} BONUSES',
 tipBonusText:'Pick up bonuses: 💰 coins, ❤️ health, 🛡️ shield, ❄️ freeze, 💣 bomb.',
-tipContinue:'Tap to continue',
+tipContinue:'Tap to continue', gotIt:'Got it', deathTip:'You respawned at the base! Each respawn costs 1000 coins. Watch your health, use cover (walls), and upgrade your tank in the shop (Tab) to survive longer!',
+enemy_artillery:'Artillery', enemy_artillery_d:'This gun is invulnerable until it fires its first shot! Once it shoots, its shield drops. It fires powerful area-damage shells. Keep moving!',
+enemy_spook:'Flamethrower Tank', enemy_spook_d:'A very fast and aggressive enemy. It hunts you personally and attacks with fire at close range. Keep your distance!',
+enemy_pt:'Tank Destroyer', enemy_pt_d:'It has twice the health and fires sniper shots from great range. Hide behind walls!',
+enemy_fast:'Speed Tank', enemy_fast_d:'It does not shoot, but races toward the base at tremendous speed! Destroy it quickly!',
+enemy_flanker:'Demolition Tank', enemy_flanker_d:'It moves along the edge and deliberately breaks bricks to reach the base. Stop it!',
+enemy_boss:'BOSS', enemy_boss_d:'Massive health, twin guns and devastating power. Below 60% HP, it fires a fan of projectiles!',
 },
 };
 
@@ -1216,6 +1242,11 @@ let overlayH = window.innerHeight;
 let gameRunning=false, gamePaused=false, shopOpen=false, levelCompleteOpen=false;
 let trainingMode = false;
 let trainingKillTipShown = false;
+let trainingStage = 0;
+let baseVisible = false;
+let trainingMoveStartX = 0;
+let trainingMoveStartY = 0;
+let trainingStageTimer = 0;
 let level=1, wave=0, waveTotal=10, coins=1000, kills=0;
 let tiles=[], brickHp=[], concreteHp=[];
 let enemies=[], bullets=[], enemyBullets=[], particles=[], floaters=[], powerups=[], laserBeams=[], damageNumbers=[];
@@ -1245,7 +1276,7 @@ let achievements={};
 let stats={totalKills:0,totalCoins:1000,totalCoinsEarned:0,totalBossKills:0,maxLevel:1,weaponKills:{cannon:0,mg:0,sniper:0,flame:0,rocket:0,laser:0},noDamageWins:0,noDeathWins:0,bestStreak:0};
 let daily={lastClaim:0,streak:0};
 let metaCoins=0;
-let save={tutorialDone:false,pendingBonus:0,money:0,lastFreeBonusDay:''};
+let save={tutorialDone:false,pendingBonus:0,money:0,lastFreeBonusDay:'',seenEnemies:{artillery:false,spook:false,pt:false,fast:false,flanker:false,boss:false},seenDeathTip:false};
 let bonusTimerInterval=null;
 let savedRun=null;
 let helicopter=null;
@@ -1492,7 +1523,7 @@ function fireLaser(sh,ang,isEnemy){
   const dmg=sh.damage||100;
   if(isEnemy){
     for(const p of players){ if(!p||!p.alive||p.invincible>0)continue; if(distPointToSegment(p.x,p.y,sx,sy,ex,ey)<p.radius+12)p.takeDamage(dmg); }
-    if(distPointToSegment(BASE_X,BASE_Y,sx,sy,ex,ey)<BASE_SIZE/2+12){ baseHealth-=dmg; if(baseHealth<0)baseHealth=0; levelBaseDamaged=true; damageFlashTime=10; mobileVibrate([25,20,25]); checkGameOver(); }
+    if(baseVisible&&distPointToSegment(BASE_X,BASE_Y,sx,sy,ex,ey)<BASE_SIZE/2+12){ baseHealth-=dmg; if(baseHealth<0)baseHealth=0; levelBaseDamaged=true; damageFlashTime=10; mobileVibrate([25,20,25]); checkGameOver(); }
   } else {
     for(const e of enemies){ if(e.hp<=0||e.spawnTime>0)continue; if(distPointToSegment(e.x,e.y,sx,sy,ex,ey)<e.radius+12){ e.takeDamage(dmg); if(e.hp<=0){ stats.weaponKills.laser=(stats.weaponKills.laser||0)+1; checkAch(); } } }
   }
@@ -1548,7 +1579,7 @@ class Bullet{
         botAlly.takeDamage(this.damage); this.life=0; return;
       }
       const bx=BASE_X-BASE_SIZE/2,by=BASE_Y-BASE_SIZE/2;
-      if(circleRect(this.x,this.y,this.radius,bx,by,BASE_SIZE,BASE_SIZE)){ baseHealth-=this.damage; if(baseHealth<0)baseHealth=0; levelBaseDamaged=true; damageFlashTime=10; mobileVibrate([25,20,25]); this.explode(); checkGameOver(); return; }
+      if(baseVisible&&circleRect(this.x,this.y,this.radius,bx,by,BASE_SIZE,BASE_SIZE)){ baseHealth-=this.damage; if(baseHealth<0)baseHealth=0; levelBaseDamaged=true; damageFlashTime=10; mobileVibrate([25,20,25]); this.explode(); checkGameOver(); return; }
     } else {
       for(const e of enemies){
         if(e.hp<=0||e.spawnTime>0)continue;
@@ -1680,7 +1711,7 @@ class Tank{
     if(this.fireCooldown>0)this.fireCooldown-=dt;
     if(this.stunTimer>0)this.stunTimer-=dt;
     if(this.burstCooldown>0)this.burstCooldown-=dt;
-    if(dist(this.x,this.y,BASE_X,BASE_Y)<70&&this.hp<this.maxHp)this.hp=Math.min(this.hp+0.4*dt,this.maxHp);
+    if(baseVisible&&dist(this.x,this.y,BASE_X,BASE_Y)<70&&this.hp<this.maxHp)this.hp=Math.min(this.hp+0.4*dt,this.maxHp);
     const regenTotal=(skillTree.regen||0)*0.3+relicBuff.regen*0.5;
     if(regenTotal>0&&this.hp<this.maxHp)this.hp=Math.min(this.hp+regenTotal*dt/60,this.maxHp);
     let dx=0,dy=0;
@@ -1708,6 +1739,7 @@ class Tank{
     else { this.turretAngle=this.bodyAngle; }
     const w=this.weapon;
     const effDelay=this.stunTimer>0?this.fireDelay*2:this.fireDelay;
+    if(trainingMode && trainingStage < 2){ this.input.fireHeld=false; this.input.firePressed=false; }
     const isFiringNow=this.input.fireHeld||this.input.firePressed;
     // Для пулемёта отпускание огня завершает текущую очередь и мгновенно
     // возвращает магазин в исходное состояние для следующего нажатия.
@@ -1738,7 +1770,9 @@ class Tank{
   takeDamage(d){
     if(this.invincible>0||!this.alive)return;
     if(this.effects.shield>0){ this.effects.shield=0; this.invincible=40; return; }
-    const real=this.takeDamageFromEnemy(d); this.hp-=real; damageFlashTime=6; mobileVibrate(30);
+    const real=this.takeDamageFromEnemy(d);
+    if (trainingMode && trainingStage === 2 && this.hp - real < this.maxHp * 0.5) return;
+    this.hp-=real; damageFlashTime=6; mobileVibrate(30);
     for(let i=0;i<8;i++)particles.push(new Particle(this.x+rand(-8,8),this.y+rand(-8,8),3,'#ff4444',0.5));
     if(this.hp<=0){ this.hp=0; this.die(); }
     updateUI();
@@ -1799,6 +1833,11 @@ class Tank{
     this.stunTimer=0; this.burstCount=0; this.burstCooldown=0;
     for(let i=0;i<30;i++)particles.push(new Particle(this.x,this.y,4,'#44ff88',0.7));
     sfxPickup(); updateUI();
+    if(!trainingMode&&!save.seenDeathTip){
+      save.seenDeathTip=true;
+      saveAll();
+      showTrainingTip('', 'Возрождение', t('deathTip'), ()=>{});
+    }
   }
   drawCamo(){
     const w=this.radius*2.6,h=this.radius*1.6;
@@ -2410,7 +2449,7 @@ class ArtilleryShell{
 }
 
 function addKill(){
-  if(trainingMode && !trainingKillTipShown && kills >= 1){
+  if(!trainingMode && !trainingKillTipShown && kills >= 1){
     trainingKillTipShown = true;
     showTrainingTip('\u{1F4A3}', t('tipBonusTitle'), t('tipBonusText'), ()=>{
       gamePaused = false; lastFrameTs = 0;
@@ -2671,6 +2710,7 @@ function spawnArtillery(){
   a.coinValue=500; a.color='#8B6B4A'; a.darkColor='#5a4030';
   a.hasFired=false; a.shootCooldown=360; a.aimTimer=0; a.spawnTime=30; a.spawnTotal=30;
   enemies.push(a);
+  maybeShowEnemyIntro(a);
   return true;
 }
 
@@ -2711,15 +2751,16 @@ function drawTreeTile(x,y){
 /* ================= UI ================= */
 const UI={};
 function cacheUI(){
-  ['hpDisplay','waveNum','waveTotal','levelNum','baseHealthDisplay','coinsDisplay','killsDisplay','bossWarning','shopPanel','shopCoins','shopStats','continueBtn','shopExitBtn','gameOver','gameOverReason','statsContainer','flash','menu','levelComplete','relicGrid','lcNext','musicBtn','tabContent','shopTabs','weaponBar','recordBox','recLevel','recCoins','recKills','continueGameBtn','startBtn','achBtn','ctrlBtn','achList','controlsList','winOverlay','killStreak','upgradeFlash','achievementPanel','settingsPanel','stabControls','stabSound','volMasterSlider','volStreakSlider','volMasterLabel','volStreakLabel','adReviveBtn','restartBtn','menuTitle','lvlDoneH1','gameOverTitle','exitConfirm','exitConfirmTitle','exitConfirmText','exitConfirmYes','exitConfirmNo','levelIntro','introLbl','introNum','introWave','introHint',
-   'diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','buyCoinsBtn','buyCoinsPanel','buyCoinsCloseBtn','trainBtn','bonusBtn','bonusTimer','achCloseX','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu','statsToggle']
+  ['welcomeScreen','welcomePlayBtn','hpDisplay','waveNum','waveTotal','levelNum','baseHealthDisplay','coinsDisplay','killsDisplay','bossWarning','shopPanel','shopCoins','shopStats','continueBtn','shopExitBtn','gameOver','gameOverReason','statsContainer','flash','menu','levelComplete','relicGrid','lcNext','musicBtn','tabContent','shopTabs','weaponBar','recordBox','recLevel','recCoins','recKills','continueGameBtn','startBtn','achBtn','ctrlBtn','achList','controlsList','winOverlay','killStreak','upgradeFlash','achievementPanel','settingsPanel','stabControls','stabSound','volMasterSlider','volStreakSlider','volMasterLabel','volStreakLabel','adReviveBtn','restartBtn','menuTitle','lvlDoneH1','gameOverTitle','exitConfirm','exitConfirmTitle','exitConfirmText','exitConfirmYes','exitConfirmNo','levelIntro','introLbl','introNum','introWave','introHint','trainingTipOkBtn',
+   'skipTrainingBtn','diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','buyCoinsBtn','buyCoinsPanel','buyCoinsCloseBtn','trainBtn','bonusBtn','bonusTimer','achCloseX','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu','statsToggle']
    .forEach(id => { UI[id] = document.getElementById(id); });
 }
 function updateUI(){
   const p1=players[0];
   UI.waveNum.textContent=Math.max(1,wave);
   UI.waveTotal.textContent=waveTotal; UI.levelNum.textContent=level;
-  UI.baseHealthDisplay.textContent=Math.max(0,Math.round(baseHealth));
+  UI.baseHealthDisplay.style.visibility=baseVisible?'visible':'hidden';
+  if(baseVisible) UI.baseHealthDisplay.textContent=Math.max(0,Math.round(baseHealth));
   UI.coinsDisplay.textContent=coins; UI.killsDisplay.textContent=kills;
   UI.hpDisplay.textContent = (p1 && p1.alive) ? Math.max(0,Math.round(p1.hp)) : '0';
   if(shopOpen)UI.shopCoins.textContent=coins;
@@ -2748,7 +2789,7 @@ function updateBonusUI(){
     return;
   }
   const visible=!!save.tutorialDone;
-  UI.trainBtn.style.display=visible?'none':'';
+  UI.trainBtn.style.display='';
   UI.bonusBtn.style.display=visible?'block':'none';
   UI.bonusTimer.style.display=visible?'block':'none';
   if(!visible){ clearBonusTimer(); return; }
@@ -2812,6 +2853,8 @@ function hideGameOver(){
   syncOverlayPointer();
 }
 function showLevelIntro(callback){
+  if(trainingTipCleanup)trainingTipCleanup();
+  UI.trainingTipOkBtn.style.display='none';
   UI.introNum.textContent=level;
   UI.introWave.textContent=t('introWaveLbl')+' '+waveTotal;
   UI.introLbl.textContent=t('introLabel');
@@ -2841,30 +2884,58 @@ function showLevelIntro(callback){
     if(callback)callback();
   }, 2600);
 }
-function showTrainingTip(icon, title, text, cb){
-  gamePaused = true;
-  mouseFireHeld = false; keys = {};
-  if(players) players.forEach(p=>{
-    p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false;
-  });
-  UI.introNum.textContent = icon;
-  UI.introLbl.textContent = title;
-  UI.introWave.textContent = '';
-  UI.introHint.textContent = text + ' · ' + t('tipContinue');
-  UI.levelIntro.classList.add('show');
-  let done = false;
-  const finish = () => {
-    if(done) return; done = true;
-    UI.levelIntro.classList.remove('show');
-    UI.levelIntro.removeEventListener('click', finish);
-    document.removeEventListener('keydown', onKey);
-    if(cb) cb();
-  };
-  const onKey = (e) => {
-    if(e.code==='Enter'||e.code==='Space'||e.code==='Escape'){ e.preventDefault(); finish(); }
-  };
-  UI.levelIntro.addEventListener('click', finish);
-  document.addEventListener('keydown', onKey);
+let trainingTipCleanup=null;
+function showTrainingTip(icon,title,text,cb){
+  if(trainingTipCleanup)trainingTipCleanup();
+  gamePaused=true;mouseFireHeld=false;keys={};
+  if(players)players.forEach(p=>{p.input.fireHeld=false;p.input.firePressed=false;p.wasFiring=false;});
+  UI.introNum.textContent=icon;UI.introLbl.textContent=title;UI.introWave.textContent='';
+  UI.introHint.textContent=text;UI.trainingTipOkBtn.textContent=t('gotIt');
+  UI.trainingTipOkBtn.style.display='inline-block';UI.levelIntro.classList.add('show');
+  let done=false;
+  const finish=()=>{if(done)return;done=true;trainingTipCleanup();UI.levelIntro.classList.remove('show');gamePaused=false;if(cb)cb();};
+  UI.trainingTipOkBtn.addEventListener('click',finish);
+  trainingTipCleanup=()=>{UI.trainingTipOkBtn.removeEventListener('click',finish);UI.trainingTipOkBtn.style.display='none';trainingTipCleanup=null;};
+}
+const enemyIntroQueue=[];
+let enemyIntroOpen=false,enemyIntroPreviousPause=false;
+function showEnemyIntro(enemyType,enemyObj){
+  if(trainingMode)return;
+  enemyIntroQueue.push({enemyType,enemyObj});
+  if(enemyIntroOpen)return;
+  enemyIntroOpen=true;enemyIntroPreviousPause=gamePaused;showNextEnemyIntro();
+}
+function showNextEnemyIntro(){
+  const entry=enemyIntroQueue.shift();
+  if(!entry){enemyIntroOpen=false;gamePaused=enemyIntroPreviousPause;lastFrameTs=0;return;}
+  gamePaused=true;
+  const {enemyType,enemyObj}=entry;
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);padding:20px;box-sizing:border-box';
+  const panel=document.createElement('div');
+  panel.style.cssText='width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #d5a837;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000';
+  const titleEl=document.createElement('h2');titleEl.textContent=t('enemy_'+enemyType);
+  titleEl.style.cssText='margin:0;color:#ffd700;font-size:clamp(22px,5vw,30px)';
+  const preview=document.createElement('canvas');preview.width=100;preview.height=100;
+  preview.style.cssText='width:100px;height:100px;background:#2d3a2d;border:1px solid #60745c;border-radius:8px';
+  const description=document.createElement('p');description.textContent=t('enemy_'+enemyType+'_d');
+  description.style.cssText='margin:0;line-height:1.5;font-size:16px';
+  const ok=document.createElement('button');ok.className='bigBtn';ok.textContent=t('gotIt');
+  ok.style.cssText='min-width:180px;max-width:100%';
+  panel.append(titleEl,preview,description,ok);overlay.appendChild(panel);document.body.appendChild(overlay);
+  const previewCtx=preview.getContext('2d');
+  if(previewCtx){
+    const oldCtx=ctx,oldSpawnTime=enemyObj.spawnTime;previewCtx.save();
+    try{previewCtx.translate(50-enemyObj.x,50-enemyObj.y);ctx=previewCtx;enemyObj.spawnTime=0;enemyObj.draw();}
+    finally{enemyObj.spawnTime=oldSpawnTime;ctx=oldCtx;previewCtx.restore();}
+  }
+  ok.addEventListener('click',()=>{overlay.remove();showNextEnemyIntro();},{once:true});
+}
+function maybeShowEnemyIntro(enemy){
+  if(trainingMode||!enemy||!save.seenEnemies)return;
+  const type=enemy.isArtillery?'artillery':enemy.isSpook?'spook':enemy.isPT?'pt':enemy.isBoss?'boss':enemy.isFast?'fast':enemy.isFlanker?'flanker':null;
+  if(!type||save.seenEnemies[type])return;
+  showEnemyIntro(type,enemy);save.seenEnemies[type]=true;saveAll();flushCloudNow();
 }
 function showTrainingIntro(cb){
   showTrainingTip('\u{1F3AE}', t('tipControlsTitle'), t('tipControlsText'), () => {
@@ -2882,6 +2953,7 @@ function showTrainingComplete(){
   updateContinueBtn(); updateRecordBox(); updateBonusUI();
 }
 function toggleShop(force, ownerPlayer){
+  if(trainingMode && trainingStage < 4)return;
   if(!gameRunning||levelCompleteOpen||adPlaying)return;
   if(UI.levelIntro&&UI.levelIntro.classList.contains('show'))return;
   shopOpen=(force===true)?true:(force===false?false:!shopOpen);
@@ -2906,6 +2978,7 @@ function toggleShop(force, ownerPlayer){
     mouseFireHeld=false; keys={};
     players.forEach(p=>{ p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false; });
     clearGamepadFocus(); gameplayStart();
+    if(trainingMode&&trainingStage===4&&!shopOpen)updateTraining(0);
     closeExitConfirm();
     gamepadCooldown=22;
     const pads=getPads();
@@ -3143,10 +3216,11 @@ function saveRun(){
   saveAll();
 }
 function saveAll(){
+  if(resettingProgress)return;
   saveProgress({
     achievements, stats, daily, metaCoins, savedRun,
     tutorialDone:!!save.tutorialDone, pendingBonus:Number(save.pendingBonus)||0, money:Number(save.money)||coins,
-    lastFreeBonusDay:save.lastFreeBonusDay||'',
+    lastFreeBonusDay:save.lastFreeBonusDay||'', seenEnemies:{...save.seenEnemies}, seenDeathTip:!!save.seenDeathTip,
     unlockedWeapons, currentWeaponIds, p1Control, lastDifficulty, selectedDifficulty,
     keyCfg, padCfg, volMaster, volStreak, langSetting,
     maxLevel:stats.maxLevel, totalCoins:coins, totalKills:stats.totalKills
@@ -3167,8 +3241,13 @@ function openExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.
 function closeExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.remove('show'); gamePaused=shopOpen; gamepadCooldown = 15; }
 function doExitToMenu(){
   trainingMode = false;
+  trainingStage = 0;
+  baseVisible = false;
+  if(UI.skipTrainingBtn) UI.skipTrainingBtn.style.display="none";
   trainingKillTipShown = false;
   if(UI.trainingComplete) UI.trainingComplete.style.display = 'none';
+  if(trainingTipCleanup)trainingTipCleanup();
+  if(UI.levelIntro) UI.levelIntro.classList.remove('show');
   if(UI.exitConfirm)UI.exitConfirm.classList.remove('show');
   savedRun=null; saveAll(); flushCloudNow(); shopOpen=false; gamePaused=false;
   UI.shopPanel.style.display='none'; gameRunning=false; gameplayStop();
@@ -3254,6 +3333,7 @@ function gatherInput(){
         if(fireDown){ p.input.fireHeld=true; if(eF)p.input.firePressed=true; }
       } else p.gpAimUsed=false;
     }
+    if(trainingMode && trainingStage < 2){ p.input.fireHeld=false; p.input.firePressed=false; }
   }
 
 
@@ -3362,6 +3442,7 @@ function updateMainMenuNav(pad, pi){
 }
 
 function cycleWeapon(playerIdx, dir){
+  if(trainingMode && trainingStage < 2)return;
   const owned=WEAPONS.filter(w=>unlockedWeapons[w.id]);
   if(!owned.length)return;
   const cur=currentWeaponIds[playerIdx]||'cannon';
@@ -3536,15 +3617,16 @@ function setupKeyboard(){
     if(levelCompleteOpen)return;
 
     keys[e.code]=true;
-    if(e.code===keyCfg.p1.fire&&!e.repeat){ if(p1Control==='kb'&&players[0]&&players[0].alive)players[0].input.firePressed=true; }
+    if(e.code===keyCfg.p1.fire&&!e.repeat){ if(!(trainingMode&&trainingStage<2)&&p1Control==='kb'&&players[0]&&players[0].alive)players[0].input.firePressed=true; }
     const wk={'Digit1':WEAPONS[0],'Digit2':WEAPONS[1],'Digit3':WEAPONS[2],'Digit4':WEAPONS[3],'Digit5':WEAPONS[4],'Digit6':WEAPONS[5]};
-    if(wk[e.code]&&unlockedWeapons[wk[e.code].id]){ currentWeaponIds[0]=wk[e.code].id; updateUI(); }
+    if(wk[e.code]&&unlockedWeapons[wk[e.code].id]){ if(trainingMode&&trainingStage<2)return; currentWeaponIds[0]=wk[e.code].id; updateUI(); }
   });
   document.addEventListener('keyup',e=>{ if(preventCodes.includes(e.code))e.preventDefault(); keys[e.code]=false; });
   canvas.addEventListener('mousedown',e=>{
     canvas.focus(); initAudio();
     if(shopOpen||levelCompleteOpen||!gameRunning)return;
     if(e.button!==0)return;
+    if(trainingMode&&trainingStage<2)return;
     mouseFireHeld=true;
     if(p1Control==='kb'&&players[0]&&players[0].alive)players[0].input.firePressed=true;
   });
@@ -3570,6 +3652,7 @@ function bindWeaponBars(){
     slot.addEventListener('click',e=>{
       e.stopPropagation();
       if(!gameRunning||shopOpen)return;
+      if(trainingMode&&trainingStage<2)return;
       const wid=slot.dataset.weapon;
       if(!unlockedWeapons[wid]){ toggleShop(true, 0); currentShopTab='weapons'; renderShop(); return; }
       currentWeaponIds[0]=wid; sfxPickup(); updateWeaponBar();
@@ -3580,16 +3663,17 @@ function bindWeaponBars(){
 /* ================= UPDATE ================= */
 function update(dt){
   if(!gameRunning||gamePaused)return;
+  if(trainingMode) updateTraining(dt);
   updateStreak(dt);
   for(const p of players)p.update(dt);
   if(botAlly)botAlly.update(dt);
   if(helicopter){ const dead=helicopter.update(dt); if(dead)helicopter=null; }
   const baseRegen=(skillTree.baseRegen||0)*0.2;
   if(baseRegen>0&&baseHealth<baseMaxHealth)baseHealth=Math.min(baseHealth+baseRegen*dt/60,baseMaxHealth);
-  if(!spawning){
+  if(!trainingMode && !spawning){
     waveTimer-=dt/60;
     if(waveTimer<=0)startWave();
-  } else {
+  } else if(!trainingMode){
     if(enemiesToSpawn>0){
       spawnTimer+=dt/60;
       const interval=isBossWave?0.15:Math.max(0.35,1.2-wave*0.02);
@@ -3600,13 +3684,7 @@ function update(dt){
     } else if(enemies.filter(e=>e.hp>0).length===0){
       spawning=false;
       if(wave>0&&wave>=waveTotal){
-        if(trainingMode){
-          trainingMode = false;
-          gameRunning = false; gamePaused = false;
-          gameplayStop();
-          showTrainingComplete();
-          return;
-        }
+
         coins+=200; stats.totalCoinsEarned+=200;
         showLevelComplete(); return;
       } else {
@@ -3652,6 +3730,7 @@ function draw(){
       drawTile(tile,i*TILE_SIZE,j*TILE_SIZE,i,j);
     }
   }
+  if(baseVisible){
   const bx=BASE_X, by=BASE_Y;
   const pulse=0.7+Math.sin(Date.now()/300)*0.15;
   const grad=ctx.createRadialGradient(bx,by,10,bx,by,80);
@@ -3682,6 +3761,7 @@ function draw(){
     const pl=0.5+0.5*Math.sin(Date.now()/180);
     ctx.strokeStyle='rgba(255,60,60,'+(0.4+pl*0.5)+')'; ctx.lineWidth=3;
     ctx.strokeRect(barX-4,barY-4,barW+8,barH+8);
+  }
   }
 
   for(const p of powerups)p.draw();
@@ -3780,7 +3860,7 @@ function mobileWeaponTap(pt){
     const w=MOBILE_WEAPONS[i];
     const wx=(w.side==='left')?32:overlayW-32;
     if(pt.x<wx-15||pt.x>wx+15||pt.y<w.y-15||pt.y>w.y+15)continue;
-    if(unlockedWeapons[w.id]){ currentWeaponIds[0]=w.id; sfxPickup(); updateWeaponBar(); }
+    if(unlockedWeapons[w.id]){ if(trainingMode&&trainingStage<2)return; currentWeaponIds[0]=w.id; sfxPickup(); updateWeaponBar(); }
     return;
   }
 }
@@ -4018,7 +4098,9 @@ function spawnEnemy(){
     }
     if(!bs)bs=findSafeSpawn(bossRadius,W/2,60);
     if(!bs){ bossSpawnedThisWave=false; return false; }
-    enemies.push(new EnemyTank(bs.x,bs.y,bt,true));
+    const boss=new EnemyTank(bs.x,bs.y,bt,true);
+    enemies.push(boss);
+    maybeShowEnemyIntro(boss);
     return;
   }
   if(!ch)ch=findSafeSpawn(normalRadius,W/2,60);
@@ -4032,10 +4114,12 @@ function spawnEnemy(){
   else if(diff==='normal'){ e.hp=Math.round(e.hp*1.0); e.maxHp=e.hp; e.speed*=1.0; }
   else if(diff==='hard'){ e.hp=Math.round(e.hp*1.4); e.maxHp=e.hp; e.speed*=1.15; }
   enemies.push(e);
+  maybeShowEnemyIntro(e);
   return true;
 }
 function startLevel(resumeWave=false){
   preloadRewarded();
+  baseVisible=true;
   // При продолжении сохраняем уровень и номер волны, но создаём новую карту
   // и новый набор врагов.
   wave=resumeWave?Math.max(0,wave-1):0; waveTotal=10;
@@ -4046,10 +4130,6 @@ function startLevel(resumeWave=false){
   const baseHpSkillBonus=(skillTree.baseHp||0)*25;
   baseMaxHealth=100+relicBuff.baseHp+baseHpSkillBonus;
   baseHealth=baseMaxHealth;
-  if(trainingMode){
-    baseMaxHealth = 500;
-    baseHealth = 500;
-  }
   enemies=[]; bullets=[]; enemyBullets=[]; particles=[]; floaters=[]; powerups=[]; laserBeams=[]; damageNumbers=[];
   botAlly=new BotAlly(BASE_X+40,BASE_Y);
   botAlly.hp=botAlly.maxHp=100+(skillTree.maxHp||0)*15+(relicBuff.maxHp||0)*30;
@@ -4075,7 +4155,7 @@ function startLevel(resumeWave=false){
   UI.shopPanel.style.display='none'; UI.levelComplete.style.display='none'; UI.bossWarning.style.display='none';
   UI.exitConfirm.classList.remove('show'); UI.flash.classList.remove('on');
   updateUI(); updateWeaponBar();
-  const introFn = trainingMode ? showTrainingIntro : showLevelIntro;
+  const introFn = showLevelIntro;
   introFn(()=>{
     gamePaused=false; lastFrameTs=0;
     gameplayStart(); saveRun();
@@ -4116,19 +4196,80 @@ function initGame(pc, fromSave){
   clearGamepadFocus(); startLevel(!!fromSave); canvas.focus();
 }
 function startTraining(){
-  trainingMode = true;
-  trainingKillTipShown = false;
-  if(UI.trainingComplete) UI.trainingComplete.style.display = 'none';
-  initAudio();
-  unlockedWeapons = {cannon:true};
-  currentWeaponIds = ['cannon','cannon'];
-  savedRun = null; saveAll(); updateContinueBtn();
-  lastDifficulty = 'easy';
-  p1Control = 'kb';
-  initGame(1, false);
-  UI.menu.style.display = 'none';
+  if(UI.welcomeScreen)UI.welcomeScreen.style.display='none';
+  trainingMode=true; trainingStage=1; trainingStageTimer=0; trainingKillTipShown=false;
+  if(UI.trainingComplete)UI.trainingComplete.style.display='none';
+  if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='block';
+  initAudio(); unlockedWeapons={cannon:true}; currentWeaponIds=['cannon','cannon'];
+  savedRun=null; saveAll(); updateContinueBtn(); lastDifficulty='easy'; p1Control='kb';
+  level=0; wave=0; waveTotal=0; coins=0; kills=0;
+  skillTree={}; [...SKILLS_TANK,...SKILLS_BASE].forEach(sk=>{skillTree[sk.id]=0;});
+  relicBuff={damage:0,maxHp:0,speed:0,coinBonus:0,fireRate:0,bulletSpeed:0,regen:0,pierce:0,baseHp:0,crit:0};
+  activePlayers=1; players=[new Tank(0,W/2,H/2,PLAYER_COLORS[0])];
+  tiles=Array.from({length:ROWS},()=>Array(COLS).fill(TILE.EMPTY));
+  brickHp=Array.from({length:ROWS},()=>Array(COLS).fill(0));
+  concreteHp=Array.from({length:ROWS},()=>Array(COLS).fill(0));
+  enemies=[]; bullets=[]; enemyBullets=[]; particles=[]; floaters=[]; powerups=[]; laserBeams=[]; damageNumbers=[]; artilleryShells=[]; helicopter=null; botAlly=null;
+  baseVisible=false; baseHealth=0; baseMaxHealth=100;
+  trainingMoveStartX=W/2; trainingMoveStartY=H/2;
+  gameRunning=true; gamePaused=false; shopOpen=false; spawning=false; enemiesToSpawn=0; waveTimer=999999;
+  hideGameOver();
+  UI.menu.style.display='none'; UI.levelIntro.classList.remove('show'); UI.shopPanel.style.display='none';
+  document.getElementById('ui').style.display='flex';
+  if(UI.weaponBar&&!IS_TOUCH)UI.weaponBar.style.display='flex';
+  const shopBtn=document.getElementById('shopOpenBtn'); if(shopBtn)shopBtn.style.display='flex';
+  updateUI(); updateWeaponBar();
+  try{Stats.track('level_start',{level:0,training:true});}catch(e){}
+  showTrainingTip('🚜','1/5',t('tip_move'),()=>{gamePaused=false;lastFrameTs=0;gameplayStart();});
+}
+function spawnTrainingEnemy(x,y,hp=15,speed=0.2,damage=2){
+  const e=new EnemyTank(x,y,0,false);
+  e.hp=e.maxHp=hp; e.speed=speed; e.damage=damage; e.meleeDamage=damage; e.radius=14;
+  e.weaponId='cannon'; e.shootDelay=150; e.bulletSpeed=3;
+  e.isFast=false; e.isFlanker=false; e.isSpook=false; e.isPT=false; e.isArtillery=false;
+  e.spawnTime=0; e.spawnTotal=0; enemies.push(e); return e;
+}
+function showTrainingStageTip(icon,title,text){showTrainingTip(icon,title,text,()=>{gamePaused=false;lastFrameTs=0;});}
+function enterTrainingStage(stage){
+  trainingStage=stage; trainingStageTimer=0;
+  if(stage===2){enemies=[]; bullets=[]; enemyBullets=[];spawnTrainingEnemy(W/2,100,15,0.2,2);showTrainingStageTip('🎯','2/5',t('tip_shoot'));}
+  else if(stage===3){enemies=[];enemyBullets=[];baseVisible=true;baseMaxHealth=100;baseHealth=100;botAlly=new BotAlly(BASE_X+40,BASE_Y);showTrainingStageTip('🏰','3/5',t('tip_base'));}
+  else if(stage===4){coins=1000;updateUI();showTrainingStageTip('🛒','4/5',t('tip_shop'));}
+  else if(stage===5){
+    if(shopOpen)toggleShop(false);
+    generateMap(); sfxUpgrade(); baseVisible=true;
+    const p=players[0];
+    if(p&&collidesWithTiles(p.x,p.y,p.radius)){p.x=BASE_X;p.y=BASE_Y;}
+    enemies=[]; bullets=[]; enemyBullets=[];
+    spawning=true; enemiesToSpawn=3; spawnTimer=0; waveTimer=999999; isBossWave=false;
+    showTrainingStageTip('🛡️','5/5',t('tip_defend'));
+  }
+  else if(stage===6){gameRunning=false;gamePaused=false;gameplayStop();if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='none';showTrainingComplete();}
+  updateUI();
+}
+function advanceTrainingStage(){if(trainingStage<6){if(trainingStage===2)enemies=[];enterTrainingStage(trainingStage+1);}}
+function updateTraining(dt){
+  trainingStageTimer+=dt;
+  const p=players[0];
+  if(trainingStage===1){if(trainingStageTimer>3600||(p&&dist(p.x,p.y,trainingMoveStartX,trainingMoveStartY)>150))enterTrainingStage(2);}
+  else if(trainingStage===2){if(trainingStageTimer>3600||enemies.length===0)enterTrainingStage(3);}
+  else if(trainingStage===3){if(trainingStageTimer>3600||(p&&dist(p.x,p.y,BASE_X,BASE_Y)<70&&p.hp>=p.maxHp))enterTrainingStage(4);}
+  else if(trainingStage===4){const changed=Object.keys(skillTree).some(k=>(skillTree[k]||0)>0)||currentWeaponIds.some((w,i)=>w!==['cannon','cannon'][i])||Object.keys(unlockedWeapons).some(k=>k!=='cannon'&&unlockedWeapons[k]);if(trainingStageTimer>3600||changed)enterTrainingStage(5);}
+  else if(trainingStage===5){
+    if(enemiesToSpawn>0){
+      spawnTimer+=dt/60;
+      const interval=Math.max(0.35,1.2-wave*0.02);
+      if(spawnTimer>=interval){
+        if(spawnEnemy()){enemiesToSpawn--;spawnTimer=0;}
+        else spawnTimer=interval;
+      }
+    }
+    if(trainingStageTimer>18000||(trainingStageTimer>120&&enemiesToSpawn===0&&enemies.filter(e=>e.hp>0).length===0&&baseHealth>0))enterTrainingStage(6);
+  }
 }
 function trainToLevels(){
+  if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='none';
+  trainingStage=0;
   UI.trainingComplete.style.display = 'none';
   trainingMode = false; trainingKillTipShown = false;
   lastDifficulty = selectedDifficulty;
@@ -4144,7 +4285,9 @@ function trainRetry(){
   startTraining();
 }
 function trainToMenu(){
+  if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='none';
   UI.trainingComplete.style.display = 'none';
+  gameRunning=false; gamePaused=false; gameplayStop();
   trainingMode = false; trainingKillTipShown = false;
   UI.menu.style.display = 'flex';
   updateContinueBtn(); updateRecordBox(); saveAll(); updateBonusUI();
@@ -4158,6 +4301,7 @@ function gameLoop(ts){
   const dt=el/FIXED_DT;
   if(!adPlaying) gatherInput();
   if(gameRunning&&!gamePaused&&!platformPaused&&!adPlaying)update(dt);
+  else if(trainingMode&&trainingStage===4&&shopOpen&&!platformPaused&&!adPlaying){trainingStageTimer+=dt;if(trainingStageTimer>3600)toggleShop(false);}
   draw();
   if(IS_TOUCH)drawMobileUI();
 }
@@ -4259,6 +4403,24 @@ function bindUI(){
   });
   UI.achBtn.addEventListener('click', ()=>{ initAudio(); openAchievements(); });
   UI.ctrlBtn.addEventListener('click', ()=>{ initAudio(); openSettings(); });
+  const resetBtn=document.getElementById('resetProgressBtn');
+  if(resetBtn)resetBtn.addEventListener('click',e=>{
+    e.preventDefault();
+    if(!confirm('Вы уверены, что хотите полностью сбросить прогресс? Это действие нельзя отменить.'))return;
+    resettingProgress=true;
+    if(_cloudSaveTimer){clearTimeout(_cloudSaveTimer);_cloudSaveTimer=null;}
+    try{localStorage.removeItem(getSaveKey());}catch(err){}
+    if(window.Platform&&Platform.save){
+      Promise.resolve(Platform.save({},ok=>{
+        if(ok)location.reload();
+        else{resettingProgress=false;alert('Не удалось сбросить облачный прогресс. Попробуйте ещё раз.');}
+      })).catch(()=>{resettingProgress=false;alert('Не удалось сбросить облачный прогресс. Попробуйте ещё раз.');});
+    }else location.reload();
+  });
+  if(UI.welcomePlayBtn)UI.welcomePlayBtn.addEventListener('click',()=>{
+    UI.welcomeScreen.style.display='none';
+    startTraining();
+  });
   const tb = document.getElementById('trainBtn');
   if(tb) tb.addEventListener('click', e=>{
     e.preventDefault(); startTraining();
@@ -4284,6 +4446,7 @@ function bindUI(){
   });
   const btl = document.getElementById('btnTrainToLevels');
   if(btl) btl.addEventListener('click', e=>{ e.preventDefault(); trainToLevels(); });
+  if(UI.skipTrainingBtn)UI.skipTrainingBtn.addEventListener('click',e=>{e.preventDefault();trainingMode=false;trainingStage=0;save.tutorialDone=true;saveAll();doExitToMenu();});
   const btr = document.getElementById('btnTrainRetry');
   if(btr) btr.addEventListener('click', e=>{ e.preventDefault(); trainRetry(); });
   const btm = document.getElementById('btnTrainToMenu');
@@ -4457,6 +4620,10 @@ window.addEventListener('load', async ()=>{
     if(saved.stats)Object.assign(stats,saved.stats);
     if(saved.daily)daily=saved.daily;
     if(typeof saved.tutorialDone==='boolean')save.tutorialDone=saved.tutorialDone;
+    if(saved.seenEnemies&&typeof saved.seenEnemies==='object'){
+      for(const type of Object.keys(save.seenEnemies))save.seenEnemies[type]=saved.seenEnemies[type]===true;
+    }
+    if(typeof saved.seenDeathTip==='boolean')save.seenDeathTip=saved.seenDeathTip;
     if(typeof saved.pendingBonus==='number')save.pendingBonus=saved.pendingBonus;
     if(typeof saved.money==='number')save.money=saved.money;
     if(typeof saved.lastFreeBonusDay==='string')save.lastFreeBonusDay=saved.lastFreeBonusDay;
@@ -4480,6 +4647,13 @@ window.addEventListener('load', async ()=>{
   UI.menu.querySelectorAll('.menu-btns,.langRow,button')
     .forEach(el => el.style.pointerEvents = '');
   UI.menu.style.opacity = '';
+  if(!save.tutorialDone){
+    UI.welcomeScreen.style.display='flex';
+    UI.menu.style.display='none';
+  }else{
+    UI.welcomeScreen.style.display='none';
+    UI.menu.style.display='flex';
+  }
   if(!isVK() && !isOK()){
     const co = document.getElementById('cloudOffline');
     if(co) co.style.display = 'inline-block';
