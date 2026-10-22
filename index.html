@@ -783,7 +783,7 @@ tipContinue:'Нажми, чтобы продолжить', gotIt:'Понятно
 enemy_artillery:'Артиллерия', enemy_artillery_d:'У этой пушки непробиваемая защита, пока она не сделает свой первый выстрел! Как только она выстрелит, щит упадёт. Она стреляет мощными снарядами по площади. Не стойте на месте!',
 enemy_spook:'Огнемётный Танк', enemy_spook_d:'Очень быстрый и агрессивный враг. Он охотится лично на вас! Стреляет огнём вблизи. Держите дистанцию!',
 enemy_pt:'ПТ-САУ', enemy_pt_d:'У неё вдвое больше здоровья, и она стреляет снайперскими выстрелами на огромное расстояние. Прячьтесь за стенами!',
-enemy_fast:'Танк-Скороход', enemy_fast_d:'Не стреляет, но несётся к базе с огромной скоростью! Сбейте его как можно быстрее!',
+enemy_fast:'Танк-Скороход', enemy_fast_d:'Очень быстрый враг, мчится к базе. Может стрелять на ходу! Сбейте его как можно быстрее!',
 enemy_flanker:'Танк-Разрушитель', enemy_flanker_d:'Едет по краю и целенаправленно ломает кирпичи, чтобы пробить путь к базе. Остановите его!',
 enemy_boss:'БОСС', enemy_boss_d:'Колоссальный запас здоровья, двойные пушки и разрушительная мощь. Когда его HP упадёт ниже 60%, он выпустит веер снарядов!',
 },
@@ -876,7 +876,7 @@ tipContinue:'Tap to continue', gotIt:'Got it', deathTip:'You respawned at the ba
 enemy_artillery:'Artillery', enemy_artillery_d:'This gun is invulnerable until it fires its first shot! Once it shoots, its shield drops. It fires powerful area-damage shells. Keep moving!',
 enemy_spook:'Flamethrower Tank', enemy_spook_d:'A very fast and aggressive enemy. It hunts you personally and attacks with fire at close range. Keep your distance!',
 enemy_pt:'Tank Destroyer', enemy_pt_d:'It has twice the health and fires sniper shots from great range. Hide behind walls!',
-enemy_fast:'Speed Tank', enemy_fast_d:'It does not shoot, but races toward the base at tremendous speed! Destroy it quickly!',
+enemy_fast:'Speed Tank', enemy_fast_d:'Very fast enemy rushing to the base. Can shoot on the move! Take it down ASAP!',
 enemy_flanker:'Demolition Tank', enemy_flanker_d:'It moves along the edge and deliberately breaks bricks to reach the base. Stop it!',
 enemy_boss:'BOSS', enemy_boss_d:'Massive health, twin guns and devastating power. Below 60% HP, it fires a fan of projectiles!',
 },
@@ -1105,20 +1105,38 @@ function sfxStreak(tier){ if(_audioBlocked()||volStreak<=0) return;
 }
 function sfxArtilleryFire(){ if(_audioBlocked()) return;
   try{
-    const n=audioCtx.currentTime,d=1.0;
+    const n=audioCtx.currentTime,d=0.5,noiseDur=0.4;
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(0.6,n);
+    g.gain.exponentialRampToValueAtTime(0.001,n+d);
+    g.connect(masterGain);
     const o=audioCtx.createOscillator(); o.type='sine';
-    o.frequency.setValueAtTime(85,n); o.frequency.exponentialRampToValueAtTime(26,n+d);
-    const g=audioCtx.createGain(); g.gain.setValueAtTime(0.45,n); g.gain.exponentialRampToValueAtTime(0.001,n+d);
-    o.connect(g).connect(masterGain||audioCtx.destination); o.start(n); o.stop(n+d);
+    o.frequency.setValueAtTime(120,n); o.frequency.exponentialRampToValueAtTime(30,n+d);
+    o.connect(g); o.start(n); o.stop(n+d);
+    const samples=Math.floor(audioCtx.sampleRate*noiseDur);
+    const b=audioCtx.createBuffer(1,samples,audioCtx.sampleRate),data=b.getChannelData(0);
+    for(let i=0;i<samples;i++)data[i]=(Math.random()*2-1)*Math.exp(-i/(samples*0.3));
+    const noise=audioCtx.createBufferSource(); noise.buffer=b;
+    const lp=audioCtx.createBiquadFilter(); lp.type='lowpass';
+    lp.frequency.setValueAtTime(800,n); lp.frequency.exponentialRampToValueAtTime(100,n+noiseDur);
+    noise.connect(lp).connect(g); noise.start(n); noise.stop(n+noiseDur);
   }catch(e){}
 }
 function sfxArtilleryImpact(){ if(_audioBlocked()) return;
   try{
-    const n=audioCtx.currentTime,d=1.2;
+    const n=audioCtx.currentTime,d=0.8;
+    const g=audioCtx.createGain(); g.gain.setValueAtTime(0.7,n);
+    g.gain.exponentialRampToValueAtTime(0.001,n+d);
+    g.connect(masterGain);
     const o=audioCtx.createOscillator(); o.type='sine';
-    o.frequency.setValueAtTime(70,n); o.frequency.exponentialRampToValueAtTime(20,n+d);
-    const g=audioCtx.createGain(); g.gain.setValueAtTime(0.55,n); g.gain.exponentialRampToValueAtTime(0.001,n+d);
-    o.connect(g).connect(masterGain||audioCtx.destination); o.start(n); o.stop(n+d);
+    o.frequency.setValueAtTime(80,n); o.frequency.exponentialRampToValueAtTime(20,n+d);
+    o.connect(g); o.start(n); o.stop(n+d);
+    const samples=Math.floor(audioCtx.sampleRate*d);
+    const b=audioCtx.createBuffer(1,samples,audioCtx.sampleRate),data=b.getChannelData(0);
+    for(let i=0;i<samples;i++)data[i]=(Math.random()*2-1)*Math.exp(-i/(samples*0.3));
+    const noise=audioCtx.createBufferSource(); noise.buffer=b;
+    const lp=audioCtx.createBiquadFilter(); lp.type='lowpass';
+    lp.frequency.setValueAtTime(600,n); lp.frequency.exponentialRampToValueAtTime(50,n+d);
+    noise.connect(lp).connect(g); noise.start(n); noise.stop(n+d);
   }catch(e){}
 }
 const LEVEL_JINGLE = [
@@ -1765,6 +1783,9 @@ class Tank{
     if(collidesWithTiles(x,y,this.radius))return true;
     for(const p of players){ if(p===this||!p||!p.alive)continue; if(circlesHit(x,y,this.radius,p.x,p.y,p.radius))return true; }
     for(const e of enemies){ if(e.hp<=0||e.spawnTime>0)continue; if(circlesHit(x,y,this.radius,e.x,e.y,e.radius))return true; }
+    if (typeof botAlly !== 'undefined' && botAlly && botAlly.alive) {
+      if (circlesHit(x, y, this.radius, botAlly.x, botAlly.y, botAlly.radius)) return true;
+    }
     return false;
   }
   takeDamage(d){
@@ -1802,13 +1823,9 @@ class Tank{
     for(const c of candidates){
       if(isFreeSpawn(c.x, c.y, this.radius)){ pos = {x: c.x, y: c.y}; break; }
     }
-    if(!pos) pos = findSafeSpawn(this.radius, prefX, prefY) || {x:prefX,y:prefY};
-    // Повторная проверка обязательна: другой игрок мог воскреснуть
-    // между попытками выбора позиции.
-    if(!isFreeSpawn(pos.x,pos.y,this.radius)){
-      pos=findSafeSpawn(this.radius,prefX,prefY);
-    }
+    if(!pos) pos = findSafeSpawn(this.radius, prefX, prefY);
     if(!pos)return;
+    if (!isFreeSpawn(pos.x, pos.y, this.radius)) { return; }
     if(players.length > 1){
       for(const other of players){
         if(other === this || !other.alive) continue;
@@ -2526,6 +2543,9 @@ class BotAlly {
     this.hp=100; this.maxHp=100; this.alive=true; this.respawnTimer=0;
     this.fireCooldown=0; this.scanRange=500; this.hitFlash=0;
     this.patrolDir=1; this.patrolMinX=BASE_X-100; this.patrolMaxX=BASE_X+100;
+    this.patrolMinY = BASE_Y - 50;
+    this.patrolMaxY = BASE_Y + 100;
+    this.patrolYDir = -1;
     this.patrolSpeed=0.6;
     const diff=getDifficulty();
     this.turretTurn=diff==='easy'?0.08:diff==='hard'?0.18:0.12;
@@ -2644,9 +2664,20 @@ class BotAlly {
       }
 
       const step=this.patrolSpeed*dt*1.4,nx=this.x+moveDir*step;
-      const blocked=nx<this.patrolMinX||nx>this.patrolMaxX||collidesWithTiles(nx,this.y,this.radius);
-      if(blocked){ this.patrolDir*=-1; }
-      else { this.x=nx; this.bodyAngle=moveDir>0?0:Math.PI; }
+      let hitsPlayer = false;
+      for (const p of players) { if (p && p.alive && circlesHit(nx, this.y, this.radius, p.x, p.y, p.radius)) { hitsPlayer = true; break; } }
+      const blocked = nx < this.patrolMinX || nx > this.patrolMaxX || collidesWithTiles(nx, this.y, this.radius) || hitsPlayer;
+      if(blocked){
+        this.patrolDir*=-1;
+        for(const dir of [this.patrolYDir,-this.patrolYDir]){
+          const ny=this.y+dir*step;
+          if(ny<this.patrolMinY||ny>this.patrolMaxY||ny<this.radius+2||ny>H-this.radius-2)continue;
+          if(collidesWithTiles(this.x,ny,this.radius))continue;
+          if(players.some(p=>p&&p.alive&&circlesHit(this.x,ny,this.radius,p.x,p.y,p.radius)))continue;
+          this.y=ny; this.patrolYDir=dir; this.bodyAngle=dir>0?Math.PI/2:-Math.PI/2;
+          break;
+        }
+      } else { this.x=nx; this.bodyAngle=moveDir>0?0:Math.PI; }
       this.turretAngle=-Math.PI/2;
     } else {
       this.bodyAngle=this.turretAngle;
