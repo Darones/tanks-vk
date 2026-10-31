@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
 html,body{background:#0a0a0a;height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;color:#fff;touch-action:none}
-#gameContainer{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;background:#000}
+#gameContainer{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;background:#000;display:flex;justify-content:center;align-items:center}
 canvas{background:#1e2a1e;outline:none;display:block;border-radius:4px;box-shadow:0 0 40px rgba(0,0,0,0.9);max-width:100%;max-height:100%;cursor:crosshair;transition:filter .8s ease-out}
 #uiOverlay{position:fixed;top:0;left:0;z-index:100;touch-action:none;pointer-events:none;background:transparent;box-shadow:none;border-radius:0;max-width:none;max-height:none;}
 canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
@@ -43,9 +43,9 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .dailyBtn,#dailyPanel{display:none!important}
 .dailyBtn.ready::after{content:'';position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#ff2222;animation:pulse 0.8s infinite alternate}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
-#ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
+#ui{position:absolute;bottom:45px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
 @media (pointer:coarse){
-  #ui{bottom:2px;max-width:96vw;gap:4px;font-size:11px}
+  #ui{bottom:45px;max-width:96vw;gap:4px;font-size:11px}
   #ui>div{padding:3px 8px;gap:6px}
 }
 #ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08);white-space:nowrap;max-width:100%}
@@ -4977,21 +4977,24 @@ window.addEventListener('load', async ()=>{
   brickHp=Array.from({length:ROWS},()=>Array(COLS).fill(0));
   concreteHp=Array.from({length:ROWS},()=>Array(COLS).fill(0));
 
-  const resize=()=>{
-    const vv=window.visualViewport;
-    const cw=vv?vv.width:window.innerWidth;
-    const ch=vv?vv.height:window.innerHeight;
+  const resize = () => {
+    const vv = window.visualViewport;
+    const cw = vv ? vv.width : window.innerWidth;
+    const ch = vv ? vv.height : window.innerHeight;
     
-    // Делаем запас по высоте (около 15%), чтобы HUD не уезжал под панели ВК
-    const safeCh=ch*0.85;
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
+    const scaleFactor = isMobile ? 0.65 : 0.75; 
     
-    const sc=Math.min(cw/W,safeCh/H);
-    canvas.style.width=(W*sc)+'px'; canvas.style.height=(H*sc)+'px';
+    const safeCh = ch * scaleFactor; 
     
-    canvas.style.position='absolute';
-    canvas.style.left='50%';
-    canvas.style.top='50%';
-    canvas.style.transform='translate(-50%,-50%)';
+    const sc = Math.min(cw / W, safeCh / H);
+    canvas.style.width  = (W * sc) + 'px';
+    canvas.style.height = (H * sc) + 'px';
+    
+    canvas.style.position = 'relative';
+    canvas.style.left = 'auto';
+    canvas.style.top = 'auto';
+    canvas.style.transform = 'none';
   };
   window.addEventListener('resize',resize);
   window.addEventListener('orientationchange',()=>setTimeout(resize,100));
