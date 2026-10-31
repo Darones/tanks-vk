@@ -35,6 +35,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #trainBtn{background:linear-gradient(180deg,#ffd700,#c9a000);box-shadow:0 4px 0 #8a6a00;color:#000}
 #achievementPanel{position:relative}
 #achCloseX{position:absolute;top:6px;right:8px;width:32px;height:32px;padding:0;border:0;background:transparent;color:#ffd700;font-size:28px;line-height:28px;cursor:pointer}
+#achCloseX,#buyCoinsCloseBtn,#closeSettingsBtn,#shopCloseCross{position:absolute !important;top:8px !important;right:8px !important;width:24px !important;height:24px !important;min-width:24px !important;padding:0 !important;border:0 !important;border-radius:50% !important;background:rgba(255,255,255,0.1) !important;color:#fff !important;font-size:14px !important;line-height:24px !important;display:flex !important;align-items:center !important;justify-content:center !important;z-index:10 !important;cursor:pointer}
 #bonusTimer{min-height:18px;font-size:12px;color:#ffd700;text-align:center;margin-top:-5px}
 .bigBtn:disabled{opacity:.45;cursor:not-allowed}
 .smallBtn{background:linear-gradient(180deg,#4a5a7a,#2e3a52);border:none;padding:10px 22px;font-size:14px;border-radius:8px;cursor:pointer;color:#fff;font-weight:bold;box-shadow:0 3px 0 #1a2438;min-width:220px}
@@ -215,9 +216,8 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
   #levelIntro { padding: 10px; }
   .introContent { max-height: 80vh; overflow: hidden; gap: 8px; padding: 10px; width: 100%; box-sizing: border-box; justify-content: center; }
   .introNum { font-size: 40px !important; }
-  .introLbl { font-size: 18px; letter-spacing: 4px; }
-  .introWave { font-size: 16px; }
-  .introHint { font-size: 12px; }
+  .introLbl, .introWave, .introHint { font-size: 15px !important; letter-spacing: normal !important; }
+  .introNum { font-size: 30px !important; }
   #skipTrainingBtn { top: 15px; right: 75px; font-size: 10px; padding: 4px 8px; z-index: 999; }
   #trainingComplete h2 { font-size: 24px !important; }
   #shopOpenBtn b { display: none !important; }
@@ -227,6 +227,16 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
   .set-tabs .tab[data-stab="controls"] { display: none !important; }
   #stabControls { display: none !important; }
   #stabSound { display: block !important; }
+  #levelIntro { padding: 10px !important; }
+  .introContent { max-height: 85vh !important; overflow: hidden !important; gap: 6px !important; justify-content: center !important; }
+  .introLbl, .introWave, .introHint { font-size: 15px !important; margin: 4px 0 !important; letter-spacing: normal !important; }
+  .introNum { font-size: 30px !important; margin: 4px 0 !important; }
+  #skipTrainingBtn { top: 15px !important; right: 65px !important; font-size: 10px !important; padding: 4px 8px !important; }
+  #shopPanel { top: 45% !important; height: 82vh !important; }
+  .set-tabs { display: none !important; }
+  #settingsPanel { position: relative !important; padding-top: 30px !important; }
+  #closeSettingsBtn { position: absolute !important; top: 8px !important; right: 8px !important; width: 24px !important; height: 24px !important; padding: 0 !important; border-radius: 50% !important; background: rgba(255,255,255,0.1) !important; border: none !important; color: #fff !important; font-size: 14px !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+  #resetProgressBtn { padding: 4px 8px !important; font-size: 10px !important; min-width: auto !important; opacity: 0.6 !important; }
 }
 
 /* MOBILE UI: Магазин и кнопки */
@@ -2964,7 +2974,8 @@ function updateBonusUI(){
 function updateShopOpenBtnVisibility(){
   const btn=document.getElementById('shopOpenBtn');
   if(!btn) return;
-  if(IS_TOUCH){ btn.style.display='none'; return; }
+  // Mobile visibility is controlled by the training/menu flow.
+  if(IS_TOUCH){ return; }
   const visible = gameRunning && !shopOpen && !levelCompleteOpen && !adPlaying;
   btn.style.display = visible ? 'flex' : 'none';
 }
@@ -4610,7 +4621,7 @@ function enterTrainingStage(stage){
   else if(stage===4){
     coins=1000; updateUI();
     const shopBtn = document.getElementById('shopOpenBtn');
-    if (shopBtn) shopBtn.style.display = 'flex';
+    if (shopBtn) { shopBtn.style.display = 'flex'; shopBtn.classList.add('flash'); }
     showTrainingStageTip('','4/5',t('tip_shop'), ()=>{
         if (shopBtn) {
             shopBtn.style.display = 'flex';
