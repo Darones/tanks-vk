@@ -45,7 +45,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
 #ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
 @media (pointer:coarse){
-  #ui{bottom:8px;max-width:96vw;gap:4px;font-size:11px}
+  #ui{bottom:0px !important;max-width:96vw;gap:4px;font-size:11px;padding-bottom:2px}
   #ui>div{padding:3px 8px;gap:6px}
 }
 #ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08);white-space:nowrap;max-width:100%}
@@ -225,7 +225,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 /* MOBILE UI: Магазин и кнопки */
 @media (pointer:coarse) {
-  #shopPanel { width: 96vw !important; height: 92vh !important; }
+  #shopPanel { width: 92vw !important; max-width: 400px !important; height: 88vh !important; }
   .shopTabs .tab { padding: 4px 6px !important; font-size: 11px !important; min-height: 28px !important; }
   .shop-actions button { padding: 6px 10px !important; font-size: 13px !important; min-height: 32px !important; flex: 1; }
   .bigBtn { min-width: 200px !important; font-size: 14px !important; padding: 8px 16px !important; }
@@ -1679,9 +1679,7 @@ class Particle{
 class Floater{
   constructor(x,y,t,c,duration=50){ this.x=x;this.y=y;this.text=t;this.color=c;this.life=duration;this.maxLife=duration; }
   update(dt){ this.y-=1.1*dt; this.life-=dt; }
-  draw(){ ctx.globalAlpha=Math.max(0,this.life/this.maxLife); ctx.fillStyle=this.color;
-    ctx.font='bold 15px Arial'; ctx.textAlign='center';
-    ctx.fillText(this.text,this.x,this.y); ctx.globalAlpha=1; }
+  draw(){ /* Floating text visuals disabled; gameplay/audio feedback remains. */ }
 }
 class DamageNumber{
   constructor(x,y,text,color){ this.x=x;this.y=y;this.text=text;this.color=color||'#fff'; this.life=45;this.maxLife=45;
@@ -2604,12 +2602,6 @@ function addKill(){
   else { for(let i=STREAKS.length-1;i>=0;i--){ if(streakCount>=STREAKS[i].n&&STREAKS[i].n>1){ streak=STREAKS[i]; break; } } }
   if(streak){
     const el=document.getElementById('killStreak');
-    el.querySelector('.eng').textContent=streak.eng;
-    el.querySelector('.eng').style.color=streak.color;
-    const localName = streak[lang] || streak.ru || streak.eng;
-    el.querySelector('.ru').textContent=localName;
-    el.classList.add('show');
-    setTimeout(()=>el.classList.remove('show'),1400);
     sfxStreak(streak.n||1);
   }
 }
@@ -3295,16 +3287,7 @@ function renderAchievements(){
 }
 function closePanel(id){ document.getElementById(id).style.display='none'; gamepadCooldown = Math.max(gamepadCooldown, 15); }
 function showToast(msg, ok){
-  let el = document.getElementById('cloudStatus');
-  if(!el){
-    el = document.createElement('div');
-    el.id = 'cloudStatus';
-    document.body.appendChild(el);
-  }
-  el.textContent = msg;
-  el.className = 'show' + (ok ? '' : ' fail');
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=>el.classList.remove('show'), 2200);
+  // Visual toast disabled. Audio feedback is handled by the calling action.
 }
 
 /* ================= SETTINGS ================= */
