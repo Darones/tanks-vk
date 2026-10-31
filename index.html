@@ -57,7 +57,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 #bossWarning{position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);color:#ff3333;font-size:clamp(40px,10vw,72px);font-weight:bold;text-shadow:0 0 40px red;display:none;pointer-events:none;z-index:25;animation:pulseB .8s infinite alternate}
 @keyframes pulseB{from{opacity:.5;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
-#shopPanel{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,rgba(10,15,25,0.98),rgba(20,30,20,0.98));padding:0;border-radius:14px;color:#fff;pointer-events:auto;border:2px solid #ffd700;display:none;flex-direction:column;gap:0;width:min(480px,94vw);height:min(88vh,660px);max-height:96vh;z-index:40;box-shadow:0 0 60px rgba(255,215,0,0.35);overflow:hidden}
+#shopPanel{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(180deg,rgba(10,15,25,0.98),rgba(20,30,20,0.98));padding:0;border-radius:14px;color:#fff;pointer-events:auto;border:2px solid #ffd700;display:none;flex-direction:column;gap:0;width:min(480px,94vw);height:min(88vh,660px);max-height:96vh;z-index:9999;box-shadow:0 0 60px rgba(255,215,0,0.35);overflow:hidden}
 .shopHeader{padding:8px 10px;text-align:center;border-bottom:1px solid #333;flex-shrink:0}
 .shopHeader .title{font-size:18px;font-weight:bold;color:#ffd700}
 .shopHeader .coins-show{font-size:15px;color:#ffd700;padding:3px 10px;background:rgba(255,215,0,0.1);border-radius:8px;display:inline-block;margin-top:3px}
@@ -219,13 +219,22 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
   .introHint { font-size: 12px; }
   #skipTrainingBtn { top: 10px; right: 10px; font-size: 10px; padding: 4px 8px; z-index: 999; }
 }
+
+/* MOBILE UI: Магазин и кнопки */
+@media (pointer:coarse) {
+  #shopPanel { width: 96vw !important; height: 92vh !important; }
+  .shopTabs .tab { padding: 4px 6px !important; font-size: 11px !important; min-height: 28px !important; }
+  .shop-actions button { padding: 6px 10px !important; font-size: 13px !important; min-height: 32px !important; flex: 1; }
+  .bigBtn { min-width: 200px !important; font-size: 14px !important; padding: 8px 16px !important; }
+}
+
 </style>
 </head>
 <body>
 <div id="gameContainer">
 <canvas id="gameCanvas" width="1000" height="700" tabindex="0"></canvas>
 <canvas id="uiOverlay"></canvas>
-<button id="shopOpenBtn" style="display:none">🏪 <b>Tab</b></button>
+<button id="shopOpenBtn" style="display:none">🛒 <b>Tab</b></button>
 <button id="skipTrainingBtn" data-i18n="skipTraining">Пропустить обучение</button>
 
 <div id="ui">
@@ -444,7 +453,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <button class="langArrow" id="langNext">▶</button>
 </div>
 
-<div class="hint-text" data-i18n-html="hintText">🖱️ Мышь — башня · ЛКМ — огонь · WASD — движение · Tab — магазин</div>
+<div class="hint-text" data-i18n-html="hintText" style="display:none">🖱️ Мышь — башня · ЛКМ — огонь · WASD — движение · Tab — магазин</div>
 </div>
 
 <button class="rateBtn" id="rateBtn" data-i18n="rateBtn">⭐ Оценить</button>
@@ -950,6 +959,15 @@ enemy_flanker:'Demolition Tank', enemy_flanker_d:'It moves along the edge and de
 enemy_boss:'BOSS', enemy_boss_d:'Massive health, twin guns and devastating power. Below 60% HP, it fires a fan of projectiles!',
 },
 };
+
+// Адаптация текстов для мобильных устройств
+if (window.matchMedia('(pointer:coarse)').matches) {
+  L.ru.tip_move = 'Добро пожаловать! Двигайся с помощью левого стика. Эта панель показывает твои жизни, монеты и прогресс.';
+  L.ru.tip_shoot = 'Наведи правый стик и нажми кнопку огня, чтобы выстрелить.';
+  L.ru.tip_shop = 'Открой магазин и купи улучшение.';
+  L.ru.tipControlsText = 'Левый стик — движение. Правый стик — башня. Кнопка огня — выстрел.';
+  L.ru.tipFireText = 'Магазин — кнопка магазина. Смена оружия — кнопки внизу.';
+}
 
 const LANGS = ['auto','ru','en'];
 let langSetting = 'auto';
