@@ -209,6 +209,16 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #shopOpenBtn b{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.78);color:#ffd700;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:9px;font-weight:bold;line-height:1}
 @keyframes shopBtnFlash{0%,100%{transform:scale(1);box-shadow:0 3px 0 #8a6a00}50%{transform:scale(1.22);box-shadow:0 3px 0 #8a6a00,0 0 22px #ffd700}}
 #shopOpenBtn.flash{animation:shopBtnFlash 0.4s ease-in-out 5}
+/* MOBILE FIX: Обучение */
+@media (pointer:coarse) {
+  #levelIntro { padding: 10px; }
+  .introContent { max-height: 95vh; overflow-y: auto; gap: 8px; padding: 10px; width: 100%; box-sizing: border-box; }
+  .introNum { font-size: clamp(60px, 15vw, 120px); }
+  .introLbl { font-size: 18px; letter-spacing: 4px; }
+  .introWave { font-size: 16px; }
+  .introHint { font-size: 12px; }
+  #skipTrainingBtn { top: 10px; right: 10px; font-size: 10px; padding: 4px 8px; z-index: 999; }
+}
 </style>
 </head>
 <body>
@@ -4999,7 +5009,7 @@ window.addEventListener('load', async ()=>{
   const resize = () => {
     const cw = window.innerWidth;
     // Вычитаем 65 пикселей под нижнюю панель ВК (и на мобилках, и на вебе)
-    const ch = window.innerHeight - 65;
+    const ch = window.innerHeight;
     
     // Масштабируем так, чтобы холст занимал 100% доступной высоты
     const sc = Math.min(cw / W, ch / H);
