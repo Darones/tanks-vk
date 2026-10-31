@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
 html,body{background:#0a0a0a;height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;color:#fff;touch-action:none}
-#gameContainer{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:center}
+#gameContainer{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;background:#000}
 canvas{background:#1e2a1e;outline:none;display:block;border-radius:4px;box-shadow:0 0 40px rgba(0,0,0,0.9);max-width:100%;max-height:100%;cursor:crosshair;transition:filter .8s ease-out}
 #uiOverlay{position:fixed;top:0;left:0;z-index:100;touch-action:none;pointer-events:none;background:transparent;box-shadow:none;border-radius:0;max-width:none;max-height:none;}
 canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
@@ -4978,9 +4978,20 @@ window.addEventListener('load', async ()=>{
   concreteHp=Array.from({length:ROWS},()=>Array(COLS).fill(0));
 
   const resize=()=>{
-    const cw=window.innerWidth, ch=window.innerHeight;
-    const sc=Math.min(cw/W,ch/H);
+    const vv=window.visualViewport;
+    const cw=vv?vv.width:window.innerWidth;
+    const ch=vv?vv.height:window.innerHeight;
+    
+    // Делаем запас по высоте (около 15%), чтобы HUD не уезжал под панели ВК
+    const safeCh=ch*0.85;
+    
+    const sc=Math.min(cw/W,safeCh/H);
     canvas.style.width=(W*sc)+'px'; canvas.style.height=(H*sc)+'px';
+    
+    canvas.style.position='absolute';
+    canvas.style.left='50%';
+    canvas.style.top='50%';
+    canvas.style.transform='translate(-50%,-50%)';
   };
   window.addEventListener('resize',resize);
   window.addEventListener('orientationchange',()=>setTimeout(resize,100));
