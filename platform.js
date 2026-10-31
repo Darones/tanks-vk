@@ -157,7 +157,20 @@
   window.Platform = {
     mode, init, adsAvailable, showRewarded, showInterstitial,
     save, load, getLang, isVK, isOK, onPause, onResume,
-    gameplayStart, gameplayStop, rateGame, SAVE_KEY
+    gameplayStart, gameplayStop, rateGame, SAVE_KEY,
+    showBanner: async () => {
+      if (mode !== 'vk' || !vkReady) return;
+      try {
+        await vkBridge.send('VKWebAppShowBannerAd', {
+          banner_location: 'bottom',
+          layout_type: 'resize',
+          height_type: 'small'
+        });
+        console.log('[Platform] Banner shown');
+      } catch (e) {
+        console.warn('[Platform] Banner failed:', e);
+      }
+    }
   };
   window.Platform.showOrderBox = showOrderBox;
 })();

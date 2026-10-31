@@ -9,7 +9,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
 html,body{background:#0a0a0a;height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;color:#fff;touch-action:none}
-#gameContainer{position:relative;width:100vw;height:100vh;display:flex;justify-content:center;align-items:center}
+#gameContainer{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;justify-content:center;align-items:center}
 canvas{background:#1e2a1e;outline:none;display:block;border-radius:4px;box-shadow:0 0 40px rgba(0,0,0,0.9);max-width:100%;max-height:100%;cursor:crosshair;transition:filter .8s ease-out}
 #uiOverlay{position:fixed;top:0;left:0;z-index:100;touch-action:none;pointer-events:none;background:transparent;box-shadow:none;border-radius:0;max-width:none;max-height:none;}
 canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
@@ -439,6 +439,8 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <button class="rateBtn" id="rateBtn" data-i18n="rateBtn">⭐ Оценить</button>
 </div>
+
+<div id="vkBanner" style="position:fixed; bottom:0; left:0; right:0; z-index:90; pointer-events:auto; display:none;"></div>
 
 <script>
 'use strict';
@@ -5006,6 +5008,7 @@ window.addEventListener('load', async ()=>{
 
   // === 2. АСИНХРОННАЯ ИНИЦИАЛИЗАЦИЯ VK — не блокирует UI ===
   try{ await Platform.init(); }catch(e){ log('Platform.init error:', e); }
+  if(Platform.mode === 'vk' || Platform.mode === 'ok') { Platform.showBanner(); }
   preloadRewarded();
   setupPlatformPauseHandlers();
   updatePlatformUI();
