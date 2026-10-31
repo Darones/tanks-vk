@@ -7,3 +7,15 @@ logotank.png
 _CONTEXT.md
 _SESSION_*.md
 memory_*.txt
+backups/
+*.bak
+*.backup-*
+patch-*.js
+.gigacode/
+AGENTS.md
+.gigacode-rules.md
+antivirus/
+match3.html
+*.md
+ответвление на АПК/
+index_before_moderation_fix.html
