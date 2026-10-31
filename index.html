@@ -500,7 +500,26 @@ function setPlatformPaused(v){
   if(platformPaused){ resetLiveInput(); flushCloudNow(); }
 }
 function setupPlatformPauseHandlers(){
-  document.addEventListener('visibilitychange', () => setPlatformPaused(document.hidden));
+  document.addEventListener('visibilitychange', () => {
+    const hidden = document.hidden;
+    setPlatformPaused(hidden);
+    
+    if (hidden) {
+      if (typeof bgmMenu !== 'undefined' && bgmMenu) bgmMenu.pause();
+      if (typeof bgmBattleA !== 'undefined' && bgmBattleA) bgmBattleA.pause();
+      if (typeof bgmBattleB !== 'undefined' && bgmBattleB) bgmBattleB.pause();
+      if (typeof audioCtx !== 'undefined' && audioCtx && audioCtx.state === 'running') {
+        audioCtx.suspend();
+      }
+    } else {
+      if (typeof musicEnabled !== 'undefined' && musicEnabled && typeof currentBgm !== 'undefined' && currentBgm) {
+        currentBgm.play().catch(()=>{});
+      }
+      if (typeof audioCtx !== 'undefined' && audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+  });
   /* blur НЕ ставит паузу (в iframe это замораживает игру без индикации), только сбрасывает ввод */
   window.addEventListener('blur', () => { resetLiveInput(); });
   Platform.onPause(() => setPlatformPaused(true));
