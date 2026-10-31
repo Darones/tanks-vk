@@ -149,16 +149,16 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #winOverlay.on{opacity:1}
 #winOverlay .txt{font-size:clamp(40px,10vw,90px);font-weight:bold;color:#ffd700;text-shadow:0 0 40px #ff8800,0 0 80px #ff4400;font-family:'Impact','Arial Black',sans-serif;letter-spacing:4px;animation:winBoom 0.6s ease-out;text-align:center;padding:0 10px}
 @keyframes winBoom{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
-#levelIntro{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(8,18,38,0.98),rgba(0,0,0,0.99));display:none;justify-content:center;align-items:center;z-index:150;text-align:center}
+#levelIntro{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(8,18,38,0.98),rgba(0,0,0,0.99));display:none;justify-content:center;align-items:center;z-index:150;text-align:center;overflow:hidden}
 #levelIntro.show{display:flex;animation:introFade .4s ease-out}
-#skipTrainingBtn{position:absolute;top:75px;right:15px;z-index:220;display:none;background:#555;color:#eee;border:1px solid #888;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer}
+#skipTrainingBtn{position:absolute;top:15px;left:15px;z-index:220;display:none;background:rgba(0,0,0,0.7);color:#eee;border:1px solid #888;border-radius:6px;padding:6px 10px;font-size:11px;cursor:pointer}
 @keyframes introFade{from{opacity:0}to{opacity:1}}
-.introContent{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px;max-width:min(520px,92vw);box-sizing:border-box;text-align:center}
-.introLbl{font-size:16px;color:#4fc3f7;letter-spacing:4px;font-weight:bold;text-shadow:0 0 20px #4fc3f7;font-family:'Segoe UI',Arial,sans-serif;text-align:center}
-.introNum{font-size:clamp(28px,5vw,44px);color:#ffd700;font-weight:bold;text-shadow:0 0 20px #ff8800;font-family:'Segoe UI',Arial,sans-serif;line-height:1.2;animation:introZoom .6s ease-out;max-width:100%;word-break:break-word;text-align:center}
+.introContent{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;max-width:min(400px,95vw);box-sizing:border-box;text-align:center}
+.introLbl{font-size:14px;color:#4fc3f7;letter-spacing:3px;font-weight:bold;text-shadow:0 0 20px #4fc3f7;font-family:'Segoe UI',Arial,sans-serif;text-align:center}
+.introNum{font-size:clamp(36px,8vw,50px);color:#ffd700;font-weight:bold;text-shadow:0 0 20px #ff8800;font-family:'Impact','Arial Black',sans-serif;line-height:1.1;animation:introZoom .6s ease-out;max-width:100%;word-break:break-word;text-align:center}
 @keyframes introZoom{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 .introWave{font-size:14px;color:#fff;letter-spacing:1px;font-family:'Segoe UI',Arial,sans-serif;text-align:center}
-.introHint{font-size:13px;color:#ffcc44;margin-top:6px;opacity:0.9;font-family:'Segoe UI',Arial,sans-serif;max-width:min(420px,92vw);line-height:1.4;white-space:normal;word-wrap:break-word;text-align:center;animation:introHint 1.2s ease-in-out infinite alternate}
+.introHint{font-size:12px;color:#ffcc44;margin-top:4px;opacity:0.9;font-family:'Segoe UI',Arial,sans-serif;max-width:90vw;line-height:1.3;white-space:normal;word-wrap:break-word;text-align:center;animation:introHint 1.2s ease-in-out infinite alternate}
 @keyframes introHint{from{opacity:0.5}to{opacity:1}}
 .ctrl-group{background:rgba(255,255,255,0.05);border:1px solid #444;border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px}
 .ctrl-group h3{font-size:14px;color:#ffd700;margin-bottom:4px;font-weight:bold}
@@ -359,7 +359,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="settingsPanel">
 <div class="title" data-i18n="settingsTitle">⚙️ НАСТРОЙКИ</div>
-<div class="set-tabs">
+<div class="set-tabs" style="display:none !important;">
 <button class="tab active" data-stab="controls" data-i18n="tabControls">🎮 Управление</button>
 <button class="tab" data-stab="sound" data-i18n="tabSound">🔊 Звук</button>
 </div>
@@ -386,8 +386,8 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
      <input type="range" id="musicVolumeSlider" min="0" max="100" value="80">
    </div>
    </div>
-<button class="bigBtn" data-i18n="close" onclick="closePanel('settingsPanel')" style="margin-top:8px">ЗАКРЫТЬ</button>
-<button class="bigBtn" id="resetProgressBtn" style="background:linear-gradient(180deg,#c62828,#7a1a1a);margin-top:12px"> СБРОСИТЬ ПРОГРЕСС</button>
+<button id="settingsCloseX" onclick="closePanel('settingsPanel')" style="position:absolute;top:6px;right:6px;width:24px;height:24px;padding:0;border:0;background:transparent;color:#ffd700;font-size:20px;line-height:24px;cursor:pointer;border-radius:50%;z-index:9999;">×</button>
+<button id="resetProgressBtn" style="background:linear-gradient(180deg,#c62828,#7a1a1a);border:1px solid #ff6644;color:#fff;font-size:12px;padding:6px 12px;border-radius:6px;cursor:pointer;margin:8px auto 0;display:block;">СБРОСИТЬ ПРОГРЕСС</button>
 </div>
 
 <div id="flash"></div>
@@ -405,7 +405,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="buyCoinsPanel" style="display:none">
 <div class="buyCoinsBox">
-<button id="buyCoinsCloseBtn" class="smallBtn">✖</button>
+<button id="buyCoinsCloseBtn" style="position:absolute;top:8px;right:8px;width:24px;height:24px;padding:0;border:1px solid #ffd700;background:rgba(0,0,0,0.6);color:#ffd700;font-size:16px;line-height:22px;cursor:pointer;border-radius:50%;z-index:9999;">×</button>
 <h3 data-i18n="shopCoinsTitle">Пополнение монет</h3>
 <div class="coinPacks">
 <button class="bigBtn coinPack" data-pack="small" data-i18n="coinsPackSmall">10 000 монет — 5 голосов</button>
@@ -417,10 +417,10 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="welcomeScreen" style="position:fixed;inset:0;z-index:500;display:none;flex-direction:column;justify-content:space-between;align-items:center;background-color:#0a0a14;background-image:radial-gradient(circle at center,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.55) 100%),url('menu-bg.png');background-size:100% 100%,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;padding:10vh 20px;">
   <div style="text-align:center;margin-top:auto;">
-    <h1 style="font-size:clamp(32px,8vw,60px);color:#ffd700;text-shadow:0 0 30px #ff8800,0 2px 12px #000;letter-spacing:3px;margin:0;">Танковый Рубеж</h1>
+    <h1 style="font-size:clamp(24px,6vw,40px);color:#ffd700;text-shadow:0 0 20px #ff8800;letter-spacing:2px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">Танковый Рубеж</h1>
   </div>
   <div style="margin-bottom:auto;display:flex;flex-direction:column;align-items:center;">
-    <button id="welcomePlayBtn" style="background:linear-gradient(180deg,#ffd700,#c9a000);border:3px solid #ffe066;border-radius:14px;color:#000;font-size:24px;font-weight:900;padding:16px 64px;cursor:pointer;box-shadow:0 8px 0 #8a6a00,0 10px 30px rgba(0,0,0,0.6);text-transform:uppercase;letter-spacing:1px;">▶ Играть</button>
+    <button id="welcomePlayBtn" style="background:linear-gradient(180deg,#ffd700,#c9a000);border:2px solid #ffe066;border-radius:10px;color:#000;font-size:16px;font-weight:900;padding:10px 36px;cursor:pointer;box-shadow:0 4px 0 #8a6a00;text-transform:uppercase;letter-spacing:1px;">▶ Играть</button>
   </div>
 </div>
 
@@ -2964,7 +2964,6 @@ function updateBonusUI(){
 function updateShopOpenBtnVisibility(){
   const btn=document.getElementById('shopOpenBtn');
   if(!btn) return;
-  if(IS_TOUCH){ btn.style.display='none'; return; }
   const visible = gameRunning && !shopOpen && !levelCompleteOpen && !adPlaying;
   btn.style.display = visible ? 'flex' : 'none';
 }
@@ -4095,7 +4094,6 @@ function mobileTouchStart(e){
         mobileFireAlpha=0.85; mobileVibrate(10);
       }
     }
-    else if(Math.hypot(pt.x-82,pt.y-40)<=24)mobileMenuTap();
     else if(md<=80&&mobileMoveTouch===null){ mobileMoveTouch=touch.identifier; mobileEdgeVibrated=false; mobileSetMove(pt); }
     else if(ad<=80&&mobileAimTouch===null){ mobileAimTouch=touch.identifier; mobileSetAim(pt); }
     else mobileWeaponTap(pt);
@@ -4167,9 +4165,6 @@ function drawMobileUI(){
   uiCtx.beginPath(); uiCtx.arc(cx,cy,30,0,Math.PI*2); uiCtx.fill(); uiCtx.stroke();
   uiCtx.fillStyle='#fff'; uiCtx.beginPath(); uiCtx.moveTo(cx,cy-17); uiCtx.bezierCurveTo(cx-8,cy-7,cx-7,cy,cx,cy+4); uiCtx.bezierCurveTo(cx+7,cy,cx+8,cy-7,cx,cy-17); uiCtx.fill();
   uiCtx.fillStyle='rgba(255,255,255,0.9)'; uiCtx.beginPath(); uiCtx.moveTo(cx-3,cy+4); uiCtx.lineTo(cx+3,cy+4); uiCtx.lineTo(cx+5,cy+12); uiCtx.lineTo(cx-5,cy+12); uiCtx.closePath(); uiCtx.fill();
-  uiCtx.fillStyle='rgba(0,0,0,0.35)'; uiCtx.strokeStyle='rgba(255,255,255,0.5)'; uiCtx.lineWidth=3;
-  uiCtx.beginPath(); uiCtx.arc(82,40,12,0,Math.PI*2); uiCtx.fill(); uiCtx.stroke();
-  uiCtx.strokeStyle='#fff'; uiCtx.lineWidth=2; for(const y of [36,40,44]){ uiCtx.beginPath(); uiCtx.moveTo(76,y); uiCtx.lineTo(88,y); uiCtx.stroke(); }
   uiCtx.font='bold 12px Arial'; uiCtx.textAlign='center'; uiCtx.textBaseline='middle';
   for(let i=0;i<MOBILE_WEAPONS.length;i++){
     const w=MOBILE_WEAPONS[i],owned=!!unlockedWeapons[w.id],selected=currentWeaponIds[0]===w.id;
@@ -4538,18 +4533,18 @@ function showCanvasIntroTip(title, text, drawFn, callback){
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);padding:20px;box-sizing:border-box';
   const panel=document.createElement('div');
-  panel.style.cssText='width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #d5a837;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000';
+  panel.style.cssText='width:min(320px,92vw);display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border:2px solid #d5a837;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000;margin:auto;';
   const titleEl=document.createElement('h2');
   titleEl.textContent=title;
   titleEl.style.cssText='margin:0;color:#ffd700;font-size:clamp(20px,5vw,26px)';
   const preview=document.createElement('canvas');
-  preview.width=140; preview.height=140;
-  preview.style.cssText='width:140px;height:140px;background:#2d3a2d;border:1px solid #60745c;border-radius:8px';
+  preview.width=90; preview.height=90;
+  preview.style.cssText='width:90px;height:90px;background:#2d3a2d;border:1px solid #60745c;border-radius:8px';
   const previewCtx=preview.getContext('2d');
   if(previewCtx){ previewCtx.save(); drawFn(previewCtx); previewCtx.restore(); }
   const description=document.createElement('p');
   description.textContent=text;
-  description.style.cssText='margin:0;line-height:1.5;font-size:16px';
+  description.style.cssText='margin:0;line-height:1.4;font-size:13px;color:#ddd;font-family:\x27Segoe UI\x27,Arial,sans-serif;';
   const ok=document.createElement('button');
   ok.className='bigBtn'; ok.textContent=t('gotIt');
   ok.style.cssText='min-width:180px;max-width:100%';
@@ -4611,7 +4606,7 @@ function enterTrainingStage(stage){
     coins=1000; updateUI();
     const shopBtn = document.getElementById('shopOpenBtn');
     if (shopBtn) shopBtn.style.display = 'flex';
-    showTrainingStageTip('','4/5',t('tip_shop'), ()=>{
+    showTrainingStageTip('\u{1F6D2}','4/5',t('tip_shop'), ()=>{
         if (shopBtn) {
             shopBtn.style.display = 'flex';
             shopBtn.classList.add('flash');
