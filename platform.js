@@ -159,6 +159,10 @@
     save, load, getLang, isVK, isOK, onPause, onResume,
     gameplayStart, gameplayStop, rateGame, SAVE_KEY,
     showBanner: async () => {
+      // Временно отключено до прохождения модерации
+      return;
+      
+      /* Закомментированный код на будущее:
       if (mode !== 'vk' || !vkReady) return;
       try {
         await vkBridge.send('VKWebAppShowBannerAd', {
@@ -170,6 +174,7 @@
       } catch (e) {
         console.warn('[Platform] Banner failed:', e);
       }
+      */
     }
   };
   window.Platform.showOrderBox = showOrderBox;
