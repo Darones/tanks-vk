@@ -43,9 +43,9 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .dailyBtn,#dailyPanel{display:none!important}
 .dailyBtn.ready::after{content:'';position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#ff2222;animation:pulse 0.8s infinite alternate}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
-#ui{position:absolute;bottom:45px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
+#ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
 @media (pointer:coarse){
-  #ui{bottom:45px;max-width:96vw;gap:4px;font-size:11px}
+  #ui{bottom:65px;max-width:96vw;gap:4px;font-size:11px}
   #ui>div{padding:3px 8px;gap:6px}
 }
 #ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08);white-space:nowrap;max-width:100%}
@@ -4978,23 +4978,13 @@ window.addEventListener('load', async ()=>{
   concreteHp=Array.from({length:ROWS},()=>Array(COLS).fill(0));
 
   const resize = () => {
-    const vv = window.visualViewport;
-    const cw = vv ? vv.width : window.innerWidth;
-    const ch = vv ? vv.height : window.innerHeight;
+    const cw = window.innerWidth;
+    const ch = window.innerHeight;
     
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent || '');
-    const scaleFactor = isMobile ? 0.65 : 0.75; 
-    
-    const safeCh = ch * scaleFactor; 
-    
-    const sc = Math.min(cw / W, safeCh / H);
+    // Масштабируем так, чтобы холст занимал 100% доступной высоты
+    const sc = Math.min(cw / W, ch / H);
     canvas.style.width  = (W * sc) + 'px';
     canvas.style.height = (H * sc) + 'px';
-    
-    canvas.style.position = 'relative';
-    canvas.style.left = 'auto';
-    canvas.style.top = 'auto';
-    canvas.style.transform = 'none';
   };
   window.addEventListener('resize',resize);
   window.addEventListener('orientationchange',()=>setTimeout(resize,100));
