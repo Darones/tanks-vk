@@ -1679,7 +1679,9 @@ class Particle{
 class Floater{
   constructor(x,y,t,c,duration=50){ this.x=x;this.y=y;this.text=t;this.color=c;this.life=duration;this.maxLife=duration; }
   update(dt){ this.y-=1.1*dt; this.life-=dt; }
-  draw(){ /* Floating text visuals disabled; gameplay/audio feedback remains. */ }
+  draw(){ ctx.globalAlpha=Math.max(0,this.life/this.maxLife); ctx.fillStyle=this.color;
+    ctx.font='bold 15px Arial'; ctx.textAlign='center';
+    ctx.fillText(this.text,this.x,this.y); ctx.globalAlpha=1; }
 }
 class DamageNumber{
   constructor(x,y,text,color){ this.x=x;this.y=y;this.text=text;this.color=color||'#fff'; this.life=45;this.maxLife=45;
@@ -3287,7 +3289,16 @@ function renderAchievements(){
 }
 function closePanel(id){ document.getElementById(id).style.display='none'; gamepadCooldown = Math.max(gamepadCooldown, 15); }
 function showToast(msg, ok){
-  // Visual toast disabled. Audio feedback is handled by the calling action.
+  let el = document.getElementById('cloudStatus');
+  if(!el){
+    el = document.createElement('div');
+    el.id = 'cloudStatus';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.className = 'show' + (ok ? '' : ' fail');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=>el.classList.remove('show'), 2200);
 }
 
 /* ================= SETTINGS ================= */
