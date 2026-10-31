@@ -179,7 +179,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .vol-row input[type=range]{width:100%;-webkit-appearance:none;height:8px;border-radius:4px;background:linear-gradient(90deg,#ffd700,#4caf50);outline:none;cursor:pointer}
 .vol-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#ffd700;border:2px solid #fff;cursor:pointer;box-shadow:0 0 10px rgba(255,215,0,0.8)}
 .vol-row input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#ffd700;border:2px solid #fff;cursor:pointer;box-shadow:0 0 10px rgba(255,215,0,0.8)}
-#exitConfirm{position:absolute;inset:0;background:rgba(0,0,0,0.85);display:none;justify-content:center;align-items:center;z-index:300;padding:16px}
+#exitConfirm{position:absolute;inset:0;background:rgba(0,0,0,0.85);display:none;justify-content:center;align-items:center;z-index:10000;padding:16px}
 #exitConfirm.show{display:flex}
 .confirmCard{background:linear-gradient(180deg,rgba(25,12,8,0.98),rgba(35,18,12,0.98));border:2px solid #ff8800;border-radius:14px;padding:22px;max-width:480px;width:100%;box-shadow:0 0 60px rgba(255,120,0,0.5);text-align:center;display:flex;flex-direction:column;gap:14px;animation:confirmIn .25s ease-out}
 @keyframes confirmIn{from{transform:scale(0.85);opacity:0}to{transform:scale(1);opacity:1}}
@@ -211,13 +211,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #shopOpenBtn b{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.78);color:#ffd700;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:9px;font-weight:bold;line-height:1}
 @keyframes shopBtnFlash{0%,100%{transform:scale(1);box-shadow:0 3px 0 #8a6a00}50%{transform:scale(1.22);box-shadow:0 3px 0 #8a6a00,0 0 22px #ffd700}}
 #shopOpenBtn.flash{animation:shopBtnFlash 0.6s ease-in-out infinite !important}
-/* MOBILE FIX: Обучение */
 @media (pointer:coarse) {
-  #levelIntro { padding: 10px; }
-  .introContent { max-height: 80vh; overflow: hidden; gap: 8px; padding: 10px; width: 100%; box-sizing: border-box; justify-content: center; }
-  .introNum { font-size: 40px !important; }
-  .introLbl, .introWave, .introHint { font-size: 15px !important; letter-spacing: normal !important; }
-  .introNum { font-size: 30px !important; }
   #skipTrainingBtn { top: 15px; right: 75px; font-size: 10px; padding: 4px 8px; z-index: 999; }
   #trainingComplete h2 { font-size: 24px !important; }
   #shopOpenBtn b { display: none !important; }
@@ -227,16 +221,13 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
   .set-tabs .tab[data-stab="controls"] { display: none !important; }
   #stabControls { display: none !important; }
   #stabSound { display: block !important; }
-  #levelIntro { padding: 10px !important; }
-  .introContent { max-height: 85vh !important; overflow: hidden !important; gap: 6px !important; justify-content: center !important; }
-  .introLbl, .introWave, .introHint { font-size: 15px !important; margin: 4px 0 !important; letter-spacing: normal !important; }
-  .introNum { font-size: 30px !important; margin: 4px 0 !important; }
   #skipTrainingBtn { top: 15px !important; right: 65px !important; font-size: 10px !important; padding: 4px 8px !important; }
   #shopPanel { top: 45% !important; height: 82vh !important; }
   .set-tabs { display: none !important; }
-  #settingsPanel { position: relative !important; padding-top: 30px !important; }
+  #settingsPanel { width: 90vw !important; max-width: 400px !important; z-index: 10000 !important; padding: 20px 15px !important; }
   #closeSettingsBtn { position: absolute !important; top: 8px !important; right: 8px !important; width: 24px !important; height: 24px !important; padding: 0 !important; border-radius: 50% !important; background: rgba(255,255,255,0.1) !important; border: none !important; color: #fff !important; font-size: 14px !important; display: flex !important; align-items: center !important; justify-content: center !important; }
   #resetProgressBtn { padding: 4px 8px !important; font-size: 10px !important; min-width: auto !important; opacity: 0.6 !important; }
+  #shopOpenBtn { left: 75px !important; }
 }
 
 /* MOBILE UI: Магазин и кнопки */
@@ -247,6 +238,13 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
   .bigBtn { min-width: 200px !important; font-size: 14px !important; padding: 8px 16px !important; }
 }
 
+/* ?????? ??????? ??? ????????? ?????? */
+@media (pointer:coarse) {
+  #levelIntro { padding: 10px !important; display: flex !important; align-items: center !important; justify-content: center !important; }
+  .introContent { max-height: 85vh !important; overflow: hidden !important; justify-content: center !important; gap: 6px !important; padding: 10px !important; width: 100% !important; box-sizing: border-box !important; }
+  .introLbl, .introWave, .introHint { font-size: 16px !important; letter-spacing: normal !important; margin: 4px 0 !important; line-height: 1.4 !important; }
+  .introNum { font-size: 32px !important; margin: 4px 0 !important; }
+}
 </style>
 </head>
 <body>
@@ -3337,7 +3335,7 @@ function padAlreadyUsed(who,act,index){
   }
   return false;
 }
-function openSettings(){ UI.settingsPanel.style.display='flex'; switchSettingsTab('controls'); renderControls(); updateVolumeSliders(); }
+function openSettings(){ UI.settingsPanel.style.display='flex'; updateVolumeSliders(); }
 function switchSettingsTab(tab){
   currentSettingsTab=tab;
   UI.settingsPanel.querySelectorAll('.set-tabs .tab').forEach(t=>t.classList.toggle('active',t.dataset.stab===tab));
