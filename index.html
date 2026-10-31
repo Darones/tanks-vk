@@ -4979,7 +4979,8 @@ window.addEventListener('load', async ()=>{
 
   const resize = () => {
     const cw = window.innerWidth;
-    const ch = window.innerHeight;
+    // Вычитаем 65 пикселей под нижнюю панель ВК (и на мобилках, и на вебе)
+    const ch = window.innerHeight - 65;
     
     // Масштабируем так, чтобы холст занимал 100% доступной высоты
     const sc = Math.min(cw / W, ch / H);
