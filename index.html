@@ -100,6 +100,8 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #gameOver .ad-btn{background:linear-gradient(180deg,#ff9800,#e65100);box-shadow:0 4px 0 #bf360c;margin-right:6px}
 #musicBtn{position:absolute;right:62px;top:20px;width:40px;height:40px;border-radius:50%;background:rgba(100,150,200,0.3);border:2px solid #9cf;color:#9cf;font-size:15px;pointer-events:auto;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:200}
 #musicBtn.off{background:rgba(60,60,60,0.5);border-color:#666;color:#666}
+#volumePopup .vol-row input[type=range]{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;background:#555;outline:none;cursor:pointer}
+#volumePopup .vol-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#ffd700;cursor:pointer}
 #weaponBar{position:absolute;left:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:35;pointer-events:auto;background:rgba(0,0,0,0.72);padding:5px;border-radius:12px;border:2px solid rgba(79,195,247,0.5);backdrop-filter:blur(6px)}
 .wslot{width:42px;height:42px;background:rgba(60,60,60,0.7);border:2px solid #555;color:#fff;font-size:20px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:.15s;padding:0;line-height:1}
 .wslot.owned{border-color:#6af;background:rgba(60,100,140,0.7)}
@@ -195,6 +197,8 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .rateBtn{position:absolute;top:8px;right:70px;background:rgba(255,215,0,0.15);border:1px solid #ffd700;border-radius:20px;color:#ffd700;font-size:12px;padding:6px 12px;cursor:pointer;font-weight:bold;z-index:31}
 .rateBtn:hover{background:rgba(255,215,0,0.3)}
 @media (max-width:520px){.bigBtn{min-width:240px;font-size:16px;padding:10px 24px}.smallBtn,.dailyBtn{min-width:200px}.langRow{font-size:13px;padding:5px 10px}.rateBtn{right:62px;font-size:11px;padding:5px 10px}.shopTabs .tab{font-size:10px;min-width:56px}}
+/* [P16] Отключаем смену языка — игра только на русском */
+#langRow{display:none !important}
 #buyCoinsPanel{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:200}
 .buyCoinsBox{background:#1e2a38;color:#fff;padding:18px 20px;border-radius:14px;min-width:260px;max-width:92vw;display:flex;flex-direction:column;gap:10px;position:relative}
 .coinPacks{display:flex;flex-direction:column;gap:8px}
@@ -203,6 +207,8 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #shopOpenBtn:hover{transform:scale(1.08);background:linear-gradient(180deg,#ffe066,#d9b000)}
 #shopOpenBtn:active{transform:scale(0.95);box-shadow:0 1px 0 #8a6a00;top:22px}
 #shopOpenBtn b{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.78);color:#ffd700;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:9px;font-weight:bold;line-height:1}
+@keyframes shopBtnFlash{0%,100%{transform:scale(1);box-shadow:0 3px 0 #8a6a00}50%{transform:scale(1.22);box-shadow:0 3px 0 #8a6a00,0 0 22px #ffd700}}
+#shopOpenBtn.flash{animation:shopBtnFlash 0.4s ease-in-out 5}
 </style>
 </head>
 <body>
@@ -232,6 +238,24 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <button class="wslot laser" data-weapon="laser" data-player="0"><span class="hotkey">6</span>⚡</button>
 </div>
 <button id="musicBtn">🔊</button>
+<div id="volumePopup" style="display:none; position:absolute; right:62px; top:65px; width:260px; background:rgba(20,30,20,0.95); border:2px solid #d5a837; border-radius:12px; padding:15px; z-index:250; flex-direction:column; gap:10px; box-shadow:0 10px 30px rgba(0,0,0,0.8);">
+  <div style="display:flex; justify-content:space-between; align-items:center; color:#ffd700; font-weight:bold; border-bottom:1px solid #444; padding-bottom:8px;">
+    <span>🎵 Звук</span>
+    <span id="closeVolumePopup" style="cursor:pointer; color:#fff; padding:0 5px;">✖</span>
+  </div>
+  <div class="vol-row" style="background:transparent; padding:0;">
+    <label style="display:block; margin-bottom:5px; color:#ccc; font-size:13px;">Музыка в меню:</label>
+    <input type="range" id="popupMusicMenuVol" min="0" max="100" value="80" style="width:100%;">
+  </div>
+  <div class="vol-row" style="background:transparent; padding:0;">
+    <label style="display:block; margin-bottom:5px; color:#ccc; font-size:13px;">Музыка в бою:</label>
+    <input type="range" id="popupMusicBattleVol" min="0" max="100" value="10" style="width:100%;">
+  </div>
+  <div class="vol-row" style="background:transparent; padding:0; border-top:1px solid #444; padding-top:10px;">
+    <label style="display:block; margin-bottom:5px; color:#ccc; font-size:13px;">Общая громкость:</label>
+    <input type="range" id="popupMasterVol" min="0" max="100" value="100" style="width:100%;">
+  </div>
+</div>
 <div id="bossWarning" data-i18n="bossWarning">⚠️ БОСС ⚠️</div>
 <div id="killStreak"><div class="eng"></div><div class="ru"></div></div>
 <div id="upgradeFlash"></div>
@@ -270,6 +294,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <button class="tab active" data-tab="tank" data-i18n="tabTank">🚜 Танк</button>
 <button class="tab" data-tab="base" data-i18n="tabBase">🏰 База</button>
 <button class="tab" data-tab="weapons" data-i18n="tabWeapons">🔫 Пушки</button>
+<button class="tab" data-tab="vip">☑ За голоса</button>
 </div>
 <div id="tabContent"></div>
 <div class="shop-actions">
@@ -283,6 +308,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <div style="font-size:17px;color:#ffd700" data-i18n="chooseRelic">Выбери реликвию:</div>
 <div id="relicGrid"></div>
 <div style="font-size:14px;color:#ccc;margin-top:8px"><span data-i18n="nextLvl">Следующий уровень:</span> <b id="lcNext">2</b></div>
+<button id="shareWinBtn" class="smallBtn" style="display:none;margin-top:12px">🎁 Поделиться победой</button>
 </div>
 
 <div id="gameOver">
@@ -306,7 +332,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <div class="title" data-i18n="settingsTitle">⚙️ НАСТРОЙКИ</div>
 <div class="set-tabs">
 <button class="tab active" data-stab="controls" data-i18n="tabControls">🎮 Управление</button>
-<button class="tab" data-stab="sound" data-i18n="tabSound">🔊 Р—РІСѓРє</button>
+<button class="tab" data-stab="sound" data-i18n="tabSound">🔊 Звук</button>
 </div>
 <div class="set-tab-content active" id="stabControls">
 <div id="controlsList"></div>
@@ -316,11 +342,21 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <label><span data-i18n="volMaster">🔊 Общая громкость:</span> <b id="volMasterLabel">100%</b></label>
 <input type="range" id="volMasterSlider" min="0" max="100" value="100">
 </div>
-<div class="vol-row">
-<label><span data-i18n="volStreak">🔥 Серии убийств:</span> <b id="volStreakLabel">70%</b></label>
-<input type="range" id="volStreakSlider" min="0" max="100" value="70">
-</div>
-</div>
+   <div class="vol-row">
+     <label><span data-i18n="volStreak">🔥 Серии убийств:</span> <b id="volStreakLabel">70%</b></label>
+     <input type="range" id="volStreakSlider" min="0" max="100" value="70">
+   </div>
+   <div class="vol-row" style="margin-top:12px; border-top:1px solid #444; padding-top:12px;">
+     <label style="display:flex; justify-content:space-between; align-items:center;">
+       <span>🎵 Фоновая музыка:</span>
+       <input type="checkbox" id="musicToggle" checked style="transform:scale(1.5);">
+     </label>
+   </div>
+   <div class="vol-row">
+     <label><span>🎶 Громкость музыки:</span> <b id="musicVolumeLabel">80%</b></label>
+     <input type="range" id="musicVolumeSlider" min="0" max="100" value="80">
+   </div>
+   </div>
 <button class="bigBtn" data-i18n="close" onclick="closePanel('settingsPanel')" style="margin-top:8px">ЗАКРЫТЬ</button>
 <button class="bigBtn" id="resetProgressBtn" style="background:linear-gradient(180deg,#c62828,#7a1a1a);margin-top:12px"> СБРОСИТЬ ПРОГРЕСС</button>
 </div>
@@ -500,26 +536,7 @@ function setPlatformPaused(v){
   if(platformPaused){ resetLiveInput(); flushCloudNow(); }
 }
 function setupPlatformPauseHandlers(){
-  document.addEventListener('visibilitychange', () => {
-    const hidden = document.hidden;
-    setPlatformPaused(hidden);
-    
-    if (hidden) {
-      if (typeof bgmMenu !== 'undefined' && bgmMenu) bgmMenu.pause();
-      if (typeof bgmBattleA !== 'undefined' && bgmBattleA) bgmBattleA.pause();
-      if (typeof bgmBattleB !== 'undefined' && bgmBattleB) bgmBattleB.pause();
-      if (typeof audioCtx !== 'undefined' && audioCtx && audioCtx.state === 'running') {
-        audioCtx.suspend();
-      }
-    } else {
-      if (typeof musicEnabled !== 'undefined' && musicEnabled && typeof currentBgm !== 'undefined' && currentBgm) {
-        currentBgm.play().catch(()=>{});
-      }
-      if (typeof audioCtx !== 'undefined' && audioCtx && audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-    }
-  });
+  document.addEventListener('visibilitychange', () => setPlatformPaused(document.hidden));
   /* blur НЕ ставит паузу (в iframe это замораживает игру без индикации), только сбрасывает ввод */
   window.addEventListener('blur', () => { resetLiveInput(); });
   Platform.onPause(() => setPlatformPaused(true));
@@ -627,7 +644,7 @@ let gameStartTime = Date.now();
 function tryInterstitial(cb){
   const now = Date.now();
   if(!adsAvailable() || adPlaying){ cb && cb(); return; }
-  if(now - gameStartTime < 65000){ cb && cb(); return; }
+  // [P3] 65s gate removed: levels >5min, interstitial between levels is safe for VK
   if(now - lastInterstitialTime < INTERSTITIAL_MIN_INTERVAL){ cb && cb(); return; }
   lastInterstitialTime = now;
   beginAd();
@@ -803,6 +820,7 @@ enemy_artillery:'Артиллерия', enemy_artillery_d:'У этой пушк�
 enemy_spook:'Огнемётный Танк', enemy_spook_d:'Очень быстрый и агрессивный враг. Он охотится лично на вас! Стреляет огнём вблизи. Держите дистанцию!',
 enemy_pt:'ПТ-САУ', enemy_pt_d:'У неё вдвое больше здоровья, и она стреляет снайперскими выстрелами на огромное расстояние. Прячьтесь за стенами!',
 enemy_fast:'Танк-Скороход', enemy_fast_d:'Очень быстрый враг, мчится к базе. Может стрелять на ходу! Сбейте его как можно быстрее!',
+enemy_heavy:'Тяжелый танк', enemy_heavy_d:'Бронированный танк. Имеет х2 HP и 50% поглощение урона. Очень опасен!',
 enemy_flanker:'Танк-Разрушитель', enemy_flanker_d:'Едет по краю и целенаправленно ломает кирпичи, чтобы пробить путь к базе. Остановите его!',
 enemy_boss:'БОСС', enemy_boss_d:'Колоссальный запас здоровья, двойные пушки и разрушительная мощь. Когда его HP упадёт ниже 60%, он выпустит веер снарядов!',
 },
@@ -896,6 +914,7 @@ enemy_artillery:'Artillery', enemy_artillery_d:'This gun is invulnerable until i
 enemy_spook:'Flamethrower Tank', enemy_spook_d:'A very fast and aggressive enemy. It hunts you personally and attacks with fire at close range. Keep your distance!',
 enemy_pt:'Tank Destroyer', enemy_pt_d:'It has twice the health and fires sniper shots from great range. Hide behind walls!',
 enemy_fast:'Speed Tank', enemy_fast_d:'Very fast enemy rushing to the base. Can shoot on the move! Take it down ASAP!',
+enemy_heavy:'Heavy Tank', enemy_heavy_d:'Armored tank. Has x2 HP and 50% damage reduction. Very dangerous!',
 enemy_flanker:'Demolition Tank', enemy_flanker_d:'It moves along the edge and deliberately breaks bricks to reach the base. Stop it!',
 enemy_boss:'BOSS', enemy_boss_d:'Massive health, twin guns and devastating power. Below 60% HP, it fires a fan of projectiles!',
 },
@@ -911,12 +930,8 @@ function normalizeLang(raw){
   return (code === 'ru' || code === 'en') ? code : null;
 }
 function pickLang(){
-  if(langSetting !== 'auto') return langSetting;
-  const platformLang = Platform.getLang() || navigator.language || null;
-  const pl = normalizeLang(platformLang);
-  if(pl) return pl;
-  const nl = normalizeLang(navigator.language);
-  return nl || 'ru';
+  // [P16] Английский отключён: игра всегда на русском. Код L.en оставлен на случай возврата.
+  return 'ru';
 }
 function langDisplayName(setting){
   if(setting === 'auto') return t('langAuto');
@@ -971,22 +986,45 @@ function applyLang(){
 /* ================= AUDIO ================= */
 let audioCtx=null, soundMuted=false, masterGain=null;
 let volMaster=1.0, volStreak=0.7;
+let musicEnabled = true;
+let volMusicMenu = 0.8;
+let volMusicBattle = 0.1;
+let volMusic = 0.8;
+let bgmMenu = new Audio('b423b42.mp3'); bgmMenu.loop = true;
+let bgmBattleA = new Audio('battleThemeA.mp3'); bgmBattleA.loop = true;
+let bgmBattleB = new Audio('battleThemeB.mp3'); bgmBattleB.loop = true;
+let currentBgm = null;
 function initAudio(){ try{
   if(!audioCtx){ audioCtx=new (window.AudioContext||window.webkitAudioContext)();
     masterGain=audioCtx.createGain(); masterGain.gain.value=(soundMuted||adPlaying)?0:volMaster; masterGain.connect(audioCtx.destination); }
   if(audioCtx.state==='suspended') audioCtx.resume();
-}catch(e){} }
+}catch(e){}
+  if(currentBgm && currentBgm.paused && musicEnabled) currentBgm.play().catch(e=>{});
+}
 function updateMasterGain(){ if(masterGain) masterGain.gain.value = (soundMuted || adPlaying) ? 0 : volMaster; }
 function _audioBlocked(){ return !audioCtx || soundMuted || platformPaused || adPlaying; }
+function playBgm(trackName) {
+    if(!musicEnabled || soundMuted || adPlaying) return;
+    const allTracks = [bgmMenu, bgmBattleA, bgmBattleB];
+    allTracks.forEach(t => { if(t !== trackName) { t.pause(); t.currentTime = 0; } });
+    if(currentBgm !== trackName) {
+        currentBgm = trackName;
+        if(currentBgm) {
+            let targetVol = (currentBgm === bgmMenu) ? volMusicMenu : volMusicBattle;
+            currentBgm.volume = targetVol;
+            currentBgm.play().catch(e => console.log('Audio play blocked', e));
+        }
+    }
+}
 function sfxShot(t=0){ if(_audioBlocked()) return;
-  const n=audioCtx.currentTime,d=[0.22,0.32,0.4,0.55,0.7,0.5][t]||0.22;
+  const n=audioCtx.currentTime,d=[0.22,0.32,0.4,0.55,0.7,0.5,0.9][t]||0.22;
   const bs=Math.floor(audioCtx.sampleRate*d),b=audioCtx.createBuffer(1,bs,audioCtx.sampleRate),dd=b.getChannelData(0);
   for(let i=0;i<bs;i++)dd[i]=(Math.random()*2-1)*Math.exp(-i/(bs*0.2));
   const ns=audioCtx.createBufferSource(); ns.buffer=b;
   const lp=audioCtx.createBiquadFilter(); lp.type='lowpass';
-  const lf=[900,1400,1800,2400,2000,3500][t]||900, lt=[70,90,120,160,100,200][t]||70;
+  const lf=[900,1400,1800,2400,2000,3500,350][t]||900, lt=[70,90,120,160,100,200,250][t]||70;
   lp.frequency.setValueAtTime(lf,n); lp.frequency.exponentialRampToValueAtTime(lt,n+d);
-  const g=audioCtx.createGain(); g.gain.setValueAtTime([0.32,0.4,0.48,0.55,0.65,0.5][t]||0.32,n);
+  const g=audioCtx.createGain(); g.gain.setValueAtTime([0.32,0.4,0.48,0.55,0.65,0.5,0.9][t]||0.32,n);
   g.gain.exponentialRampToValueAtTime(0.001,n+d);
   ns.connect(lp).connect(g).connect(masterGain||audioCtx.destination);
   ns.start(n); ns.stop(n+d);
@@ -1198,12 +1236,12 @@ const ENEMY_TIERS=[
 {color:'#0a0a0a',dark:'#000000',hp:900,speed:0.26,dmg:21,radius:21,coin:180}
 ];
 const WEAPONS=[
-{id:'cannon',tier:1,damage:20,fireDelay:50,bulletSpeed:6,pierce:0,aoe:0,pellets:1,price:0,autoFire:false},
-{id:'mg',tier:0,damage:3,fireDelay:8,bulletSpeed:8,pierce:0,aoe:0,pellets:1,price:1500,autoFire:true,burstSize:5,burstPause:90},
-{id:'sniper',tier:2,damage:40,fireDelay:90,bulletSpeed:14,pierce:3,aoe:0,pellets:1,price:3000,autoFire:false},
- {id:'flame',tier:3,damage:2.5,fireDelay:10,bulletSpeed:5,pierce:0,aoe:0,pellets:4,price:6000,life:28,autoFire:true},
-{id:'rocket',tier:4,damage:180,fireDelay:110,bulletSpeed:6,pierce:0,aoe:150,pellets:1,price:12000,autoFire:false},
-{id:'laser',tier:5,damage:360,fireDelay:90,bulletSpeed:0,pierce:99,aoe:0,pellets:1,price:18000,isLaser:true,autoFire:false}
+{id:'cannon',tier:1,damage:20,fireDelay:50,bulletSpeed:6,pierce:0,aoe:0,pellets:1,price:0,autoFire:false,desc:'Базовое оружие. Без особых эффектов.'},
+{id:'mg',tier:0,damage:3,fireDelay:8,bulletSpeed:8,pierce:0,aoe:0,pellets:1,price:1500,autoFire:true,burstSize:5,burstPause:90,desc:'Стреляет очередями. Высокая скорострельность.'},
+{id:'sniper',tier:2,damage:40,fireDelay:90,bulletSpeed:14,pierce:3,aoe:0,pellets:1,price:3000,autoFire:false,desc:'Пробивает до 3 целей. Огромная скорость снаряда.'},
+ {id:'flame',tier:3,damage:2.5,fireDelay:10,bulletSpeed:5,pierce:0,aoe:0,pellets:4,price:6000,life:28,autoFire:true,desc:'Веер из 4 струй. Урон по площади вблизи.'},
+{id:'rocket',tier:4,damage:180,fireDelay:110,bulletSpeed:6,pierce:0,aoe:150,pellets:1,price:12000,autoFire:false,desc:'Мощный взрыв по площади. Бьет по всем врагам рядом.'},
+{id:'laser',tier:5,damage:360,fireDelay:90,bulletSpeed:0,pierce:99,aoe:0,pellets:1,price:18000,isLaser:true,autoFire:false,desc:'Уничтожает всех на линии огня. Бесконечное пробивание.'}
 ];
 const SKILLS_TANK=[
 {id:'damage',base:60,mult:1.45},{id:'fireRate',base:50,mult:1.45},
@@ -1212,6 +1250,13 @@ const SKILLS_TANK=[
 {id:'crit',base:160,mult:1.50},{id:'regen',base:200,mult:1.50},
 {id:'pierce',base:300,mult:1.70},{id:'concrete',base:800,mult:2.50,max:1},
 {id:'water',base:600,mult:2.50,max:1}
+];
+const VIP_WEAPONS=[
+  {id:'mg',     item:'tanks_weapon_mg',     name:'🔫 Пулемёт',     price:1, desc:'Стреляет очередями. Высокая скорострельность.'},
+  {id:'sniper', item:'tanks_weapon_sniper', name:'🎯 Снайперка',    price:2, desc:'Пробивает до 3 целей. Огромная скорость снаряда.'},
+  {id:'flame',  item:'tanks_weapon_flame',  name:'🔥 Огнемёт',      price:2, desc:'Веер из 4 струй. Урон по площади вблизи.'},
+  {id:'rocket', item:'tanks_weapon_rocket', name:'🚀 Ракетница',    price:3, desc:'Мощный взрыв по площади. Бьет по всем врагам рядом.'},
+  {id:'laser',  item:'tanks_weapon_laser',  name:'⚡ Лазер',        price:5, desc:'Уничтожает всех на линии огня. Бесконечное пробивание.'}
 ];
 const SKILLS_BASE=[
 {id:'baseHp',base:120,mult:1.50,max:15},{id:'baseRegen',base:160,mult:1.55,max:10},
@@ -1284,6 +1329,8 @@ let baseVisible = false;
 let trainingMoveStartX = 0;
 let trainingMoveStartY = 0;
 let trainingStageTimer = 0;
+let trainingMarker = null;
+let trainingBaseArrived = false;
 let level=1, wave=0, waveTotal=10, coins=1000, kills=0;
 let tiles=[], brickHp=[], concreteHp=[];
 let enemies=[], bullets=[], enemyBullets=[], particles=[], floaters=[], powerups=[], laserBeams=[], damageNumbers=[];
@@ -1294,6 +1341,7 @@ let baseHealth=100, baseMaxHealth=100;
 let keys={};
 let waveTimer=5, spawning=false, enemiesToSpawn=0, spawnTimer=0;
 let isBossWave=false, bossSpawnedThisWave=false;
+  let forcedEnemyType=null, forcedEnemySpawned=false;
 let damageFlashTime=0;
 let skillTree={};
 let mouseX=W/2, mouseY=H/2-100;
@@ -1313,7 +1361,7 @@ let achievements={};
 let stats={totalKills:0,totalCoins:1000,totalCoinsEarned:0,totalBossKills:0,maxLevel:1,weaponKills:{cannon:0,mg:0,sniper:0,flame:0,rocket:0,laser:0},noDamageWins:0,noDeathWins:0,bestStreak:0};
 let daily={lastClaim:0,streak:0};
 let metaCoins=0;
-let save={tutorialDone:false,pendingBonus:0,money:0,lastFreeBonusDay:'',seenEnemies:{artillery:false,spook:false,pt:false,fast:false,flanker:false,boss:false},seenDeathTip:false};
+let save={tutorialDone:false,pendingBonus:0,money:0,lastFreeBonusDay:'',seenEnemies:{artillery:false,spook:false,pt:false,fast:false,flanker:false,boss:false,heavy:false},seenDeathTip:false,seenBossTip:false,purchasedWeapons:{}};
 let bonusTimerInterval=null;
 let savedRun=null;
 let helicopter=null;
@@ -1735,7 +1783,7 @@ class Tank{
     if(!this.alive){
       if(this.respawnTimer>0)this.respawnTimer=Math.max(0,this.respawnTimer-dt/60);
       if(this.respawnTimer<=0){
-        if(coins>=1000){
+        if(coins>=1000 || trainingMode){
           this.noMoneyRespawnTimer=0;
           this.respawnInBase();
         } else {
@@ -1827,7 +1875,7 @@ class Tank{
     sfxExplosion(); updateUI();
   }
   respawnInBase(){
-    if(coins<1000)return;
+    if(coins<1000 && !trainingMode)return;
     const prefX = (this.id === 0) ? BASE_X - 40 : BASE_X + 40;
     const prefY = BASE_Y - 30;
     const candidates = [
@@ -1856,7 +1904,7 @@ class Tank{
       }
     }
     if(!isFreeSpawn(pos.x,pos.y,this.radius))return;
-    coins-=1000;
+    if(!trainingMode) coins-=1000;
     updateUI();
     this.alive = true;
     this.hp = this.maxHp;
@@ -1869,10 +1917,10 @@ class Tank{
     this.stunTimer=0; this.burstCount=0; this.burstCooldown=0;
     for(let i=0;i<30;i++)particles.push(new Particle(this.x,this.y,4,'#44ff88',0.7));
     sfxPickup(); updateUI();
-    if(!trainingMode&&!save.seenDeathTip){
+    if(!save.seenDeathTip){
       save.seenDeathTip=true;
       saveAll();
-      showTrainingTip('', 'Возрождение', t('deathTip'), ()=>{});
+      showTrainingTip('💀', 'Возрождение', t('deathTip'), ()=>{});
     }
   }
   drawCamo(){
@@ -1948,7 +1996,7 @@ function hasLineOfFire(x1,y1,x2,y2){
 }
 
 class EnemyTank{
-  constructor(x,y,ti,isBoss=false,hpMul=1){
+  constructor(x,y,ti,isBoss=false,hpMul=1,forceType=null){
     this.x=x; this.y=y; this.tierIdx=clamp(ti,0,9);
     const t=ENEMY_TIERS[this.tierIdx];
     this.isBoss=isBoss; this.radius=isBoss?t.radius+6:t.radius;
@@ -1970,13 +2018,14 @@ class EnemyTank{
       this.shootDelay=Math.max(30,w.fireDelay*(isBoss?1.6:1.3));
       this.bulletSpeed=w.bulletSpeed||3;
     } else { this.bulletSpeed=2.8; this.shootDelay=Math.max(50,110-this.tierIdx*8); }
-    this.isFast=!isBoss&&Math.random()<0.28;
+    const isForced = !!forceType;
+    this.isFast = !isBoss && wave>=4 && (forceType === 'fast' || (!isForced && Math.random()<0.28));
     if(this.isFast)this.speed*=2.0;
-    this.isFlanker=!isBoss&&!this.isFast&&level>=2&&Math.random()<0.20;
+    this.isFlanker = !isBoss && !this.isFast && wave>=5 && (forceType === 'flanker' || (!isForced && Math.random()<0.20));
     if(this.isFlanker){ this.speed*=1.15; this.flankRow=Math.random()<0.5?1:12; }
 
     const spookCount = enemies.filter(e => e && e.isSpook && e.hp > 0).length;
-    this.isSpook = !isBoss && spookCount < 2 && Math.random()<0.10;
+    this.isSpook = !isBoss && spookCount < 2 && wave>=7 && (forceType === 'spook' || (!isForced && Math.random()<0.10));
     if(this.isSpook){
       this.speed*=1.5; this.hp=this.maxHp=Math.max(20,Math.round(this.maxHp*0.5));
       this.weaponId='flame';
@@ -1989,7 +2038,7 @@ class EnemyTank{
       this.isFast=false; this.isFlanker=false;
     }
     const ptCount = enemies.filter(e => e && e.isPT && e.hp > 0).length;
-    this.isPT = !isBoss && !this.isSpook && wave>=3 && ptCount < 3 && Math.random()<0.10;
+    this.isPT = !isBoss && !this.isSpook && wave>=8 && ptCount < 3 && (forceType === 'pt' || (!isForced && Math.random()<0.10));
     if(this.isPT){
       this.weaponId='sniper';
       const sw=WEAPONS.find(x=>x.id==='sniper');
@@ -2002,6 +2051,8 @@ class EnemyTank{
       this.fireRange=2000; this.isFast=false; this.isFlanker=false;
       this.color='#c8b878'; this.darkColor='#8a7a50';
     }
+    this.isHeavy = (forceType === 'heavy');
+    if(this.isHeavy){ this.hp=Math.round(this.hp*2); this.maxHp=this.hp; this.speed*=0.7; this.damage=Math.round(this.damage*2); this.shootDelay=Math.round(this.shootDelay*2.5); }
     this.isArtillery=false;
     this.hasFired=false; this.aimTimer=0; this.targetX=0; this.targetY=0; this.fireRange=0; this.volleyCooldown=300;
     if(!isBoss&&!this.isSpook&&!this.isPT&&!this.isArtillery&&wave===waveTotal-1&&Math.random()<0.5){
@@ -2161,7 +2212,7 @@ class EnemyTank{
         rb.isRocket=true; enemyBullets.push(rb); sfxRocket();
       }
       else if(isFlameEnemy){ enemyBullets.push(new Bullet(this.x+Math.cos(a)*(this.radius+4),this.y+Math.sin(a)*(this.radius+4),a,this.bulletSpeed,this.damage,'enemy',0,tierUse,false,0,35,true)); sfxFlame(); }
-      else { enemyBullets.push(new Bullet(this.x+Math.cos(a)*(this.radius+4),this.y+Math.sin(a)*(this.radius+4),a,this.bulletSpeed,this.damage,'enemy',0,tierUse,false,0,700,false)); sfxShot(0); }
+      else { enemyBullets.push(new Bullet(this.x+Math.cos(a)*(this.radius+4),this.y+Math.sin(a)*(this.radius+4),a,this.bulletSpeed,this.damage,'enemy',0,tierUse,false,0,700,false)); sfxShot(this.isHeavy ? 6 : 0); }
       if(this.weaponId==='mg'){
         this.mgBurstCount++;
         if(this.mgBurstCount>=5){ this.mgBurstCount=0; this.shootCooldown=this.shootDelay+90; }
@@ -2214,7 +2265,7 @@ class EnemyTank{
     for(const e of enemies){ if(e===this||e.hp<=0||e.spawnTime>0)continue; if(circlesHit(x,y,this.radius,e.x,e.y,e.radius))return true; }
     return false;
   }
-  takeDamage(d){ if(this.spawnTime>0)return; if(this.isArtillery&&!this.hasFired)return; this.hp-=d; this.hitFlash=5; if(this.hp<=0)this.die(); }
+  takeDamage(d){ if(this.spawnTime>0)return; if(this.isArtillery&&!this.hasFired)return; if(this.isHeavy) d *= 0.5; this.hp-=d; this.hitFlash=5; if(this.hp<=0)this.die(); }
   die(){
     this.hp=0;
     const b=1+(skillTree.coinBonus||0)*0.15+relicBuff.coinBonus*0.25;
@@ -2367,7 +2418,7 @@ class EnemyTank{
     if(this.isArtillery){ this.drawArtillery(); return; }
     if(this.isPT){ this.drawPT(); return; }
     const bl=this.hitFlash>0;
-    const w=this.radius*2.6, h=this.radius*1.6;
+    const w=this.isHeavy?this.radius*3.2:this.radius*2.6, h=this.isHeavy?this.radius*2.2:this.radius*1.6;
     ctx.save(); ctx.translate(this.x,this.y);
     ctx.fillStyle='rgba(0,0,0,0.28)';
     ctx.beginPath(); ctx.ellipse(3,4,w*0.52,h*0.48,0,0,Math.PI*2); ctx.fill();
@@ -2395,6 +2446,7 @@ class EnemyTank{
     if(this.isFast){ ctx.fillStyle='#ffe000'; ctx.font='bold 14px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('⚡',-this.radius,-this.radius); }
     if(this.isFlanker){ ctx.fillStyle='#ff4400'; ctx.font='bold 14px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('⤴',this.radius,-this.radius); }
     if(this.isSpook){ ctx.fillStyle='#ff2200'; ctx.font='bold 20px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('⚠️ ',0,-this.radius-4); }
+    if(this.isHeavy){ ctx.fillStyle='#aaa'; ctx.font='bold 18px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('🛡️',0,-this.radius-12); }
     if(this.isBoss){ ctx.fillStyle='#ffd700'; ctx.font='bold 20px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('👑',0,-this.radius-14); }
     ctx.restore();
     const hpPct=this.hp/this.maxHp; const bw=this.isBoss?100:30;
@@ -2832,6 +2884,8 @@ function grantDailyFreeBonus(){
 }
 function updateBonusUI(){
   if(!UI.bonusBtn||!UI.bonusTimer)return;
+  const trainBtn=document.getElementById('trainBtn');
+  if(trainBtn){ trainBtn.style.display=save.tutorialDone?'none':'inline-block'; }
   if(BONUS_DISABLED){
     UI.bonusBtn.style.display='none';
     UI.bonusTimer.style.display='none';
@@ -2839,7 +2893,6 @@ function updateBonusUI(){
     return;
   }
   const visible=!!save.tutorialDone;
-  UI.trainBtn.style.display='';
   UI.bonusBtn.style.display=visible?'block':'none';
   UI.bonusTimer.style.display=visible?'block':'none';
   if(!visible){ clearBonusTimer(); return; }
@@ -2910,7 +2963,7 @@ function showLevelIntro(callback){
   UI.introLbl.textContent=t('introLabel');
   UI.introHint.textContent=t('introHint');
   UI.levelIntro.classList.add('show');
-  playLevelJingle();
+  // playLevelJingle();
   let done=false;
   let canSkip=false;
   const cleanup=()=>{
@@ -2935,6 +2988,7 @@ function showLevelIntro(callback){
   }, 2600);
 }
 let trainingTipCleanup=null;
+let flashInterval=null;
 function showTrainingTip(icon,title,text,cb){
   if(trainingTipCleanup)trainingTipCleanup();
   gamePaused=true;mouseFireHeld=false;keys={};
@@ -2983,7 +3037,7 @@ function showNextEnemyIntro(){
 }
 function maybeShowEnemyIntro(enemy){
   if(trainingMode||!enemy||!save.seenEnemies)return;
-  const type=enemy.isArtillery?'artillery':enemy.isSpook?'spook':enemy.isPT?'pt':enemy.isBoss?'boss':enemy.isFast?'fast':enemy.isFlanker?'flanker':null;
+  const type=enemy.isHeavy?'heavy':enemy.isArtillery?'artillery':enemy.isSpook?'spook':enemy.isPT?'pt':enemy.isBoss?'boss':enemy.isFast?'fast':enemy.isFlanker?'flanker':null;
   if(!type||save.seenEnemies[type])return;
   showEnemyIntro(type,enemy);save.seenEnemies[type]=true;saveAll();flushCloudNow();
 }
@@ -3018,6 +3072,8 @@ function toggleShop(force, ownerPlayer){
     gameplayStop();
     gamepadState.shopFocusZone='tabs'; gamepadState.shopTabFocus=currentShopTabIndex(); gamepadState.shopItemFocus=0;
     closeExitConfirm();
+    if(flashInterval){ clearInterval(flashInterval); flashInterval=null; }
+    const shopBtn=document.getElementById('shopOpenBtn'); if(shopBtn)shopBtn.classList.remove('flash');
     setTimeout(()=>{
       const tabs=Array.from(document.querySelectorAll('#shopTabs .tab'));
       const items=Array.from(document.querySelectorAll('#tabContent > *'));
@@ -3063,6 +3119,7 @@ function renderShop(){
   if(currentShopTab==='tank')SKILLS_TANK.forEach(s=>div.appendChild(skillBtn(s)));
   else if(currentShopTab==='base')SKILLS_BASE.forEach(s=>div.appendChild(skillBtn(s)));
   else if(currentShopTab==='weapons')WEAPONS.forEach(w=>div.appendChild(weaponBtn(w)));
+  else if(currentShopTab==='vip')VIP_WEAPONS.forEach(vw=>div.appendChild(vipWeaponBtn(vw)));
   updateStatsVisibility();
 }
 function skillBtn(s){
@@ -3084,12 +3141,45 @@ function buySkill(s){
   else if(s.id==='wallHp')applyWallUpgrade(skillTree[s.id]);
   renderShop(); updateUI();
 }
+function vipWeaponBtn(vw){
+  const owned = !!(save.purchasedWeapons && save.purchasedWeapons[vw.id]);
+  const b = document.createElement('button');
+  b.className = 'skill-btn' + (owned ? ' owned' : '');
+  const currency = isOK() ? 'ОКов' : 'голосов';
+  b.innerHTML = '<span><span class="name">' + vw.name + '</span><span class="lvl" style="font-size:10px;opacity:0.8;line-height:1.2">' + (vw.desc||'') + '</span></span><span class="cost ' + (owned ? 'max' : '') + '">' + (owned ? 'КУПЛЕНО' : vw.price + ' ' + currency) + '</span>';
+  if(!owned){
+    b.addEventListener('click', () => buyVipWeapon(vw, b));
+  }
+  return b;
+}
+function buyVipWeapon(vw, btn){
+  if(btn) btn.disabled = true;
+  Platform.showOrderBox(vw.item, (ok, res) => {
+    if(btn) btn.disabled = false;
+    if(ok){
+      save.purchasedWeapons = save.purchasedWeapons || {};
+      save.purchasedWeapons[vw.id] = true;
+      unlockedWeapons[vw.id] = true;
+      saveAll();
+      sfxUpgrade();
+      playUpgradeEffect();
+      showToast('Оружие отКрыто навсегда!', true);
+      try { Stats.track('purchase', { item: vw.item, currency: isOK() ? 'OK' : 'votes' }); } catch(e){}
+      renderShop();
+      updateWeaponBar();
+    } else {
+      const em = res && res.error_data && res.error_data.error_msg;
+      const msg = em && /cancel/i.test(em) ? 'Покупка отменена' : (em || 'Неудалось выполнить покупку');
+      showToast(msg, false);
+    }
+  });
+}
 function weaponBtn(w){
   const owned=!!unlockedWeapons[w.id];
   const b=document.createElement('button');
   const sel1=currentWeaponIds[0]===w.id;
   b.className='skill-btn'+(owned?' owned':'')+(sel1?' selected':'');
-  b.innerHTML=`<span><span class="name">${t('w_'+w.id)}</span>${!owned?`<span class="lvl">${t('buyOnce')}</span>`:`<span class="lvl">${sel1?'✓':''}</span>`}</span><span class="cost ${owned?'max':''}">${owned?t('owned'):w.price+'💰'}</span>`;
+  b.innerHTML=`<span><span class="name">${t('w_'+w.id)}</span><span class="lvl" style="font-size:10px;opacity:0.8;line-height:1.2">${w.desc||''}</span></span><span class="cost ${owned?'max':''}">${owned?t('owned'):w.price+'💰'}</span>`;
   b.addEventListener('click',()=>{
     if(!owned){ if(coins<w.price)return; coins-=w.price; unlockedWeapons[w.id]=true; sfxUpgrade(); playUpgradeEffect(); }
     currentWeaponIds[currentShopOwner]=w.id;
@@ -3219,6 +3309,12 @@ function updateVolumeSliders(){
   if(UI.volStreakSlider)UI.volStreakSlider.value=Math.round(volStreak*100);
   if(UI.volMasterLabel)UI.volMasterLabel.textContent=Math.round(volMaster*100)+'%';
   if(UI.volStreakLabel)UI.volStreakLabel.textContent=Math.round(volStreak*100)+'%';
+  if(UI.musicToggle)UI.musicToggle.checked=musicEnabled;
+  if(UI.musicVolumeSlider)UI.musicVolumeSlider.value=Math.round(volMusic*100);
+  if(UI.musicVolumeLabel)UI.musicVolumeLabel.textContent=Math.round(volMusic*100)+'%';
+  if(document.getElementById('popupMusicMenuVol')) document.getElementById('popupMusicMenuVol').value = Math.round(volMusicMenu * 100);
+  if(document.getElementById('popupMusicBattleVol')) document.getElementById('popupMusicBattleVol').value = Math.round(volMusicBattle * 100);
+  if(document.getElementById('popupMasterVol')) document.getElementById('popupMasterVol').value = Math.round(volMaster * 100);
 }
 
 /* ================= DAILY ================= */
@@ -3271,8 +3367,10 @@ function saveAll(){
     achievements, stats, daily, metaCoins, savedRun,
     tutorialDone:!!save.tutorialDone, pendingBonus:Number(save.pendingBonus)||0, money:Number(save.money)||coins,
     lastFreeBonusDay:save.lastFreeBonusDay||'', seenEnemies:{...save.seenEnemies}, seenDeathTip:!!save.seenDeathTip,
+    purchasedWeapons: save.purchasedWeapons || {},
     unlockedWeapons, currentWeaponIds, p1Control, lastDifficulty, selectedDifficulty,
     keyCfg, padCfg, volMaster, volStreak, langSetting,
+    musicEnabled, volMusicMenu, volMusicBattle, volMusic,
     maxLevel:stats.maxLevel, totalCoins:coins, totalKills:stats.totalKills
   });
 }
@@ -3307,6 +3405,7 @@ function doExitToMenu(){
   powerups=[]; laserBeams=[]; damageNumbers=[]; artilleryShells=[]; helicopter=null;
   pruneInputCaches();
   UI.menu.style.display='flex'; clearGamepadFocus();
+  playBgm(bgmMenu);
   updateContinueBtn(); updateRecordBox(); updateMetaCoinsDisplay(); updateBonusUI();
   gamepadCooldown = 20;
 }
@@ -3768,6 +3867,33 @@ function update(dt){
 }
 
 /* ================= DRAW ================= */
+function drawBaseAt(c, bx, by, withBar){
+  const pulse=0.7+Math.sin(Date.now()/300)*0.15;
+  const grad=c.createRadialGradient(bx,by,10,bx,by,80);
+  grad.addColorStop(0,`rgba(80,255,80,${0.15*pulse})`); grad.addColorStop(1,'rgba(80,255,80,0.01)');
+  c.fillStyle=grad; c.beginPath(); c.arc(bx,by,80,0,Math.PI*2); c.fill();
+  c.strokeStyle=`rgba(80,255,80,${0.6*pulse})`; c.lineWidth=3;
+  c.setLineDash([6,8]); c.beginPath(); c.arc(bx,by,70,0,Math.PI*2); c.stroke(); c.setLineDash([]);
+  c.fillStyle='#8a7a5a'; c.fillRect(bx-50,by-50,100,100);
+  c.strokeStyle='#5a4a3a'; c.lineWidth=4; c.strokeRect(bx-50,by-50,100,100);
+  c.fillStyle='#6a5a4a'; c.fillRect(bx-18,by-18,36,36);
+  c.save(); c.translate(bx,by);
+  c.fillStyle='#ffffff'; c.beginPath(); c.arc(0,0,26,0,Math.PI*2); c.fill();
+  c.strokeStyle='#c00'; c.lineWidth=3; c.stroke();
+  c.fillStyle='#e60000'; c.fillRect(-7,-20,14,40); c.fillRect(-20,-7,40,14);
+  c.restore();
+  if(!withBar) return;
+  const bp=clamp(baseHealth/baseMaxHealth,0,1);
+  const barY=by-72, barW=90, barH=12, barX=bx-barW/2;
+  c.fillStyle='rgba(0,0,0,0.78)'; c.fillRect(barX-2,barY-2,barW+4,barH+4);
+  c.fillStyle=bp>0.5?'#4caf50':bp>0.25?'#ff9800':'#f44336';
+  c.fillRect(barX,barY,barW*bp,barH);
+  c.strokeStyle='#000'; c.lineWidth=2; c.strokeRect(barX,barY,barW,barH);
+  c.fillStyle='#000'; c.font='bold 11px Arial'; c.textAlign='center'; c.textBaseline='middle';
+  c.fillText(Math.max(0,Math.round(baseHealth))+' / '+Math.round(baseMaxHealth),bx,barY+barH/2);
+  c.fillStyle='#cfe8ff'; c.font='bold 13px Arial';
+  c.fillText('🛡️',barX-16,barY+barH/2);
+}
 function draw(){
   ctx.fillStyle='#2d3a2d'; ctx.fillRect(0,0,W,H);
   ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.lineWidth=1;
@@ -3780,39 +3906,7 @@ function draw(){
       drawTile(tile,i*TILE_SIZE,j*TILE_SIZE,i,j);
     }
   }
-  if(baseVisible){
-  const bx=BASE_X, by=BASE_Y;
-  const pulse=0.7+Math.sin(Date.now()/300)*0.15;
-  const grad=ctx.createRadialGradient(bx,by,10,bx,by,80);
-  grad.addColorStop(0,`rgba(80,255,80,${0.15*pulse})`); grad.addColorStop(1,'rgba(80,255,80,0.01)');
-  ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(bx,by,80,0,Math.PI*2); ctx.fill();
-  ctx.strokeStyle=`rgba(80,255,80,${0.6*pulse})`; ctx.lineWidth=3;
-  ctx.setLineDash([6,8]); ctx.beginPath(); ctx.arc(bx,by,70,0,Math.PI*2); ctx.stroke(); ctx.setLineDash([]);
-  ctx.fillStyle='#8a7a5a'; ctx.fillRect(bx-50,by-50,100,100);
-  ctx.strokeStyle='#5a4a3a'; ctx.lineWidth=4; ctx.strokeRect(bx-50,by-50,100,100);
-  ctx.fillStyle='#6a5a4a'; ctx.fillRect(bx-18,by-18,36,36);
-  ctx.save(); ctx.translate(bx,by);
-  ctx.fillStyle='#ffffff'; ctx.beginPath(); ctx.arc(0,0,26,0,Math.PI*2); ctx.fill();
-  ctx.strokeStyle='#c00'; ctx.lineWidth=3; ctx.stroke();
-  ctx.fillStyle='#e60000'; ctx.fillRect(-7,-20,14,40); ctx.fillRect(-20,-7,40,14);
-  ctx.restore();
-
-  const bp=clamp(baseHealth/baseMaxHealth,0,1);
-  const barY=by-72, barW=90, barH=12, barX=bx-barW/2;
-  ctx.fillStyle='rgba(0,0,0,0.78)'; ctx.fillRect(barX-2,barY-2,barW+4,barH+4);
-  ctx.fillStyle=bp>0.5?'#4caf50':bp>0.25?'#ff9800':'#f44336';
-  ctx.fillRect(barX,barY,barW*bp,barH);
-  ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.strokeRect(barX,barY,barW,barH);
-  ctx.fillStyle='#000'; ctx.font='bold 11px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(Math.max(0,Math.round(baseHealth))+' / '+Math.round(baseMaxHealth),bx,barY+barH/2);
-  ctx.fillStyle='#cfe8ff'; ctx.font='bold 13px Arial';
-  ctx.fillText('🛡️',barX-16,barY+barH/2);
-  if(bp<0.3){
-    const pl=0.5+0.5*Math.sin(Date.now()/180);
-    ctx.strokeStyle='rgba(255,60,60,'+(0.4+pl*0.5)+')'; ctx.lineWidth=3;
-    ctx.strokeRect(barX-4,barY-4,barW+8,barH+8);
-  }
-  }
+  if(baseVisible) drawBaseAt(ctx, BASE_X, BASE_Y, true);
 
   for(const p of powerups)p.draw();
   for(const p of players)p.draw();
@@ -3828,6 +3922,20 @@ function draw(){
   for(const dn of damageNumbers)dn.draw();
   if(tiles&&tiles.length){
     for(let j=0;j<ROWS;j++)for(let i=0;i<COLS;i++){ if(tiles[j][i]===TILE.TREE)drawTreeTile(i*TILE_SIZE,j*TILE_SIZE); }
+  }
+  if(trainingMarker && trainingMode){
+    ctx.save();
+    const bounce = Math.sin(Date.now()/200) * 10;
+    ctx.fillStyle = '#ffd700';
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(trainingMarker.x, trainingMarker.y - 30 + bounce);
+    ctx.lineTo(trainingMarker.x - 15, trainingMarker.y - 50 + bounce);
+    ctx.lineTo(trainingMarker.x + 15, trainingMarker.y - 50 + bounce);
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+    ctx.restore();
   }
   if(IS_TOUCH)drawMobileAim();
   if(!IS_TOUCH && gameRunning && (p1Control==='kb')){
@@ -4025,6 +4133,25 @@ function drawMobileUI(){
 
 
 /* ================= LEVEL FLOW ================= */
+function shareWin(){
+  const link = isOK() ? 'https://ok.ru/app/512005381577' : 'https://vk.com/app54786750';
+  const done = (ok) => {
+    if(ok) showToast('Спасибо за поддержку!');
+  };
+  if(window.vkBridge && (isVK() || isOK())){
+    try{
+      window.vkBridge.send('VKWebAppShare', { link })
+        .then(()=>done(true))
+        .catch(()=>{
+          try { navigator.clipboard.writeText(link); done(true); }
+          catch(e){ done(false); }
+        });
+      return;
+    }catch(e){}
+  }
+  try { navigator.clipboard.writeText(link); done(true); }
+  catch(e){ done(false); }
+}
 function showLevelComplete(){
   levelCompleteOpen=true; gameRunning=false; gamePaused=true; helicopter=null;
   UI.bossWarning.style.display='none';
@@ -4032,6 +4159,16 @@ function showLevelComplete(){
   mouseFireHeld=false;
   players.forEach(p=>{ p.input.fireHeld=false; p.input.firePressed=false; p.wasFiring=false; });
   UI.levelComplete.style.display='flex'; UI.lcNext.textContent=level+1;
+  const _shareBtn = document.getElementById('shareWinBtn');
+  if(_shareBtn){
+    if(level >= 5){
+      _shareBtn.style.display = 'inline-block';
+      _shareBtn.onclick = shareWin;
+    } else {
+      _shareBtn.style.display = 'none';
+      _shareBtn.onclick = null;
+    }
+  }
   const pool=[...RELIC_IDS], ch=[];
   for(let i=0;i<3&&pool.length>0;i++){ const idx=randInt(0,pool.length-1); ch.push(pool.splice(idx,1)[0]); }
   let html='';
@@ -4075,6 +4212,50 @@ function pickRelic(id){
   levelCompleteOpen=false; UI.levelComplete.style.display='none'; level++;
   tryInterstitial(()=>{ startLevel(); });
 }
+function flashShopBtn(){
+  const btn = document.getElementById('shopOpenBtn');
+  if(!btn) return;
+  btn.classList.remove('flash');
+  void btn.offsetWidth;
+  if(flashInterval) clearInterval(flashInterval);
+  flashInterval=setInterval(()=>{
+    btn.classList.toggle('flash');
+  },1100);
+}
+function tryShowBossTip(){
+  if(!gameRunning || trainingMode) return;
+  if(enemyIntroOpen || gamePaused){
+    setTimeout(tryShowBossTip, 500);
+    return;
+  }
+  const prevPause = gamePaused;
+  gamePaused = true;
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:601;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);padding:20px;box-sizing:border-box';
+  const panel = document.createElement('div');
+  panel.style.cssText = 'width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #ff8800;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000';
+  const title = document.createElement('h2');
+  title.textContent = '⚠️ Скоро Босс!';
+  title.style.cssText = 'margin:0;color:#ffcc44;font-size:clamp(20px,5vw,26px)';
+  const text = document.createElement('p');
+  text.textContent = 'Лучше закупиться оружием или усилениями.';
+  text.style.cssText = 'margin:0;line-height:1.5;font-size:16px';
+  const ok = document.createElement('button');
+  ok.className = 'bigBtn';
+  ok.textContent = 'Понятно';
+  ok.style.cssText = 'min-width:180px;max-width:100%';
+  ok.addEventListener('click', () => {
+    overlay.remove();
+    gamePaused = prevPause;
+    lastFrameTs = 0;
+    flashShopBtn();
+  }, { once: true });
+  panel.appendChild(title);
+  panel.appendChild(text);
+  panel.appendChild(ok);
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+}
 function startWave(){
   if(trainingMode){
     wave = 1;
@@ -4090,7 +4271,13 @@ function startWave(){
   const diff=getDifficulty();
   const dM=diff==='easy'?0.65:diff==='normal'?1.0:1.4;
   const pF=activePlayers>=2?2:1;
-  if(wave===waveTotal-1&&level>=1){ const reward=level*1500; helicopter=new Helicopter(reward); }
+  if(wave===waveTotal-1&&level>=1){
+    const reward=level*1500; helicopter=new Helicopter(reward);
+    if(level===1 && save.seenBossTip===false){
+      save.seenBossTip=true; saveAll();
+      setTimeout(tryShowBossTip, 3000);
+    }
+  }
   if(isBossWave){
     const bossCount=1;
     enemiesToSpawn=bossCount+2+Math.floor(level/2);
@@ -4103,11 +4290,24 @@ function startWave(){
     enemiesToSpawn=Math.max(4,Math.floor(bc*pF*dM));
   }
   let willSpawnArtillery=false;
-  if(artillerySpawnedThisLevel<2){
-    if(wave===waveTotal)willSpawnArtillery=true;
-    else if(Math.random()<0.10)willSpawnArtillery=true;
+  if(wave===waveTotal){
+    willSpawnArtillery=true;
+  } else if(wave>=6 && artillerySpawnedThisLevel<2){
+    if(wave===6 && save.seenEnemies && save.seenEnemies.artillery===false){
+      willSpawnArtillery=true;
+    } else if(Math.random()<0.10){
+      willSpawnArtillery=true;
+    }
   }
   if(willSpawnArtillery && spawnArtillery()) artillerySpawnedThisLevel++;
+  forcedEnemyType=null; forcedEnemySpawned=false;
+  if(!trainingMode && !isBossWave){
+    const _typeByWave={3:'heavy',4:'fast',5:'flanker',7:'spook',8:'pt'};
+    const _t=_typeByWave[wave];
+    if(_t && save.seenEnemies && save.seenEnemies[_t]===false){
+      forcedEnemyType=_t;
+    }
+  }
   spawning=true; spawnTimer=0; updateUI();
   cloudSync();
 }
@@ -4158,7 +4358,9 @@ function spawnEnemy(){
   const base=(level-1)*0.7+(wave-1)*0.25;
   const roll=base+rand(-0.5,0.6);
   const ti=clamp(Math.round(roll),0,9);
-  const e=new EnemyTank(ch.x,ch.y,ti,false);
+  let _ft=null;
+  if(forcedEnemyType && !forcedEnemySpawned){ _ft=forcedEnemyType; forcedEnemySpawned=true; }
+  const e=new EnemyTank(ch.x,ch.y,ti,false,1,_ft);
   const diff=getDifficulty();
   if(diff==='easy'){ e.hp=Math.round(e.hp*0.65); e.maxHp=e.hp; e.speed*=0.75; }
   else if(diff==='normal'){ e.hp=Math.round(e.hp*1.0); e.maxHp=e.hp; e.speed*=1.0; }
@@ -4205,6 +4407,8 @@ function startLevel(resumeWave=false){
   UI.shopPanel.style.display='none'; UI.levelComplete.style.display='none'; UI.bossWarning.style.display='none';
   UI.exitConfirm.classList.remove('show'); UI.flash.classList.remove('on');
   updateUI(); updateWeaponBar();
+  const battleTrack = (level % 2 === 0) ? bgmBattleA : bgmBattleB;
+  playBgm(battleTrack);
   const introFn = showLevelIntro;
   introFn(()=>{
     gamePaused=false; lastFrameTs=0;
@@ -4218,6 +4422,7 @@ function getStartCoins(){
   return base+levelBonus;
 }
 function initGame(pc, fromSave){
+  bgmMenu.pause();
   if(fromSave && savedRun){
     level=savedRun.level; wave=savedRun.wave||0; coins=savedRun.coins; kills=savedRun.kills||0;
     baseHealth=savedRun.baseHealth||100; baseMaxHealth=savedRun.baseMaxHealth||100;
@@ -4245,6 +4450,68 @@ function initGame(pc, fromSave){
   gamepadState.shopItemFocus=0; gamepadState.relicFocus=0; gamepadState.goFocus=0;
   clearGamepadFocus(); startLevel(!!fromSave); canvas.focus();
 }
+function drawTankAt(c, tx, ty, color, weaponId){
+  c.save();
+  c.translate(tx, ty);
+  c.scale(1.4, 1.4);
+  c.rotate(-Math.PI / 2);
+  const radius = 18;
+  const w = radius * 2.6, h = radius * 1.6;
+  const b = color, d = shadeColor(color, -45), l = shadeColor(color, 25);
+  c.fillStyle = 'rgba(0,0,0,0.28)'; c.fillRect(-w/2+3, -h/2+3, w, h);
+  c.fillStyle = '#1a1a1a'; c.fillRect(-w/2-3, -h/2+1, 5, h-2); c.fillRect(w/2-2, -h/2+1, 5, h-2);
+  c.fillStyle = '#333'; const th = (h-2)/6;
+  for(let i=0; i<6; i++) { c.fillRect(-w/2-3, -h/2+1+i*th, 5, 2); c.fillRect(w/2-2, -h/2+1+i*th, 5, 2); }
+  c.fillStyle = b; c.fillRect(-w/2, -h/2, w, h);
+  c.fillStyle = l; c.fillRect(-w/2, -h/2, w, 2);
+  c.fillStyle = d; c.fillRect(-w/2, h/2-2, w, 2); c.fillRect(-w/2, -h/2+3, 6, h-6);
+  c.fillStyle = d; c.beginPath(); c.arc(w*0.22, -h*0.12, h*0.22, 0, Math.PI*2); c.fill();
+  c.strokeStyle = '#000'; c.lineWidth = 1; c.stroke();
+  c.fillStyle = '#555'; c.fillRect(w/2-6, -h*0.25, 6, h*0.5);
+  c.strokeStyle = '#000'; c.lineWidth = 2; c.strokeRect(-w/2, -h/2, w, h);
+  const wObj = (typeof WEAPONS !== 'undefined') ? (WEAPONS.find(w => w.id === weaponId) || WEAPONS[0]) : {tier: 0, id: 'cannon'};
+  const bl2 = wObj.id === 'sniper' ? 48 : wObj.id === 'flame' ? 22 : wObj.id === 'laser' ? 28 : 24;
+  c.fillStyle = '#222'; c.fillRect(0, -3, radius + bl2, 6);
+  c.fillStyle = '#111'; c.fillRect(0, -3, radius + bl2, 2);
+  c.fillStyle = (['#888','#aaa','#88ddff','#ff8833','#ff6600','#00ff66'][wObj.tier]) || '#888';
+  c.fillRect(radius + bl2 - 4, -4, 5, 8);
+  c.fillStyle = '#444'; c.beginPath(); c.arc(0, 0, 9, 0, Math.PI*2); c.fill();
+  c.strokeStyle = '#000'; c.lineWidth = 1.5; c.stroke();
+  c.fillStyle = '#666'; c.beginPath(); c.arc(0, 0, 6, 0, Math.PI*2); c.fill();
+  c.restore();
+}
+function drawPlayerTankPreview(ctx){
+  drawTankAt(ctx, 70, 70, PLAYER_COLORS[0], 'cannon');
+}
+function showCanvasIntroTip(title, text, drawFn, callback){
+  if(trainingTipCleanup) trainingTipCleanup();
+  gamePaused=true; mouseFireHeld=false; keys={};
+  if(players)players.forEach(p=>{p.input.fireHeld=false;p.input.firePressed=false;p.wasFiring=false;});
+  const overlay=document.createElement('div');
+  overlay.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);padding:20px;box-sizing:border-box';
+  const panel=document.createElement('div');
+  panel.style.cssText='width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #d5a837;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000';
+  const titleEl=document.createElement('h2');
+  titleEl.textContent=title;
+  titleEl.style.cssText='margin:0;color:#ffd700;font-size:clamp(20px,5vw,26px)';
+  const preview=document.createElement('canvas');
+  preview.width=140; preview.height=140;
+  preview.style.cssText='width:140px;height:140px;background:#2d3a2d;border:1px solid #60745c;border-radius:8px';
+  const previewCtx=preview.getContext('2d');
+  if(previewCtx){ previewCtx.save(); drawFn(previewCtx); previewCtx.restore(); }
+  const description=document.createElement('p');
+  description.textContent=text;
+  description.style.cssText='margin:0;line-height:1.5;font-size:16px';
+  const ok=document.createElement('button');
+  ok.className='bigBtn'; ok.textContent=t('gotIt');
+  ok.style.cssText='min-width:180px;max-width:100%';
+  panel.append(titleEl,preview,description,ok);
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+  const finish=()=>{ overlay.remove(); gamePaused=false; lastFrameTs=0; if(callback) callback(); };
+  ok.addEventListener('click', finish, {once:true});
+  trainingTipCleanup=()=>{ ok.removeEventListener('click', finish); overlay.remove(); };
+}
 function startTraining(){
   if(UI.welcomeScreen)UI.welcomeScreen.style.display='none';
   trainingMode=true; trainingStage=1; trainingStageTimer=0; trainingKillTipShown=false;
@@ -4270,7 +4537,8 @@ function startTraining(){
   const shopBtn=document.getElementById('shopOpenBtn'); if(shopBtn)shopBtn.style.display='flex';
   updateUI(); updateWeaponBar();
   try{Stats.track('level_start',{level:0,training:true});}catch(e){}
-  showTrainingTip('🚜','1/5',t('tip_move'),()=>{gamePaused=false;lastFrameTs=0;gameplayStart();});
+  playBgm(bgmBattleA);
+  showCanvasIntroTip('🎮 1/5 · Управление', t('tip_move'), (ctx)=>drawPlayerTankPreview(ctx), ()=>{gamePaused=false;lastFrameTs=0;gameplayStart();});
 }
 function spawnTrainingEnemy(x,y,hp=15,speed=0.2,damage=2){
   const e=new EnemyTank(x,y,0,false);
@@ -4279,20 +4547,28 @@ function spawnTrainingEnemy(x,y,hp=15,speed=0.2,damage=2){
   e.isFast=false; e.isFlanker=false; e.isSpook=false; e.isPT=false; e.isArtillery=false;
   e.spawnTime=0; e.spawnTotal=0; enemies.push(e); return e;
 }
-function showTrainingStageTip(icon,title,text){showTrainingTip(icon,title,text,()=>{gamePaused=false;lastFrameTs=0;});}
+function showTrainingStageTip(icon,title,text,afterCb){
+  showTrainingTip(icon,title,text,()=>{
+    gamePaused=false;lastFrameTs=0;
+    if(afterCb) afterCb();
+  });
+}
 function enterTrainingStage(stage){
+  if(flashInterval){ clearInterval(flashInterval); flashInterval=null; }
+  const shopBtn=document.getElementById('shopOpenBtn'); if(shopBtn)shopBtn.classList.remove('flash');
   trainingStage=stage; trainingStageTimer=0;
   if(stage===2){enemies=[]; bullets=[]; enemyBullets=[];spawnTrainingEnemy(W/2,100,15,0.2,2);showTrainingStageTip('🎯','2/5',t('tip_shoot'));}
-  else if(stage===3){enemies=[];enemyBullets=[];baseVisible=true;baseMaxHealth=100;baseHealth=100;botAlly=new BotAlly(BASE_X+40,BASE_Y);showTrainingStageTip('🏰','3/5',t('tip_base'));}
-  else if(stage===4){coins=1000;updateUI();showTrainingStageTip('🛒','4/5',t('tip_shop'));}
+  else if(stage===3){enemies=[];enemyBullets=[];baseVisible=true;baseMaxHealth=100;baseHealth=100;botAlly=new BotAlly(BASE_X+40,BASE_Y);trainingBaseArrived=false;showCanvasIntroTip('\u{1F3F0} 3/5 · Защита базы', t('tip_base'), (ctx)=>drawBaseAt(ctx,70,70,false));}
+  else if(stage===4){coins=1000;updateUI();showTrainingStageTip('🛒','4/5',t('tip_shop'), ()=>flashShopBtn());}
   else if(stage===5){
     if(shopOpen)toggleShop(false);
     generateMap(); sfxUpgrade(); baseVisible=true;
+    botAlly = null;
     const p=players[0];
-    if(p&&collidesWithTiles(p.x,p.y,p.radius)){p.x=BASE_X;p.y=BASE_Y;}
+    if(p){ p.x = BASE_X; p.y = BASE_Y + 60; }
     enemies=[]; bullets=[]; enemyBullets=[];
     spawning=true; enemiesToSpawn=3; spawnTimer=0; waveTimer=999999; isBossWave=false;
-    showTrainingStageTip('🛡️','5/5',t('tip_defend'));
+    showCanvasIntroTip('\u{1F6E1}\uFE0F 5/5 · Защита', t('tip_defend'), (ctx)=>drawBaseAt(ctx,70,70,false), ()=>{gamePaused=false;lastFrameTs=0;});
   }
   else if(stage===6){gameRunning=false;gamePaused=false;gameplayStop();if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='none';showTrainingComplete();}
   updateUI();
@@ -4301,9 +4577,24 @@ function advanceTrainingStage(){if(trainingStage<6){if(trainingStage===2)enemies
 function updateTraining(dt){
   trainingStageTimer+=dt;
   const p=players[0];
-  if(trainingStage===1){if(trainingStageTimer>3600||(p&&dist(p.x,p.y,trainingMoveStartX,trainingMoveStartY)>150))enterTrainingStage(2);}
-  else if(trainingStage===2){if(trainingStageTimer>3600||enemies.length===0)enterTrainingStage(3);}
-  else if(trainingStage===3){if(trainingStageTimer>3600||(p&&dist(p.x,p.y,BASE_X,BASE_Y)<70&&p.hp>=p.maxHp))enterTrainingStage(4);}
+  if(trainingStage===1){
+    trainingMarker = {x: W/2, y: H/2 - 150};
+    if(trainingStageTimer>3600||(p&&dist(p.x,p.y,trainingMoveStartX,trainingMoveStartY)>150)){trainingMarker=null;enterTrainingStage(2);}
+  }
+  else if(trainingStage===2){trainingMarker=null;if(trainingStageTimer>3600||enemies.length===0)enterTrainingStage(3);}
+  else if(trainingStage===3){
+    if(p && dist(p.x,p.y,BASE_X,BASE_Y)<120 && !trainingBaseArrived){
+      trainingBaseArrived = true;
+      trainingStageTimer = 0;
+      trainingMarker = null;
+    }
+    if(trainingBaseArrived){
+      if(trainingStageTimer > 120){ enterTrainingStage(4); }
+    } else {
+      trainingMarker = {x: BASE_X, y: BASE_Y - 40};
+      if(trainingStageTimer > 1800){ trainingMarker=null; enterTrainingStage(4); }
+    }
+  }
   else if(trainingStage===4){const changed=Object.keys(skillTree).some(k=>(skillTree[k]||0)>0)||currentWeaponIds.some((w,i)=>w!==['cannon','cannon'][i])||Object.keys(unlockedWeapons).some(k=>k!=='cannon'&&unlockedWeapons[k]);if(trainingStageTimer>3600||changed)enterTrainingStage(5);}
   else if(trainingStage===5){
     if(enemiesToSpawn>0){
@@ -4573,10 +4864,41 @@ function bindUI(){
   });
   document.getElementById('musicBtn').addEventListener('click', e=>{
     e.preventDefault();
-    soundMuted=!soundMuted;
-    document.getElementById('musicBtn').classList.toggle('off',soundMuted);
-    document.getElementById('musicBtn').textContent=soundMuted?'🔇':'🔊';
+    const popup = document.getElementById('volumePopup');
+    if(popup) {
+      const isVisible = popup.style.display === 'flex';
+      popup.style.display = isVisible ? 'none' : 'flex';
+      if(!isVisible) {
+        document.getElementById('popupMusicMenuVol').value = Math.round(volMusicMenu * 100);
+        document.getElementById('popupMusicBattleVol').value = Math.round(volMusicBattle * 100);
+        document.getElementById('popupMasterVol').value = Math.round(volMaster * 100);
+      }
+    }
+  });
+  // Логика мини-окна настроек звука
+  document.getElementById('closeVolumePopup').addEventListener('click', () => document.getElementById('volumePopup').style.display = 'none');
+  document.getElementById('popupMusicMenuVol').addEventListener('input', (e) => {
+    volMusicMenu = parseInt(e.target.value, 10) / 100;
+    if(currentBgm === bgmMenu) currentBgm.volume = volMusicMenu;
+    saveAll();
+  });
+  document.getElementById('popupMusicBattleVol').addEventListener('input', (e) => {
+    volMusicBattle = parseInt(e.target.value, 10) / 100;
+    if(currentBgm === bgmBattleA || currentBgm === bgmBattleB) currentBgm.volume = volMusicBattle;
+    saveAll();
+  });
+  document.getElementById('popupMasterVol').addEventListener('input', (e) => {
+    volMaster = parseInt(e.target.value, 10) / 100;
     updateMasterGain();
+    saveAll();
+  });
+  // Закрытие окна при клике вне его
+  document.addEventListener('click', (e) => {
+    const popup = document.getElementById('volumePopup');
+    const btn = document.getElementById('musicBtn');
+    if(popup && popup.style.display === 'flex' && !popup.contains(e.target) && !btn.contains(e.target)) {
+      popup.style.display = 'none';
+    }
   });
 
   UI.shopTabs.querySelectorAll('.tab').forEach(tab=>{
@@ -4598,6 +4920,28 @@ function bindUI(){
   UI.volStreakSlider.addEventListener('input',()=>{ volStreak=parseInt(UI.volStreakSlider.value,10)/100;
     UI.volStreakLabel.textContent=Math.round(volStreak*100)+'%'; saveAll(); });
 
+  const musicToggle = document.getElementById('musicToggle');
+  if(musicToggle) {
+      musicToggle.addEventListener('change', (e) => {
+          musicEnabled = e.target.checked;
+          if(!musicEnabled && currentBgm) currentBgm.pause();
+          else if(musicEnabled && currentBgm) currentBgm.play().catch(e=>{});
+          saveAll();
+      });
+  }
+  const musicVolSlider = document.getElementById('musicVolumeSlider');
+  if(musicVolSlider) {
+      musicVolSlider.addEventListener('input', (e) => {
+          volMusic = parseInt(e.target.value, 10) / 100;
+          document.getElementById('musicVolumeLabel').textContent = Math.round(volMusic * 100) + '%';
+          if(currentBgm) {
+              let targetVol = (currentBgm === bgmMenu) ? volMusic : (volMusic * 0.2);
+              currentBgm.volume = targetVol;
+          }
+          saveAll();
+      });
+  }
+
   bindWeaponBars();
 }
 function cycleLang(dir){
@@ -4615,9 +4959,7 @@ window.addEventListener('load', async ()=>{
   window.addEventListener('resize',resizeOverlay);
   cacheUI();
 
-  UI.menu.querySelectorAll('.menu-btns,.langRow,button')
-    .forEach(el => el.style.pointerEvents = 'none');
-  UI.menu.style.opacity = '0.6';
+  // [iOS-FIX] UI не блокируем — Platform.init и loadProgress идут в фоне
 
   // === 1. СИНХРОННАЯ ИНИЦИАЛИЗАЦИЯ UI — ДО любых await ===
   setupKeyboard();
@@ -4656,6 +4998,12 @@ window.addEventListener('load', async ()=>{
   lastFrameTs=0;
   window._rafId=requestAnimationFrame(gameLoop);
 
+  // [iOS-FIX] Показываем Welcome сразу, до await. Если tutorialDone подтянется из облака — переключим на menu ниже.
+  const ml = document.getElementById('menuLoading');
+  if(ml) ml.remove();
+  UI.welcomeScreen.style.display='flex';
+  UI.menu.style.display='none';
+
   // === 2. АСИНХРОННАЯ ИНИЦИАЛИЗАЦИЯ VK — не блокирует UI ===
   try{ await Platform.init(); }catch(e){ log('Platform.init error:', e); }
   preloadRewarded();
@@ -4678,6 +5026,11 @@ window.addEventListener('load', async ()=>{
     if(typeof saved.money==='number')save.money=saved.money;
     if(typeof saved.lastFreeBonusDay==='string')save.lastFreeBonusDay=saved.lastFreeBonusDay;
     if(typeof saved.metaCoins==='number')metaCoins=saved.metaCoins;
+    if(saved.purchasedWeapons && typeof saved.purchasedWeapons==='object'){
+      save.purchasedWeapons = {};
+      for(const k in saved.purchasedWeapons){ if(saved.purchasedWeapons[k]) save.purchasedWeapons[k]=true; }
+      for(const k in save.purchasedWeapons){ if(save.purchasedWeapons[k]) unlockedWeapons[k]=true; }
+    }
     if(saved.savedRun)savedRun=saved.savedRun;
     if(saved.p1Control)p1Control=saved.p1Control;
     if(typeof saved.lastDifficulty==='string')lastDifficulty=saved.lastDifficulty;
@@ -4686,21 +5039,18 @@ window.addEventListener('load', async ()=>{
     if(saved.padCfg){ padCfg.gp1={...padCfg.gp1,...(saved.padCfg.gp1||{})}; }
     if(typeof saved.volMaster==='number')volMaster=saved.volMaster;
     if(typeof saved.volStreak==='number')volStreak=saved.volStreak;
+    if(typeof saved.musicEnabled==='boolean')musicEnabled=saved.musicEnabled;
+    if(typeof saved.volMusicMenu==='number')volMusicMenu=saved.volMusicMenu;
+    if(typeof saved.volMusicBattle==='number')volMusicBattle=saved.volMusicBattle;
+    if(typeof saved.volMusic==='number')volMusic=saved.volMusic;
     if(saved.langSetting)langSetting=saved.langSetting;
     updateContinueBtn();
     updateBonusUI();
   }
   updateBonusUI();
 
-  const ml = document.getElementById('menuLoading');
-  if(ml) ml.remove();
-  UI.menu.querySelectorAll('.menu-btns,.langRow,button')
-    .forEach(el => el.style.pointerEvents = '');
-  UI.menu.style.opacity = '';
-  if(!save.tutorialDone){
-    UI.welcomeScreen.style.display='flex';
-    UI.menu.style.display='none';
-  }else{
+  // [iOS-FIX] После загрузки — переключаем на menu, если обучение уже пройдено
+  if(save.tutorialDone){
     UI.welcomeScreen.style.display='none';
     UI.menu.style.display='flex';
   }
