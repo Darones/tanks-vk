@@ -535,7 +535,26 @@ function resetLiveInput(){
 }
 function setPlatformPaused(v){
   platformPaused = !!v;
-  if(platformPaused){ resetLiveInput(); flushCloudNow(); }
+  if(platformPaused){ 
+    resetLiveInput(); flushCloudNow(); 
+    // Ставим на паузу всю музыку
+    if (typeof bgmMenu !== 'undefined' && bgmMenu) bgmMenu.pause();
+    if (typeof bgmBattleA !== 'undefined' && bgmBattleA) bgmBattleA.pause();
+    if (typeof bgmBattleB !== 'undefined' && bgmBattleB) bgmBattleB.pause();
+    // Ставим на паузу звуковые эффекты (выстрелы)
+    if (typeof audioCtx !== 'undefined' && audioCtx && audioCtx.state === 'running') {
+      audioCtx.suspend();
+    }
+  } else {
+    // Возобновляем музыку, если она была включена
+    if (typeof musicEnabled !== 'undefined' && musicEnabled && typeof currentBgm !== 'undefined' && currentBgm) {
+      currentBgm.play().catch(()=>{});
+    }
+    // Возобновляем звуковые эффекты
+    if (typeof audioCtx !== 'undefined' && audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
 }
 function setupPlatformPauseHandlers(){
   document.addEventListener('visibilitychange', () => setPlatformPaused(document.hidden));
