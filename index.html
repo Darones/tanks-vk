@@ -3457,6 +3457,7 @@ function doExitToMenu(){
   powerups=[]; laserBeams=[]; damageNumbers=[]; artilleryShells=[]; helicopter=null;
   pruneInputCaches();
   UI.menu.style.display='flex'; clearGamepadFocus();
+  const _sb=document.getElementById('shopOpenBtn'); if(_sb) _sb.style.display='none';
   playBgm(bgmMenu);
   updateContinueBtn(); updateRecordBox(); updateMetaCoinsDisplay(); updateBonusUI();
   gamepadCooldown = 20;
@@ -5124,6 +5125,8 @@ window.addEventListener('load', async ()=>{
   if(save.tutorialDone){
     UI.welcomeScreen.style.display='none';
     UI.menu.style.display='flex';
+    const _sb=document.getElementById('shopOpenBtn'); if(_sb) _sb.style.display='none';
+    if(UI.skipTrainingBtn) UI.skipTrainingBtn.style.display='none';
   }
   if(!isVK() && !isOK()){
     const co = document.getElementById('cloudOffline');
