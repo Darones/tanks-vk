@@ -2964,6 +2964,7 @@ function updateBonusUI(){
 function updateShopOpenBtnVisibility(){
   const btn=document.getElementById('shopOpenBtn');
   if(!btn) return;
+  if(!gameRunning){ btn.style.display='none'; return; }
   const visible = gameRunning && !shopOpen && !levelCompleteOpen && !adPlaying;
   btn.style.display = visible ? 'flex' : 'none';
 }
@@ -4624,7 +4625,7 @@ function enterTrainingStage(stage){
     spawning=true; enemiesToSpawn=3; spawnTimer=0; waveTimer=999999; isBossWave=false;
     showCanvasIntroTip('\u{1F6E1}\uFE0F 5/5 · Защита', t('tip_defend'), (ctx)=>drawBaseAt(ctx,70,70,false), ()=>{gamePaused=false;lastFrameTs=0;});
   }
-  else if(stage===6){gameRunning=false;gamePaused=false;gameplayStop();if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='none';showTrainingComplete();}
+  else if(stage===6){gameRunning=false;gamePaused=false;gameplayStop();if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='none';const _sb=document.getElementById('shopOpenBtn'); if(_sb) _sb.style.display='none';showTrainingComplete();}
   updateUI();
 }
 function advanceTrainingStage(){if(trainingStage<6){if(trainingStage===2)enemies=[];enterTrainingStage(trainingStage+1);}}
@@ -4685,6 +4686,7 @@ function trainToMenu(){
   gameRunning=false; gamePaused=false; gameplayStop();
   trainingMode = false; trainingKillTipShown = false;
   UI.menu.style.display = 'flex';
+  const _sb=document.getElementById('shopOpenBtn'); if(_sb) _sb.style.display='none';
   updateContinueBtn(); updateRecordBox(); saveAll(); updateBonusUI();
 }
 
@@ -5122,7 +5124,7 @@ window.addEventListener('load', async ()=>{
   updateBonusUI();
 
   // [iOS-FIX] После загрузки — переключаем на menu, если обучение уже пройдено
-  if(save.tutorialDone){
+  if(save.tutorialDone && !gameRunning){
     UI.welcomeScreen.style.display='none';
     UI.menu.style.display='flex';
     const _sb=document.getElementById('shopOpenBtn'); if(_sb) _sb.style.display='none';
