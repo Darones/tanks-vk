@@ -203,7 +203,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #buyCoinsPanel{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:200}
 .buyCoinsBox{background:#1e2a38;color:#fff;padding:18px 20px;border-radius:14px;min-width:260px;max-width:92vw;display:flex;flex-direction:column;gap:10px;position:relative}
 .coinPacks{display:flex;flex-direction:column;gap:8px}
-#buyCoinsCloseBtn{position:absolute;top:6px;right:6px;width:24px;height:24px;min-width:24px;max-width:24px;padding:0;border:0;background:transparent;color:#ffd700;font-size:20px;line-height:24px;cursor:pointer;border-radius:50%}
+#buyCoinsCloseBtn{position:absolute;top:10px;right:10px;width:24px;height:24px;min-width:24px;max-width:24px;padding:0;border:0;background:transparent;color:#ffd700;font-size:20px;line-height:24px;cursor:pointer;}
 #shopOpenBtn{position:fixed;left:65px;top:18px;width:44px;height:44px;border-radius:50%;background:linear-gradient(180deg,#ffd700,#c9a000);border:2px solid #ffe066;color:#000;font-size:22px;font-weight:bold;cursor:pointer;z-index:200;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 0 #8a6a00;transition:transform .1s;padding:0;line-height:1;font-family:'Segoe UI',Arial,sans-serif}
 #shopOpenBtn:hover{transform:scale(1.08);background:linear-gradient(180deg,#ffe066,#d9b000)}
 #shopOpenBtn:active{transform:scale(0.95);box-shadow:0 1px 0 #8a6a00;top:22px}
@@ -405,7 +405,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="buyCoinsPanel" style="display:none">
 <div class="buyCoinsBox">
-<button id="buyCoinsCloseBtn" style="position:absolute;top:8px;right:8px;width:24px;height:24px;padding:0;border:1px solid #ffd700;background:rgba(0,0,0,0.6);color:#ffd700;font-size:16px;line-height:22px;cursor:pointer;border-radius:50%;z-index:9999;">×</button>
+<button id="buyCoinsCloseBtn" style="position:absolute;top:10px;right:10px;width:24px;height:24px;padding:0;border:0;background:transparent;color:#ffd700;font-size:20px;line-height:24px;cursor:pointer;z-index:9999;">×</button>
 <h3 data-i18n="shopCoinsTitle">Пополнение монет</h3>
 <div class="coinPacks">
 <button class="bigBtn coinPack" data-pack="small" data-i18n="coinsPackSmall">10 000 монет — 5 голосов</button>
