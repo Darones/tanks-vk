@@ -4818,7 +4818,12 @@ function bindUI(){
   });
   if(UI.welcomePlayBtn)UI.welcomePlayBtn.addEventListener('click',()=>{
     UI.welcomeScreen.style.display='none';
-    startTraining();
+    if(save.tutorialDone){
+      const sb = document.getElementById('startBtn');
+      if(sb) sb.click();
+    } else {
+      startTraining();
+    }
   });
   const tb = document.getElementById('trainBtn');
   if(tb) tb.addEventListener('click', e=>{
