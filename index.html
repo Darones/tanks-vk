@@ -45,9 +45,20 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
 #ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
 @media (pointer:coarse){
-  #ui{bottom:auto !important;top:155px !important;left:10px !important;transform:none !important;display:flex !important;flex-direction:row !important;justify-content:flex-start !important;gap:0 !important;padding:0 !important;background:transparent !important;border:none !important;border-radius:0 !important;max-width:none !important;font-size:9px !important;z-index:10;pointer-events:none;}
-  #ui>div{display:grid !important;grid-template-columns:repeat(3, auto) !important;gap:2px 6px !important;padding:4px 8px !important;background:rgba(0,0,0,0.85) !important;border:1px solid rgba(255,255,255,0.1) !important;border-radius:6px !important;align-items:center !important;backdrop-filter:blur(4px) !important;max-width:140px !important;}
-  #ui>div>span{display:block !important;font-size:9px !important;white-space:nowrap !important;padding:0 !important;line-height:1.3 !important;text-align:left !important;margin:0 !important;}
+  /* Базовая игра (после обучения) */
+  #ui{bottom:auto !important;top:110px !important;left:10px !important;transform:none !important;display:flex !important;flex-direction:row !important;justify-content:flex-start !important;gap:0 !important;padding:0 !important;background:transparent !important;border:none !important;border-radius:0 !important;max-width:none !important;font-size:10px !important;z-index:10;pointer-events:none;}
+  #ui>div{display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:4px 10px !important;padding:6px 12px !important;background:rgba(0,0,0,0.85) !important;border:1px solid rgba(255,255,255,0.15) !important;border-radius:8px !important;align-items:center !important;backdrop-filter:blur(4px) !important;max-width:170px !important;}
+  #ui>div>span{display:block !important;font-size:10px !important;white-space:nowrap !important;padding:0 !important;line-height:1.4 !important;text-align:center !important;margin:0 !important;}
+
+  /* Режим обучения (сдвинут и 4 элемента) */
+  #ui.training-mode { top: 155px !important; left: 90px !important; }
+  #ui.training-mode .hud-hide-training { display: none !important; }
+  #ui.training-mode > div { grid-template-columns: 1fr 1fr !important; max-width: 120px !important; font-size: 9px !important; }
+  #ui.training-mode > div > span { font-size: 9px !important; text-align: left !important; }
+  #ui.training-mode > div > span.hud-item-kills { order: 1 !important; }
+  #ui.training-mode > div > span.hud-item-coins { order: 2 !important; }
+  #ui.training-mode > div > span.hud-item-hp { order: 3 !important; }
+  #ui.training-mode > div > span.hud-item-shield { order: 4 !important; }
 }
 #ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08);white-space:nowrap;max-width:100%}
 #ui>div>span{padding-right:2px;white-space:nowrap}
@@ -249,12 +260,12 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="ui">
 <div>
-<span><span data-i18n="hud_kills">Уб.:</span> <b id="killsDisplay">0</b></span>
-<span><span data-i18n="hud_level">РЈСЂ.</span><b id="levelNum">1</b></span>
-<span><span data-i18n="hud_wave">Волна</span> <b id="waveNum">0</b>/<b id="waveTotal">10</b></span>
-<span><span data-i18n="hud_hp">HP:</span> <b id="hpDisplay">100</b></span>
-<span>🛡️ <b id="baseHealthDisplay">100</b></span>
-<span>💰 <b id="coinsDisplay">0</b></span>
+<span class="hud-item-kills"><span data-i18n="hud_kills">Уб.:</span> <b id="killsDisplay">0</b></span>
+<span class="hud-hide-training"><span data-i18n="hud_level">Ур.</span><b id="levelNum">1</b></span>
+<span class="hud-hide-training"><span data-i18n="hud_wave">Волна</span> <b id="waveNum">0</b>/<b id="waveTotal">10</b></span>
+<span class="hud-item-hp"><span data-i18n="hud_hp">HP:</span> <b id="hpDisplay">100</b></span>
+<span class="hud-item-shield">🛡️ <b id="baseHealthDisplay">100</b></span>
+<span class="hud-item-coins">💰 <b id="coinsDisplay">0</b></span>
 </div>
 </div>
 
@@ -3447,6 +3458,7 @@ function updateRecordBox(){
 function openExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.add('show'); gamePaused=true; gamepadCooldown = 15; }
 function closeExitConfirm(){ if(!UI.exitConfirm)return; UI.exitConfirm.classList.remove('show'); gamePaused=shopOpen; gamepadCooldown = 15; }
 function doExitToMenu(){
+  document.getElementById('ui').classList.remove('training-mode');
   trainingMode = false;
   trainingStage = 0;
   baseVisible = false;
@@ -4422,6 +4434,7 @@ function spawnEnemy(){
 }
 function startLevel(resumeWave=false){
   preloadRewarded();
+  document.getElementById('ui').classList.remove('training-mode');
   baseVisible=true;
   // При продолжении сохраняем уровень и номер волны, но создаём новую карту
   // и новый набор врагов.
@@ -4565,6 +4578,7 @@ function showCanvasIntroTip(title, text, drawFn, callback){
 }
 function startTraining(){
   if(UI.welcomeScreen)UI.welcomeScreen.style.display='none';
+  document.getElementById('ui').classList.add('training-mode');
   trainingMode=true; trainingStage=1; trainingStageTimer=0; trainingKillTipShown=false;
   if(UI.trainingComplete)UI.trainingComplete.style.display='none';
   if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='block';
