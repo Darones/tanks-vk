@@ -45,8 +45,9 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
 #ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
 @media (pointer:coarse){
-  #ui{bottom:0px !important;max-width:96vw;gap:4px;font-size:11px;padding-bottom:2px}
-  #ui>div{padding:3px 8px;gap:6px}
+  #ui{bottom:auto !important;top:160px !important;left:10px !important;transform:none !important;flex-direction:column !important;align-items:flex-start !important;gap:2px !important;padding:6px 10px !important;background:rgba(0,0,0,0.75) !important;border-radius:8px !important;border:1px solid rgba(255,255,255,0.1) !important;max-width:140px !important;font-size:11px !important;}
+  #ui>div{flex-direction:column !important;align-items:flex-start !important;gap:0 !important;padding:0 !important;background:transparent !important;border:none !important;box-shadow:none !important;backdrop-filter:none !important;display:flex !important;max-width:100% !important;}
+  #ui>div>span{display:block !important;line-height:1.4 !important;padding:0 !important;margin:0 !important;font-size:11px !important;white-space:nowrap !important;text-align:left !important;}
 }
 #ui>div{background:rgba(0,0,0,0.78);padding:5px 12px;border-radius:20px;pointer-events:auto;display:flex;flex-wrap:nowrap;gap:8px;align-items:center;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,0.08);white-space:nowrap;max-width:100%}
 #ui>div>span{padding-right:2px;white-space:nowrap}
@@ -248,7 +249,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="ui">
 <div>
-<span><span data-i18n="hud_kills">Убийств:</span> <b id="killsDisplay">0</b></span>
+<span><span data-i18n="hud_kills">Уб.:</span> <b id="killsDisplay">0</b></span>
 <span><span data-i18n="hud_level">РЈСЂ.</span><b id="levelNum">1</b></span>
 <span><span data-i18n="hud_wave">Волна</span> <b id="waveNum">0</b>/<b id="waveTotal">10</b></span>
 <span><span data-i18n="hud_hp">HP:</span> <b id="hpDisplay">100</b></span>
@@ -783,7 +784,7 @@ const L = {
 ru:{
 cloudSaved:'\u2705 Сохранено в VK', cloudSavedOK:'\u2705 \u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e \u0432 OK', cloudFail:'\u26A0\uFE0F Не удалось сохранить', cloudOffline:'Автономный режим: прогресс не синхронизируется',
 title:'🎯 Танковый Рубеж',
-hud_kills:'Убийств:', hud_level:'Ур.', hud_wave:'Волна', hud_hp:'HP:', langLbl:'Язык:',
+hud_kills:'Уб.:', hud_level:'Ур.', hud_wave:'Волна', hud_hp:'HP:', langLbl:'Язык:',
 easy:'Легкий', normal:'Средний', hard:'Тяжелый',
 langAuto:'Авто', langRu:'Русский', langEn:'English',
 newGame:'▶ НОВАЯ ИГРА', continueGame:'▶ ПРОДОЛЖИТЬ', achBtn:'🏆 Достижения', settingsBtn:'⚙️ Настройки',
@@ -2910,14 +2911,19 @@ function cacheUI(){
    'skipTrainingBtn','diffRow','diffPrev','diffNext','diffValue','langRow','langPrev','langNext','langValue','rateBtn','cloudOffline','supportBtn','buyCoinsBtn','buyCoinsPanel','buyCoinsCloseBtn','trainBtn','bonusBtn','bonusTimer','achCloseX','trainingComplete','btnTrainToLevels','btnTrainRetry','btnTrainToMenu','statsToggle']
    .forEach(id => { UI[id] = document.getElementById(id); });
 }
+function formatNumber(n){
+  if(n >= 1000000) return (n/1000000).toFixed(n%1000000===0?0:1).replace('.0','')+'кк';
+  if(n >= 1000) return (n/1000).toFixed(n%1000===0?0:1).replace('.0','')+'к';
+  return String(n);
+}
 function updateUI(){
   const p1=players[0];
   UI.waveNum.textContent=Math.max(1,wave);
   UI.waveTotal.textContent=waveTotal; UI.levelNum.textContent=level;
   UI.baseHealthDisplay.style.visibility=baseVisible?'visible':'hidden';
-  if(baseVisible) UI.baseHealthDisplay.textContent=Math.max(0,Math.round(baseHealth));
-  UI.coinsDisplay.textContent=coins; UI.killsDisplay.textContent=kills;
-  UI.hpDisplay.textContent = (p1 && p1.alive) ? Math.max(0,Math.round(p1.hp)) : '0';
+  if(baseVisible) UI.baseHealthDisplay.textContent=formatNumber(Math.max(0,Math.round(baseHealth)));
+  UI.coinsDisplay.textContent=formatNumber(coins); UI.killsDisplay.textContent=formatNumber(kills);
+  UI.hpDisplay.textContent = (p1 && p1.alive) ? formatNumber(Math.max(0,Math.round(p1.hp))) : '0';
   if(shopOpen)UI.shopCoins.textContent=coins;
   updateWeaponBar();
   updateShopOpenBtnVisibility();
