@@ -10,7 +10,7 @@
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
 html,body{background:#0a0a0a;height:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;color:#fff;touch-action:none}
 #gameContainer{position:absolute;top:0;left:0;right:0;bottom:0;overflow:hidden;background:#000;display:flex;justify-content:center;align-items:center}
-canvas{background:#1e2a1e;outline:none;display:block;border-radius:4px;box-shadow:0 0 40px rgba(0,0,0,0.9);max-width:100%;max-height:100%;cursor:crosshair;transition:filter .8s ease-out}
+canvas{background:#1e2a1e;outline:none;display:block;border-radius:4px;box-shadow:0 0 40px rgba(0,0,0,0.9);max-width:100%;max-height:100%;cursor:crosshair;transition:filter .8s ease-out;margin:auto}
 #uiOverlay{position:fixed;top:0;left:0;z-index:100;touch-action:none;pointer-events:none;background:transparent;box-shadow:none;border-radius:0;max-width:none;max-height:none;}
 canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #menu{position:absolute;inset:0;background-color:#0a0a14;background-image:radial-gradient(circle at center,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.55) 100%),url('menu-bg.png');background-size:100% 100%,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;z-index:100;gap:10px;padding:16px;text-align:center;overflow-y:auto;text-shadow:0 2px 8px rgba(0,0,0,0.9)}
@@ -44,7 +44,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 .dailyBtn.ready::after{content:'';position:absolute;top:-4px;right:-4px;width:14px;height:14px;border-radius:50%;background:#ff2222;animation:pulse 0.8s infinite alternate}
 @keyframes pulse{from{transform:scale(0.9);opacity:0.7}to{transform:scale(1.15);opacity:1}}
 #ui{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;justify-content:center;pointer-events:none;font-size:12px;z-index:10;gap:6px;max-width:98vw}
-@media (pointer:coarse){
+@media (pointer: coarse) and (hover: none){
   /* Базовая игра (после обучения) - 3 колонки, 6 элементов */
   #ui{bottom:auto !important;top:110px !important;left:5px !important;transform:none !important;display:flex !important;flex-direction:row !important;justify-content:flex-start !important;gap:0 !important;padding:0 !important;background:transparent !important;border:none !important;border-radius:0 !important;max-width:none !important;font-size:9px !important;z-index:10;pointer-events:none;}
   #ui>div{display:grid !important;grid-template-columns:1fr 1fr 1fr !important;gap:2px 4px !important;padding:4px 6px !important;background:rgba(0,0,0,0.85) !important;border:1px solid rgba(255,255,255,0.15) !important;border-radius:6px !important;align-items:center !important;backdrop-filter:blur(4px) !important;max-width:125px !important;}
@@ -223,7 +223,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 @keyframes shopBtnFlash{0%,100%{transform:scale(1);box-shadow:0 3px 0 #8a6a00}50%{transform:scale(1.22);box-shadow:0 3px 0 #8a6a00,0 0 22px #ffd700}}
 #shopOpenBtn.flash{animation:shopBtnFlash 0.6s ease-in-out infinite !important}
 /* MOBILE FIX: Обучение */
-@media (pointer:coarse) {
+@media (pointer: coarse) and (hover: none) {
   #levelIntro { padding: 10px; }
   .introContent { max-height: none; overflow: visible; gap: 8px; padding: 10px; width: 100%; max-width: calc(100vw - 20px); box-sizing: border-box; justify-content: center; }
   .introNum { font-size: clamp(28px, 8vw, 44px) !important; font-family: 'Segoe UI', Arial, sans-serif !important; max-width: 100%; word-break: break-word; }
@@ -242,7 +242,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 }
 
 /* MOBILE UI: Магазин и кнопки */
-@media (pointer:coarse) {
+@media (pointer: coarse) and (hover: none) {
   #shopPanel { width: 92vw !important; max-width: 400px !important; height: 88vh !important; }
   .shopTabs .tab { padding: 4px 6px !important; font-size: 11px !important; min-height: 28px !important; }
   .shop-actions button { padding: 6px 10px !important; font-size: 13px !important; min-height: 32px !important; flex: 1; }
@@ -2122,7 +2122,8 @@ class EnemyTank{
       this.fireRange=2000; this.isFast=false; this.isFlanker=false;
       this.color='#c8b878'; this.darkColor='#8a7a50';
     }
-    this.isHeavy = (forceType === 'heavy');
+    const heavyCount = enemies.filter(e => e && e.isHeavy && e.hp > 0).length;
+    this.isHeavy = !isBoss && !this.isSpook && !this.isPT && heavyCount < 2 && (forceType === 'heavy' || (wave>=6 && !isForced && Math.random()<0.10));
     if(this.isHeavy){ this.hp=Math.round(this.hp*2); this.maxHp=this.hp; this.speed*=0.7; this.damage=Math.round(this.damage*2); this.shootDelay=Math.round(this.shootDelay*2.5); }
     this.isArtillery=false;
     this.hasFired=false; this.aimTimer=0; this.targetX=0; this.targetY=0; this.fireRange=0; this.volleyCooldown=300;
@@ -4021,7 +4022,7 @@ function draw(){
     ctx.stroke();
   }
 }
-const IS_TOUCH = matchMedia('(pointer:coarse)').matches;
+const IS_TOUCH = matchMedia('(pointer: coarse) and (hover: none)').matches;
 /* ================= MOBILE TOUCH ================= */
 let mobileMoveX=0, mobileMoveY=0, mobileAimAngle=-Math.PI/2;
 let mobileMoveTouch=null, mobileAimTouch=null, mobileFireTouch=null, mobileEdgeVibrated=false, mobileFireAlpha=0;
@@ -5071,10 +5072,10 @@ window.addEventListener('load', async ()=>{
   concreteHp=Array.from({length:ROWS},()=>Array(COLS).fill(0));
 
   const resize = () => {
-    const cw = window.innerWidth;
-    // Вычитаем 65 пикселей под нижнюю панель ВК (и на мобилках, и на вебе)
-    const ch = window.innerHeight;
-    
+    // Берем реальные размеры контейнера, чтобы избежать проблем с сайдбарами браузера
+    const cw = canvas.parentElement ? canvas.parentElement.clientWidth : window.innerWidth;
+    const ch = canvas.parentElement ? canvas.parentElement.clientHeight : window.innerHeight;
+
     // Масштабируем так, чтобы холст занимал 100% доступной высоты
     const sc = Math.min(cw / W, ch / H);
     canvas.style.width  = (W * sc) + 'px';
