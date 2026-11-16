@@ -13,7 +13,7 @@ html,body{background:#0a0a0a;height:100%;overflow:hidden;font-family:'Segoe UI',
 canvas{background:#1e2a1e;outline:none;display:block;border-radius:4px;box-shadow:0 0 40px rgba(0,0,0,0.9);max-width:100%;max-height:100%;cursor:crosshair;transition:filter .8s ease-out;margin:auto}
 #uiOverlay{position:fixed;top:0;left:0;z-index:100;touch-action:none;pointer-events:none;background:transparent;box-shadow:none;border-radius:0;max-width:none;max-height:none;}
 canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
-#menu{position:absolute;inset:0;background-color:#0a0a14;background-image:radial-gradient(circle at center,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.55) 100%),url('menu-bg.png');background-size:100% 100%,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;z-index:100;gap:10px;padding:16px;text-align:center;overflow-y:auto;text-shadow:0 2px 8px rgba(0,0,0,0.9)}
+#menu{position:absolute;inset:0;background-color:#eef2e9;background-image:linear-gradient(180deg,#f7faf3,#dde9d2);background-size:100% 100%;background-position:center;background-repeat:no-repeat;display:flex;flex-direction:column;justify-content:flex-start;align-items:center;z-index:100;gap:10px;padding:16px;text-align:center;overflow-y:auto;text-shadow:0 2px 8px rgba(0,0,0,0.9)}
 #menu>h1:first-child, #menu>#menuLoading:first-child{margin-top:auto}
 #menu>*:last-child{margin-bottom:auto}
 #levelComplete{position:absolute;inset:0;background:linear-gradient(180deg,#0a0a14,#1a2a1a);display:none;flex-direction:column;justify-content:center;align-items:center;z-index:100;gap:12px;padding:16px;text-align:center;overflow-y:auto}
@@ -161,16 +161,16 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 #winOverlay.on{opacity:1}
 #winOverlay .txt{font-size:clamp(40px,10vw,90px);font-weight:bold;color:#ffd700;text-shadow:0 0 40px #ff8800,0 0 80px #ff4400;font-family:'Impact','Arial Black',sans-serif;letter-spacing:4px;animation:winBoom 0.6s ease-out;text-align:center;padding:0 10px}
 @keyframes winBoom{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.15);opacity:1}100%{transform:scale(1);opacity:1}}
-#levelIntro{position:absolute;inset:0;background:radial-gradient(circle at center,rgba(8,18,38,0.98),rgba(0,0,0,0.99));display:none;justify-content:center;align-items:center;z-index:150;text-align:center;overflow:hidden}
+#levelIntro{position:absolute;inset:0;background:radial-gradient(circle at center,#f9fbf6 0%,#e6eedd 60%,#d5e2c8 100%);display:none;justify-content:center;align-items:center;z-index:150;text-align:center;overflow:hidden}
 #levelIntro.show{display:flex;animation:introFade .4s ease-out}
 #skipTrainingBtn{position:absolute;top:110px;left:15px;z-index:220;display:none;background:rgba(0,0,0,0.7);color:#eee;border:1px solid #888;border-radius:6px;padding:6px 10px;font-size:11px;cursor:pointer;width:auto;max-width:fit-content;white-space:nowrap;}
 @keyframes introFade{from{opacity:0}to{opacity:1}}
 .introContent{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px;max-width:min(400px,95vw);box-sizing:border-box;text-align:center}
-.introLbl{font-size:14px;color:#4fc3f7;letter-spacing:3px;font-weight:bold;text-shadow:0 0 20px #4fc3f7;font-family:'Segoe UI',Arial,sans-serif;text-align:center}
-.introNum{font-size:clamp(36px,8vw,50px);color:#ffd700;font-weight:bold;text-shadow:0 0 20px #ff8800;font-family:'Impact','Arial Black',sans-serif;line-height:1.1;animation:introZoom .6s ease-out;max-width:100%;word-break:break-word;text-align:center}
+.introLbl{font-size:14px;color:#4f7a45;letter-spacing:3px;font-weight:bold;text-shadow:none;font-family:'Segoe UI',Arial,sans-serif;text-align:center}
+.introNum{font-size:clamp(36px,8vw,50px);color:#2f4a34;font-weight:bold;text-shadow:0 2px 0 #fff;font-family:'Impact','Arial Black',sans-serif;line-height:1.1;animation:introZoom .6s ease-out;max-width:100%;word-break:break-word;text-align:center}
 @keyframes introZoom{0%{transform:scale(0.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
-.introWave{font-size:14px;color:#fff;letter-spacing:1px;font-family:'Segoe UI',Arial,sans-serif;text-align:center}
-.introHint{font-size:12px;color:#ffcc44;margin-top:4px;opacity:0.9;font-family:'Segoe UI',Arial,sans-serif;max-width:90vw;line-height:1.3;white-space:normal;word-wrap:break-word;text-align:center;animation:introHint 1.2s ease-in-out infinite alternate}
+.introWave{font-size:14px;color:#43523f;letter-spacing:1px;font-family:'Segoe UI',Arial,sans-serif;text-align:center}
+.introHint{font-size:12px;color:#5a6b52;margin-top:4px;opacity:0.9;font-family:'Segoe UI',Arial,sans-serif;max-width:90vw;line-height:1.3;white-space:normal;word-wrap:break-word;text-align:center;animation:introHint 1.2s ease-in-out infinite alternate}
 @keyframes introHint{from{opacity:0.5}to{opacity:1}}
 .ctrl-group{background:rgba(255,255,255,0.05);border:1px solid #444;border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:4px}
 .ctrl-group h3{font-size:14px;color:#ffd700;margin-bottom:4px;font-weight:bold}
@@ -249,13 +249,89 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
   .bigBtn { min-width: 200px !important; font-size: 14px !important; padding: 8px 16px !important; }
 }
 
+/* ===== LIGHT THEME (stage 1) ===== */
+html,body{background:#eef2e9;color:#22302a}
+#gameContainer{background:#e3ead9}
+#menu{background-color:#eef2e9;background-image:none;color:#22302a;text-shadow:none}
+#menu h1{color:#33502f;text-shadow:0 2px 0 #fff}
+#menuLoading{background:#fff !important;color:#5a6b52 !important}
+.record-box{background:#fff;border:1px solid #cddcc3;color:#40503f;box-shadow:0 8px 22px rgba(45,70,45,.10);backdrop-filter:none}
+.record-box .rec-item b{color:#22302a}
+.bigBtn{background:linear-gradient(180deg,#8ed07a,#4f9a45);box-shadow:0 4px 0 #3b7233}
+.bigBtn.cont{background:linear-gradient(180deg,#ffc470,#e08a2a);box-shadow:0 4px 0 #b36a1e}
+#trainBtn{background:linear-gradient(180deg,#ffe066,#e0b800);box-shadow:0 4px 0 #a88700;color:#3a2c00}
+.smallBtn{background:#fff;color:#2a3a2e;border:1px solid #cddcc3;box-shadow:0 3px 0 #dbe6d3}
+.langRow{background:#fff;border:1px solid #cddcc3;color:#40503f;box-shadow:0 4px 12px rgba(45,70,45,.08)}
+.langArrow{background:#eef4e8;color:#33502f;border:1px solid #cddcc3}
+.langVal{color:#3a4a3e !important}
+#ui>div{background:rgba(255,255,255,.95) !important;border:1px solid #cddcc3 !important;color:#22302a !important;box-shadow:0 6px 16px rgba(50,80,50,.14) !important}
+#ui>div>span{color:#22302a !important}
+.wslot{background:#fff !important;border-color:#cddcc3 !important;color:#22302a !important}
+.wslot.owned{background:#eef6e8 !important;border-color:#8fbf7a !important}
+.wslot.selected{background:#fff6d6 !important;border-color:#e0b800 !important;box-shadow:0 0 0 3px rgba(224,184,0,.25) !important}
+.wslot .hotkey{background:#5d6b52 !important;color:#fff !important}
+#weaponBar{background:rgba(255,255,255,.92) !important;border:1px solid #cddcc3 !important;box-shadow:0 6px 16px rgba(50,80,50,.12) !important}
+#shopPanel{background:linear-gradient(180deg,#ffffff,#f3f8ee) !important;color:#22302a !important;border:2px solid #cddcc3 !important;box-shadow:0 12px 40px rgba(50,80,50,.18) !important}
+.shopHeader{border-bottom-color:#dbe6d3 !important}
+.shopHeader .title{color:#33502f !important}
+.shopHeader .coins-show{color:#3b7a35 !important;background:#eaf4e3 !important}
+#shopCloseCross{background:#eef2e9 !important;color:#33502f !important}
+#gameOver{background:rgba(238,242,233,.96) !important;color:#22302a !important}
+#gameOver h2{color:#c0392b !important;text-shadow:none !important}
+#gameOver .stats span{color:#2f6b2b !important}
+#levelComplete{background:linear-gradient(180deg,#f7faf3,#e2ecd8) !important;color:#22302a !important}
+#levelComplete h1{color:#33502f !important;text-shadow:0 2px 0 #fff !important}
+#winOverlay{background:radial-gradient(circle at center,rgba(255,215,0,.35),rgba(255,255,255,.85)) !important}
+.shopTabs{background:#f3f8ee !important;border-bottom-color:#dbe6d3 !important}
+.shopTabs .tab{background:#ffffff !important;border-color:#cddcc3 !important;color:#2b3a2e !important}
+.shopTabs .tab.active{background:#fff2c2 !important;border-color:#e0b800 !important;color:#3a2c00 !important}
+.skill-btn{background:#ffffff !important;border:1px solid #d3dfc8 !important;color:#22302a !important}
+.ach-item{background:#ffffff !important;border-color:#d3dfc8 !important;color:#22302a !important}
+.ctrl-row{background:#ffffff !important;color:#22302a !important;border:1px solid #e2ebd9 !important}
+.vol-row{background:#ffffff !important;color:#22302a !important;border:1px solid #e2ebd9 !important}
+.set-tabs{border-bottom-color:#dbe6d3 !important}
+.skill-btn{display:flex;align-items:center;gap:10px}
+.skill-btn>span:not(.shop-ico):not(.cost){flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left}
+.skill-btn .cost{margin-left:auto}
+.shop-ico{flex:0 0 30px;width:30px;height:30px;border-radius:9px;background:#eef6e8;display:flex;align-items:center;justify-content:center}
+.shop-ico svg{width:18px;height:18px;display:block}
+.statsToggle{background:#ffffff !important;border:1px solid #cddcc3 !important;color:#33502f !important;box-shadow:none !important}
+.statsToggle.open{background:#fff2c2 !important;border-color:#e0b800 !important;color:#3a2c00 !important}
+.skill-btn .lvl{color:#7b8a77 !important}
+.shop-actions{padding:10px;gap:8px;background:#f3f8ee;border-top:1px solid #e2ebd9}
+#continueBtn{flex:2;border-radius:10px;box-shadow:0 3px 0 #3b7233 !important;background:linear-gradient(180deg,#8ed07a,#4f9a45) !important}
+#shopExitBtn{flex:1;border-radius:10px;background:#fff !important;border:1px solid #cddcc3 !important;color:#2f4a34 !important;box-shadow:0 3px 0 #dbe6d3 !important}
+.relic{background:#fff !important;border:2px solid #cddcc3 !important;color:#22302a !important;box-shadow:0 8px 22px rgba(50,80,50,.10) !important}
+.relic .rname{color:#33502f !important}
+.shop-hint b{color:#2f4a34 !important}
+.shop-stats>div>b{color:#2f4a34 !important}
+.skill-btn .cost{color:#946200 !important}
+.relic .rname{color:#33502f !important}
+#achievementPanel .title,#dailyPanel .title,#settingsPanel .title{color:#33502f !important}
+.ach-progress,.ach-reward{color:#3b7a35 !important}
+.daily-cell .amount{color:#3b7a35 !important}
+#bonusTimer{color:#3b7a35 !important}
+#menu h1{color:#2f4a34 !important;text-shadow:0 2px 0 #fff !important}
+#gameContainer{background:#e3ead9 !important}
+#skipTrainingBtn{background:#ffffff !important;color:#3d5a3f !important;border:1px solid #cddcc3 !important;box-shadow:0 4px 12px rgba(50,80,50,.12) !important}
+#exitConfirm{background:rgba(238,242,233,.92) !important;color:#22302a !important}
+#buyCoinsPanel{background:rgba(238,242,233,.78) !important}
+#shopOpenBtn b{background:#ffffff !important;color:#2f4a34 !important;border:1px solid #cddcc3 !important}
+#musicBtn{background:#ffffff !important;border-color:#cddcc3 !important;color:#33502f !important;box-shadow:0 4px 12px rgba(50,80,50,.12) !important}
+#musicBtn.off{background:#eef2e9 !important;border-color:#dbe6d3 !important;color:#9aa79a !important}
+.ico{width:16px;height:16px;display:inline-block;vertical-align:-3px;flex:0 0 auto}
+#achBtn::before,#ctrlBtn::before,#supportBtn::before,#buyCoinsBtn::before{content:'';display:inline-block;width:15px;height:15px;margin-right:7px;vertical-align:-3px;background-repeat:no-repeat;background-size:contain}
+#achBtn::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2333502f' stroke-width='2' stroke-linecap='round'><path d='M8 4h8v5a4 4 0 0 1-8 0z'/><path d='M8 6H5a3 3 0 0 0 3 3M16 6h3a3 3 0 0 1-3 3'/><path d='M12 13v4M9 20h6'/></svg>")}
+#ctrlBtn::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2333502f' stroke-width='2' stroke-linecap='round'><path d='M4 7h9M19 7h1M4 17h4M14 17h6'/><circle cx='15' cy='7' r='2'/><circle cx='10' cy='17' r='2'/></svg>")}
+#supportBtn::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2333502f' stroke-width='2'><circle cx='12' cy='12' r='8'/><circle cx='12' cy='12' r='3'/><path d='M6.4 6.4l3.3 3.3M14.3 14.3l3.3 3.3M17.6 6.4l-3.3 3.3M9.7 14.3l-3.3 3.3'/></svg>")}
+#buyCoinsBtn::before{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2333502f' stroke-width='2'><circle cx='12' cy='12' r='8'/><path d='M12 7.5v9M9.5 10h4a1.6 1.6 0 0 1 0 3.2h-3a1.6 1.6 0 0 0 0 3.2H15'/></svg>")}
 </style>
 </head>
 <body>
 <div id="gameContainer">
 <canvas id="gameCanvas" width="1000" height="700" tabindex="0"></canvas>
 <canvas id="uiOverlay"></canvas>
-<button id="shopOpenBtn" style="display:none">🛒 <b>Tab</b></button>
+<button id="shopOpenBtn" style="display:none"><svg class="ico" style="width:22px;height:22px;vertical-align:-4px" viewBox="0 0 24 24" fill="none" stroke="#33502f" stroke-width="2" stroke-linejoin="round"><path d="M4 5h2l2.2 10.2a2 2 0 0 0 2 1.6h6.6a2 2 0 0 0 2-1.6L20 8H7"/><circle cx="10" cy="20" r="1.4" fill="#33502f"/><circle cx="17" cy="20" r="1.4" fill="#33502f"/></svg> <b>Tab</b></button>
 <button id="skipTrainingBtn" data-i18n="skipTraining">Пропустить обучение</button>
 
 <div id="ui">
@@ -264,24 +340,24 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <span class="hud-hide-training"><span data-i18n="hud_level">Ур.</span><b id="levelNum">1</b></span>
 <span class="hud-hide-training"><span data-i18n="hud_wave">Волна</span> <b id="waveNum">0</b>/<b id="waveTotal">10</b></span>
 <span class="hud-item-hp"><span data-i18n="hud_hp">HP:</span> <b id="hpDisplay">100</b></span>
-<span class="hud-item-shield">🛡️ <b id="baseHealthDisplay">100</b></span>
-<span class="hud-item-coins">💰 <b id="coinsDisplay">0</b></span>
+<span class="hud-item-shield"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#33502f" stroke-width="2"><path d="M12 3l7 3v6c0 4.4-2.9 7.4-7 9-4.1-1.6-7-4.6-7-9V6z"/></svg> <b id="baseHealthDisplay">100</b></span>
+<span class="hud-item-coins"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#946200" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 7.5v9M9.5 10h4a1.6 1.6 0 0 1 0 3.2h-3a1.6 1.6 0 0 0 0 3.2H15"/></svg> <b id="coinsDisplay">0</b></span>
 </div>
 </div>
 
 <div id="weaponBar">
-<button class="wslot" data-weapon="cannon" data-player="0"><span class="hotkey">1</span>💥</button>
-<button class="wslot" data-weapon="mg" data-player="1"><span class="hotkey">2</span>🔫</button>
-<button class="wslot" data-weapon="sniper" data-player="0"><span class="hotkey">3</span>🎯</button>
-<button class="wslot" data-weapon="flame" data-player="0"><span class="hotkey">4</span>🔥</button>
-<button class="wslot" data-weapon="rocket" data-player="0"><span class="hotkey">5</span>🚀</button>
-<button class="wslot laser" data-weapon="laser" data-player="0"><span class="hotkey">6</span>⚡</button>
+<button class="wslot" data-weapon="cannon" data-player="0"><span class="hotkey">1</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="13" r="4"/><path d="M14 10l6-4M8 19h7"/></svg></button>
+<button class="wslot" data-weapon="mg" data-player="1"><span class="hotkey">2</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6v5M12 5v6M16 6v5M6 16h12"/></svg></button>
+<button class="wslot" data-weapon="sniper" data-player="0"><span class="hotkey">3</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="6"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4" stroke-linecap="round"/></svg></button>
+<button class="wslot" data-weapon="flame" data-player="0"><span class="hotkey">4</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3c3 4 5 6.5 5 9.5A5 5 0 0 1 7 12.5c0-1.8.8-3 1.8-4 .1 1.6.9 2.6 1.8 2.6 0-3 .4-5.6 1.4-8.1z"/></svg></button>
+<button class="wslot" data-weapon="rocket" data-player="0"><span class="hotkey">5</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3c3 2.2 4.5 5.2 4.5 8.5L14 15h-4l-2.5-3.5C7.5 8.2 9 5.2 12 3z"/><path d="M10 15l-2 5 4-2.2 4 2.2-2-5"/></svg></button>
+<button class="wslot laser" data-weapon="laser" data-player="0"><span class="hotkey">6</span><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M13 3L6 13h5l-1 8 7-10h-5l1-8z"/></svg></button>
 </div>
-<button id="musicBtn">🔊</button>
+<button id="musicBtn"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M11 5l7-2v11"/><circle cx="8" cy="17" r="3"/><circle cx="18" cy="14" r="3"/></svg></button>
 <div id="volumePopup" style="display:none; position:absolute; right:62px; top:65px; width:260px; background:rgba(20,30,20,0.95); border:2px solid #d5a837; border-radius:12px; padding:15px; z-index:250; flex-direction:column; gap:10px; box-shadow:0 10px 30px rgba(0,0,0,0.8);">
   <div style="display:flex; justify-content:space-between; align-items:center; color:#ffd700; font-weight:bold; border-bottom:1px solid #444; padding-bottom:8px;">
-    <span>🎵 Звук</span>
-    <span id="closeVolumePopup" style="cursor:pointer; color:#fff; padding:0 5px;">✖</span>
+    <span>Звук</span>
+    <span id="closeVolumePopup" style="cursor:pointer; color:#fff; padding:0 5px;"></span>
   </div>
   <div class="vol-row" style="background:transparent; padding:0;">
     <label style="display:block; margin-bottom:5px; color:#ccc; font-size:13px;">Музыка в меню:</label>
@@ -296,7 +372,7 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
     <input type="range" id="popupMasterVol" min="0" max="100" value="100" style="width:100%;">
   </div>
 </div>
-<div id="bossWarning" data-i18n="bossWarning">⚠️ БОСС ⚠️</div>
+<div id="bossWarning" data-i18n="bossWarning">БОСС </div>
 <div id="killStreak"><div class="eng"></div><div class="ru"></div></div>
 <div id="upgradeFlash"></div>
 <div id="winOverlay"><div class="txt">VICTORY!</div></div>
@@ -313,12 +389,12 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="trainingComplete" style="position:absolute;inset:0;background:radial-gradient(circle at center,rgba(255,215,0,0.25),rgba(0,0,0,0.94));display:none;flex-direction:column;justify-content:flex-start;align-items:center;z-index:160;gap:16px;padding:20px;text-align:center;overflow-y:auto">
 <div style="margin-top:auto"></div>
-<h2 data-i18n="trainCompleteTitle" style="font-size:clamp(28px,6vw,48px);color:#ffd700;text-shadow:0 0 30px #ff8800,0 2px 12px #000;letter-spacing:2px">🎯 ОБУЧЕНИЕ ПРОЙДЕНО!</h2>
+<h2 data-i18n="trainCompleteTitle" style="font-size:clamp(28px,6vw,48px);color:#ffd700;text-shadow:0 0 30px #ff8800,0 2px 12px #000;letter-spacing:2px">ОБУЧЕНИЕ ПРОЙДЕНО!</h2>
 <div data-i18n="trainCompleteText" style="font-size:16px;color:#ddd">Готов к настоящему бою?</div>
 <div class="menu-btns" style="margin-top:8px">
-<button class="bigBtn" id="btnTrainToLevels" data-i18n="btnToLevels">▶ К УРОВНЯМ</button>
-<button class="bigBtn" id="btnTrainRetry" data-i18n="btnRetryTraining">🔁 ЗАНОВО</button>
-<button class="smallBtn" id="btnTrainToMenu" data-i18n="btnTrainToMenu">🏠 В МЕНЮ</button>
+<button class="bigBtn" id="btnTrainToLevels" data-i18n="btnToLevels">К УРОВНЯМ</button>
+<button class="bigBtn" id="btnTrainRetry" data-i18n="btnRetryTraining">ЗАНОВО</button>
+<button class="smallBtn" id="btnTrainToMenu" data-i18n="btnTrainToMenu">В МЕНЮ</button>
 </div>
 <div style="margin-bottom:auto"></div>
 </div>
@@ -327,74 +403,74 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 <div class="shopHeader">
 <div class="title" data-i18n="shop">🏗️ МАГАЗИН</div>
 <button id="shopCloseCross" title="Close">&#10006;</button>
-<div class="coins-show">💰 <span id="shopCoins">0</span></div>
+<div class="coins-show"><span id="shopCoins">0</span></div>
 <button id="statsToggle" class="statsToggle" data-i18n="statsBtn"> Статистика</button>
 </div>
 <div class="shop-stats" id="shopStats"></div>
 <div class="shopTabs" id="shopTabs">
-<button class="tab active" data-tab="tank" data-i18n="tabTank">🚜 Танк</button>
-<button class="tab" data-tab="base" data-i18n="tabBase">🏰 База</button>
-<button class="tab" data-tab="weapons" data-i18n="tabWeapons">🔫 Пушки</button>
-<button class="tab" data-tab="vip">☑ За голоса</button>
+<button class="tab active" data-tab="tank" data-i18n="tabTank">Танк</button>
+<button class="tab" data-tab="base" data-i18n="tabBase">База</button>
+<button class="tab" data-tab="weapons" data-i18n="tabWeapons">Пушки</button>
+<button class="tab" data-tab="vip">За голоса</button>
 </div>
 <div id="tabContent"></div>
 <div class="shop-actions">
-<button id="continueBtn" data-i18n="btnContinue">▶ ПРОДОЛЖИТЬ</button>
-<button id="shopExitBtn" data-i18n="btnExit">🚪 В МЕНЮ</button>
+<button id="continueBtn" data-i18n="btnContinue">ПРОДОЛЖИТЬ</button>
+<button id="shopExitBtn" data-i18n="btnExit">В МЕНЮ</button>
 </div>
 </div>
 
 <div id="levelComplete">
-<h1 id="lvlDoneH1">🏆 УРОВЕНЬ ПРОЙДЕН!</h1>
+<h1 id="lvlDoneH1">УРОВЕНЬ ПРОЙДЕН!</h1>
 <div style="font-size:17px;color:#ffd700" data-i18n="chooseRelic">Выбери реликвию:</div>
 <div id="relicGrid"></div>
 <div style="font-size:14px;color:#ccc;margin-top:8px"><span data-i18n="nextLvl">Следующий уровень:</span> <b id="lcNext">2</b></div>
-<button id="shareWinBtn" class="smallBtn" style="display:none;margin-top:12px">🎁 Поделиться победой</button>
+<button id="shareWinBtn" class="smallBtn" style="display:none;margin-top:12px">Поделиться победой</button>
 </div>
 
 <div id="gameOver">
-<h2 id="gameOverTitle">💀 ИГРА ОКОНЧЕНА</h2>
+<h2 id="gameOverTitle">ИГРА ОКОНЧЕНА</h2>
 <div id="gameOverReason" style="font-size:13px;color:#ff8888;margin-bottom:4px;min-height:18px"></div>
 <div class="stats" id="statsContainer"></div>
 <div>
-<button class="ad-btn" id="adReviveBtn" data-i18n="reviveBtn">❤️ Возродиться</button>
-<button id="restartBtn" data-i18n="toMenuBtn">🔄 В меню</button>
+<button class="ad-btn" id="adReviveBtn" data-i18n="reviveBtn">Возродиться</button>
+<button id="restartBtn" data-i18n="toMenuBtn">В меню</button>
 </div>
 </div>
 
 <div id="achievementPanel">
 <button id="achCloseX" aria-label="Закрыть">×</button>
-<div class="title" data-i18n="achTitle">🏆 ДОСТИЖЕНИЯ</div>
+<div class="title" data-i18n="achTitle">ДОСТИЖЕНИЯ</div>
 <div id="achList"></div>
 <button class="bigBtn" data-i18n="close" onclick="closePanel('achievementPanel')" style="margin-top:8px">ЗАКРЫТЬ</button>
 </div>
 
 <div id="settingsPanel">
-<div class="title" data-i18n="settingsTitle">⚙️ НАСТРОЙКИ</div>
+<div class="title" data-i18n="settingsTitle">НАСТРОЙКИ</div>
 <div class="set-tabs">
-<button class="tab active" data-stab="controls" data-i18n="tabControls">🎮 Управление</button>
-<button class="tab" data-stab="sound" data-i18n="tabSound">🔊 Звук</button>
+<button class="tab active" data-stab="controls" data-i18n="tabControls">Управление</button>
+<button class="tab" data-stab="sound" data-i18n="tabSound">Звук</button>
 </div>
 <div class="set-tab-content active" id="stabControls">
 <div id="controlsList"></div>
 </div>
 <div class="set-tab-content" id="stabSound">
 <div class="vol-row">
-<label><span data-i18n="volMaster">🔊 Общая громкость:</span> <b id="volMasterLabel">100%</b></label>
+<label><span data-i18n="volMaster">Общая громкость:</span> <b id="volMasterLabel">100%</b></label>
 <input type="range" id="volMasterSlider" min="0" max="100" value="100">
 </div>
    <div class="vol-row">
-     <label><span data-i18n="volStreak">🔥 Серии убийств:</span> <b id="volStreakLabel">70%</b></label>
+     <label><span data-i18n="volStreak">Серии убийств:</span> <b id="volStreakLabel">70%</b></label>
      <input type="range" id="volStreakSlider" min="0" max="100" value="70">
    </div>
    <div class="vol-row" style="margin-top:12px; border-top:1px solid #444; padding-top:12px;">
      <label style="display:flex; justify-content:space-between; align-items:center;">
-       <span>🎵 Фоновая музыка:</span>
+       <span>Фоновая музыка:</span>
        <input type="checkbox" id="musicToggle" checked style="transform:scale(1.5);">
      </label>
    </div>
    <div class="vol-row">
-     <label><span>🎶 Громкость музыки:</span> <b id="musicVolumeLabel">80%</b></label>
+     <label><span>Громкость музыки:</span> <b id="musicVolumeLabel">80%</b></label>
      <input type="range" id="musicVolumeSlider" min="0" max="100" value="80">
    </div>
    </div>
@@ -406,11 +482,11 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 
 <div id="exitConfirm">
 <div class="confirmCard">
-<div class="confirmTitle" id="exitConfirmTitle">⚠️ ВЫЙТИ В МЕНЮ?</div>
+<div class="confirmTitle" id="exitConfirmTitle">ВЫЙТИ В МЕНЮ?</div>
 <div class="confirmText" id="exitConfirmText">Прогресс текущего боя будет потерян безвозвратно.</div>
 <div class="confirmBtns">
-<button class="confirmBtnYes" id="exitConfirmYes">🚪 ВЫЙТИ</button>
-<button class="confirmBtnNo" id="exitConfirmNo">↩ ОСТАТЬСЯ В БОЮ</button>
+<button class="confirmBtnYes" id="exitConfirmYes">ВЫЙТИ</button>
+<button class="confirmBtnNo" id="exitConfirmNo">ОСТАТЬСЯ В БОЮ</button>
 </div>
 </div>
 </div>
@@ -427,55 +503,55 @@ canvas.grayscale{filter:grayscale(100%) brightness(0.5)}
 </div>
 </div>
 
-<div id="welcomeScreen" style="position:fixed;inset:0;z-index:500;display:none;flex-direction:column;justify-content:space-between;align-items:center;background-color:#0a0a14;background-image:radial-gradient(circle at center,rgba(0,0,0,0.15) 0%,rgba(0,0,0,0.55) 100%),url('menu-bg.png');background-size:100% 100%,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;padding:10vh 20px;">
+<div id="welcomeScreen" style="position:fixed;inset:0;z-index:500;display:none;flex-direction:column;justify-content:space-between;align-items:center;background-color:#eef2e9;background-image:linear-gradient(180deg,rgba(255,255,255,0.48),rgba(238,244,233,0.74)),url('assets/ui/welcome.jpg');background-size:cover;background-position:center;padding:10vh 20px;">
   <div style="text-align:center;margin-top:auto;">
-    <h1 style="font-size:clamp(24px,6vw,40px);color:#ffd700;text-shadow:0 0 20px #ff8800;letter-spacing:2px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">Танковый Рубеж</h1>
+    <h1 style="font-size:clamp(24px,6vw,40px);color:#2f4a34;text-shadow:0 2px 0 #fff,0 8px 24px rgba(255,255,255,.9);letter-spacing:2px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">Танковый Рубеж</h1>
   </div>
   <div style="margin-bottom:auto;display:flex;flex-direction:column;align-items:center;">
-    <button id="welcomePlayBtn" style="background:linear-gradient(180deg,#ffd700,#c9a000);border:2px solid #ffe066;border-radius:10px;color:#000;font-size:16px;font-weight:900;padding:10px 36px;cursor:pointer;box-shadow:0 4px 0 #8a6a00;text-transform:uppercase;letter-spacing:1px;">▶ Играть</button>
+    <button id="welcomePlayBtn" style="background:linear-gradient(180deg,#8ed07a,#4f9a45);border:2px solid #3b7233;border-radius:10px;color:#fff;font-size:16px;font-weight:900;padding:10px 36px;cursor:pointer;box-shadow:0 4px 0 #3b7233;text-transform:uppercase;letter-spacing:1px;">Играть</button>
   </div>
 </div>
 
 <div id="menu">
 <div id="menuLoading" style="font-size:14px;color:#ffd700;padding:6px 14px;background:rgba(0,0,0,0.5);border-radius:8px;margin-bottom:6px">Загрузка…</div>
-<h1 id="menuTitle">🎯 Танковый Рубеж</h1>
+<h1 id="menuTitle">Танковый Рубеж</h1>
 <div class="record-box" id="recordBox">
-<span class="rec-item"><span data-i18n="recLevel">🏆 Рекорд ур.:</span> <b id="recLevel">1</b></span>
-<span class="rec-item"><span data-i18n="recCoins">💰 Всего:</span> <b id="recCoins">0</b></span>
-<span class="rec-item"><span data-i18n="recKills">🎯 Убийств:</span> <b id="recKills">0</b></span>
+<span class="rec-item"><span data-i18n="recLevel">Рекорд ур.:</span> <b id="recLevel">1</b></span>
+<span class="rec-item"><span data-i18n="recCoins">Всего:</span> <b id="recCoins">0</b></span>
+<span class="rec-item"><span data-i18n="recKills">Убийств:</span> <b id="recKills">0</b></span>
 </div>
 
 <div id="cloudOffline" data-i18n="cloudOffline" style="display:none;font-size:11px;color:#999;padding:4px 10px;background:rgba(0,0,0,0.4);border-radius:6px;margin:4px 0"></div>
 <div class="menu-btns">
-<button class="bigBtn" id="trainBtn" data-i18n="trainBtn">🎓 Обучение</button>
-<button class="bigBtn" id="bonusBtn" style="display:none">💰 Бонус +5000</button>
+<button class="bigBtn" id="trainBtn" data-i18n="trainBtn">Обучение</button>
+<button class="bigBtn" id="bonusBtn" style="display:none">Бонус +5000</button>
 <div id="bonusTimer" style="display:none"></div>
-<button class="bigBtn" id="startBtn" data-i18n="newGame">▶ НОВАЯ ИГРА</button>
-<button class="bigBtn cont" id="continueGameBtn" style="display:none" data-i18n="continueGame">▶ ПРОДОЛЖИТЬ</button>
+<button class="bigBtn" id="startBtn" data-i18n="newGame">НОВАЯ ИГРА</button>
+<button class="bigBtn cont" id="continueGameBtn" style="display:none" data-i18n="continueGame">ПРОДОЛЖИТЬ</button>
 </div>
 
 <div class="langRow" id="diffRow">
 <span><span data-i18n="ngDiffLbl">Сложность:</span></span>
-<button class="langArrow" id="diffPrev">◀</button>
+<button class="langArrow" id="diffPrev">‹</button>
 <span class="langVal" id="diffValue">Легкий</span>
-<button class="langArrow" id="diffNext">▶</button>
+<button class="langArrow" id="diffNext">›</button>
 </div>
 
 <div class="menu-btns">
-<button class="smallBtn" id="achBtn" data-i18n="achBtn">🏆 Достижения</button>
-<button class="smallBtn" id="ctrlBtn" data-i18n="settingsBtn">⚙️ Настройки</button>
-<button class="smallBtn" id="supportBtn" data-i18n="supportBtn">🆘 Поддержка</button>
-<button class="smallBtn" id="buyCoinsBtn" data-i18n="buyCoinsBtn">💰 Купить монеты</button>
+<button class="smallBtn" id="achBtn" data-i18n="achBtn">Достижения</button>
+<button class="smallBtn" id="ctrlBtn" data-i18n="settingsBtn">Настройки</button>
+<button class="smallBtn" id="supportBtn" data-i18n="supportBtn">Поддержка</button>
+<button class="smallBtn" id="buyCoinsBtn" data-i18n="buyCoinsBtn">Купить монеты</button>
 </div>
 
 <div class="langRow" id="langRow">
-<span>🌐 <span data-i18n="langLbl">Язык:</span></span>
-<button class="langArrow" id="langPrev">◀</button>
+<span><span data-i18n="langLbl">Язык:</span></span>
+<button class="langArrow" id="langPrev">‹</button>
 <span class="langVal" id="langValue">Авто</span>
-<button class="langArrow" id="langNext">▶</button>
+<button class="langArrow" id="langNext">›</button>
 </div>
 
-<div class="hint-text" data-i18n-html="hintText" style="display:none">🖱️ Мышь — башня · ЛКМ — огонь · WASD — движение · Tab — магазин</div>
+<div class="hint-text" data-i18n-html="hintText" style="display:none">Мышь — башня · ЛКМ — огонь · WASD — движение · Tab — магазин</div>
 </div>
 
 <button class="rateBtn" id="rateBtn" data-i18n="rateBtn">⭐ Оценить</button>
@@ -793,42 +869,42 @@ async function loadProgress(){
 /* ================= LOCALIZATION ================= */
 const L = {
 ru:{
-cloudSaved:'\u2705 Сохранено в VK', cloudSavedOK:'\u2705 \u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e \u0432 OK', cloudFail:'\u26A0\uFE0F Не удалось сохранить', cloudOffline:'Автономный режим: прогресс не синхронизируется',
-title:'🎯 Танковый Рубеж',
+cloudSaved:'Сохранено в VK', cloudSavedOK:'\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e \u0432 OK', cloudFail:'Не удалось сохранить', cloudOffline:'Автономный режим: прогресс не синхронизируется',
+title:'Танковый Рубеж',
 hud_kills:'Уб.:', hud_level:'Ур.', hud_wave:'Волна', hud_hp:'HP:', langLbl:'Язык:',
 easy:'Легкий', normal:'Средний', hard:'Тяжелый',
 langAuto:'Авто', langRu:'Русский', langEn:'English',
-newGame:'▶ НОВАЯ ИГРА', continueGame:'▶ ПРОДОЛЖИТЬ', achBtn:'🏆 Достижения', settingsBtn:'⚙️ Настройки',
-recLevel:'🏆 Рекорд ур.:', recCoins:'💰 Всего:', recKills:'🎯 Убийств:',
-hintText:'🖱️ Мышь — башня · ЛКМ — огонь · WASD — движение · Tab — магазин',
-shop:'🏗️ МАГАЗИН', statsBtn:' Статистика', statsBtnHide:' Скрыть',
-tabTank:'🚜 Танк', tabBase:'🏰 База', tabWeapons:'🔫 Пушки',
-btnContinue:'▶ ПРОДОЛЖИТЬ', btnExit:'🚪 В МЕНЮ',
+newGame:'НОВАЯ ИГРА', continueGame:'ПРОДОЛЖИТЬ', achBtn:'Достижения', settingsBtn:'Настройки',
+recLevel:'Рекорд ур.:', recCoins:'Всего:', recKills:'Убийств:',
+hintText:'Мышь — башня · ЛКМ — огонь · WASD — движение · Tab — магазин',
+shop:'МАГАЗИН', statsBtn:' Статистика', statsBtnHide:' Скрыть',
+tabTank:'Танк', tabBase:'База', tabWeapons:'Пушки',
+btnContinue:'ПРОДОЛЖИТЬ', btnExit:'В МЕНЮ',
 buyOnce:'Купить один раз',
 owned:'КУПЛЕНО', lvlShort:'Ур.', maxLbl:'МАКС',
-achTitle:'🏆 ДОСТИЖЕНИЯ',
+achTitle:'ДОСТИЖЕНИЯ',
 close:'ЗАКРЫТЬ',
-settingsTitle:'⚙️ НАСТРОЙКИ', tabControls:'🎮 Управление', tabSound:'🔊 Звук',
-volMaster:'🔊 Общая громкость:', volStreak:'🔥 Серии убийств:',
+settingsTitle:'НАСТРОЙКИ', tabControls:'Управление', tabSound:'Звук',
+volMaster:'Общая громкость:', volStreak:'Серии убийств:',
 ctrl_up:'Вверх', ctrl_down:'Вниз', ctrl_left:'Влево', ctrl_right:'Вправо', ctrl_fire:'Огонь',
-lvlDone:'🏆 УРОВЕНЬ ПРОЙДЕН!', chooseRelic:'Выбери реликвию:',
+lvlDone:'УРОВЕНЬ ПРОЙДЕН!', chooseRelic:'Выбери реликвию:',
 nextLvl:'Следующий уровень:',
-gameOverTitle:'💀 ИГРА ОКОНЧЕНА', noCoinsReason:'Не хватает монет для возрождения', reviveBtn:'🔄 Переиграть волну', toMenuBtn:'🔄 В меню',
+gameOverTitle:'ИГРА ОКОНЧЕНА', noCoinsReason:'Не хватает монет для возрождения', reviveBtn:'Переиграть волну', toMenuBtn:'В меню',
 baseDestroyed:'База уничтожена',
-bossWarning:'⚠️ БОСС ⚠️',
-exitConfirmTitle:'⚠️ ВЫЙТИ В МЕНЮ?',
+bossWarning:'БОСС ',
+exitConfirmTitle:'ВЫЙТИ В МЕНЮ?',
 exitConfirmText:'Прогресс текущего боя будет потерян безвозвратно.',
-exitConfirmYes:'🚪 ВЫЙТИ', exitConfirmNo:'↩ ОСТАТЬСЯ В БОЮ',
-s_damage:'💥 Урон +6 за уровень', s_fireRate:'⚡ Скорострельность', s_speed:'🏃 Скорость',
-s_maxHp:'❤️ HP', s_armor:'🛡️ Броня', s_bulletSpeed:'🚀 Скор. снаряда',
-s_pierce:'🎯 Пробивание', s_crit:'⚡ Крит', s_regen:'💚 Регенерация',
-s_concrete:'🛑 Пробитие бетона', s_water:'🏊 Аква-ход',
-s_baseHp:'🏰 HP базы', s_baseRegen:'💚 Рег. базы', s_wallHp:'🧱 Стены', s_coinBonus:'💰 Доход',
-w_cannon:'💥 Пушка', w_mg:'🔫 Пулемёт', w_sniper:'🎯 Снайперка',
-w_flame:'🔥 Огнемёт', w_rocket:'🚀 Ракетница', w_laser:'⚡ Лазер',
-st_dmg:'💥 Урон', st_fr:'⚡ Скоростр.', st_spd:'🏃 Скорость', st_hp:'❤️ HP',
-st_arm:'🛡️ Броня', st_crit:'⚡ Крит', st_regen:'💚 Реген', st_coin:'💰 Доход',
-st_pierce:'🎯 Пробив.', st_bspd:'🚀 Скор.снар.',
+exitConfirmYes:'ВЫЙТИ', exitConfirmNo:'ОСТАТЬСЯ В БОЮ',
+s_damage:'Урон +6 за уровень', s_fireRate:'Скорострельность', s_speed:'Скорость',
+s_maxHp:'HP', s_armor:'Броня', s_bulletSpeed:'Скор. снаряда',
+s_pierce:'Пробивание', s_crit:'Крит', s_regen:'Регенерация',
+s_concrete:'Пробитие бетона', s_water:'Аква-ход',
+s_baseHp:'HP базы', s_baseRegen:'Рег. базы', s_wallHp:'Стены', s_coinBonus:'Доход',
+w_cannon:'Пушка', w_mg:'Пулемёт', w_sniper:'Снайперка',
+w_flame:'Огнемёт', w_rocket:'Ракетница', w_laser:'Лазер',
+st_dmg:'Урон', st_fr:'Скоростр.', st_spd:'Скорость', st_hp:'HP',
+st_arm:'Броня', st_crit:'Крит', st_regen:'Реген', st_coin:'Доход',
+st_pierce:'Пробив.', st_bspd:'Скор.снар.',
 cdShort:' кд', pct:'%', perSec:'/сек',
 r_dmg:'Кровожадность', r_hp:'Стальные нервы', r_speed:'Форсаж', r_coins:'Золотая жила',
 r_fire:'Пулемётчик', r_bullet:'Ускоритель', r_regen:'Восстановление', r_pierce:'Бронебой',
@@ -836,47 +912,47 @@ r_base:'Ремонт базы', r_crit:'Крит-удар',
 r_dmg_d:'+25% урона', r_hp_d:'+30 HP', r_speed_d:'+15% скорость', r_coins_d:'+25% монет',
 r_fire_d:'-15% кд', r_bullet_d:'+0.5 скорость', r_regen_d:'+0.5 HP/сек',
 r_pierce_d:'+1 пробивание', r_base_d:'+25% HP базы', r_crit_d:'+10% шанс x2',
-ach_k1:'🗡 Первая кровь', ach_k1_d:'1 убийство',
-ach_k2:'🗡 Рядовой', ach_k2_d:'100 убийств',
-ach_k3:'🗡 Сержант', ach_k3_d:'500 убийств',
-ach_k4:'🗡 Лейтенант', ach_k4_d:'2000 убийств',
-ach_k5:'🗡 Полковник', ach_k5_d:'10000 убийств',
-ach_l1:'🏰 Рядовой базы', ach_l1_d:'Пройти уровень 1',
-ach_l2:'🏰 Ветеран', ach_l2_d:'Пройти 5 уровней',
-ach_l3:'🏰 Легенда', ach_l3_d:'Пройти 10 уровней',
-ach_d1:'⚔️ Непробиваемый', ach_d1_d:'Победить без урона базы',
-ach_d2:'⚔️ Неубиваемый', ach_d2_d:'Победить без смертей',
-ach_w1:'🔫 Коллекционер', ach_w1_d:'3 оружия куплено',
-ach_w2:'🔫 Арсенал', ach_w2_d:'Всё оружие куплено',
-ach_w3:'⚡ Мастер лазера', ach_w3_d:'100 убийств лазером',
-ach_w4:'🎯 Снайпер', ach_w4_d:'100 убийств снайперкой',
-ach_w5:'🔥 Огнемётчик', ach_w5_d:'100 убийств огнемётом',
-ach_m1:'💰 Богач', ach_m1_d:'Набрать 100K монет',
-ach_b1:'👑 Боссоруб', ach_b1_d:'Убить 5 боссов',
-ach_b2:'👑 Убийца драконов', ach_b2_d:'Убить 20 боссов',
-ach_s1:'🔥 Godlike', ach_s1_d:'10+ убийств подряд',
+ach_k1:'Первая кровь', ach_k1_d:'1 убийство',
+ach_k2:'Рядовой', ach_k2_d:'100 убийств',
+ach_k3:'Сержант', ach_k3_d:'500 убийств',
+ach_k4:'Лейтенант', ach_k4_d:'2000 убийств',
+ach_k5:'Полковник', ach_k5_d:'10000 убийств',
+ach_l1:'Рядовой базы', ach_l1_d:'Пройти уровень 1',
+ach_l2:'Ветеран', ach_l2_d:'Пройти 5 уровней',
+ach_l3:'Легенда', ach_l3_d:'Пройти 10 уровней',
+ach_d1:'Непробиваемый', ach_d1_d:'Победить без урона базы',
+ach_d2:'Неубиваемый', ach_d2_d:'Победить без смертей',
+ach_w1:'Коллекционер', ach_w1_d:'3 оружия куплено',
+ach_w2:'Арсенал', ach_w2_d:'Всё оружие куплено',
+ach_w3:'Мастер лазера', ach_w3_d:'100 убийств лазером',
+ach_w4:'Снайпер', ach_w4_d:'100 убийств снайперкой',
+ach_w5:'Огнемётчик', ach_w5_d:'100 убийств огнемётом',
+ach_m1:'Богач', ach_m1_d:'Набрать 100K монет',
+ach_b1:'Боссоруб', ach_b1_d:'Убить 5 боссов',
+ach_b2:'Убийца драконов', ach_b2_d:'Убить 20 боссов',
+ach_s1:'Godlike', ach_s1_d:'10+ убийств подряд',
 introLabel:'УРОВЕНЬ', introWaveLbl:'Волн:', introHint:'Приготовься!',
-ngTitle:'▶ НОВАЯ ИГРА',
-ngDiffLbl:'⚔️ Сложность:',
+ngTitle:'НОВАЯ ИГРА',
+ngDiffLbl:'Сложность:',
 rateBtn:'⭐ Оценить',
-buyCoinsBtn:'\u{1F4B0} Купить монеты', shopCoinsTitle:'Пополнение монет',
+buyCoinsBtn:'Купить монеты', shopCoinsTitle:'Пополнение монет',
 coinsPackSmall:'10 000 монет — 5 голосов', coinsPackMedium:'25 000 монет — 10 голосов', coinsPackLarge:'60 000 монет — 20 голосов',
 buySuccess:'Монеты зачислены!', buyFail:'Не удалось выполнить покупку', buyCancel:'Покупка отменена', buyOnlyVK:'Покупка доступна только в VK',
-supportBtn:'\u{1F198} Поддержка',
-trainBtn:'\u{1F393} Обучение',
+supportBtn:'Поддержка',
+trainBtn:'Обучение',
 trainCompleteTitle:'ПОЗДРАВЛЯЕМ! ОБУЧЕНИЕ ПРОЙДЕНО!',
 trainCompleteText:'Готов к настоящему бою?',
 btnToLevels:'\u25B6 К УРОВНЯМ',
-btnRetryTraining:'\u{1F501} ЗАНОВО',
-btnTrainToMenu:'\u{1F3E0} В МЕНЮ',
+btnRetryTraining:'ЗАНОВО',
+btnTrainToMenu:'В МЕНЮ',
 tip_move:'Добро пожаловать! Двигайся с помощью WASD. Эта панель показывает твои жизни, монеты и прогресс.',tip_shoot:'Наведи мышь и нажми ЛКМ, чтобы выстрелить.',tip_base:'Это твоя база. Она защищает тебя и лечит. Подъедь к базе и полечись, если нужно. А это твой напарник-бот (BOT), он поможет защитить базу!',tip_shop:'Открой магазин (Tab) и купи улучшение.',tip_defend:'Враги идут! Защити базу.',skipTraining:'Пропустить обучение',tipControlsTitle:'1/4 · УПРАВЛЕНИЕ',
 tipControlsText:'WASD — движение. Мышь — башня. Клик или ПРОБЕЛ — огонь.',
 tipFireTitle:'2/4 · ОРУЖИЕ',
 tipFireText:'Tab — магазин. 1-6 или колёсико мыши — смена оружия.',
 tipBaseTitle:'3/4 · ЗАЩИТА БАЗЫ',
 tipBaseText:'Защити базу. Враги идут сверху.',
-tipBonusTitle:'\u{1F4A3} БОНУСЫ',
-tipBonusText:'Подбирай бонусы: 💰 монеты, ❤️ лечение, 🛡️ щит, ❄️ заморозка, 💣 бомба.',
+tipBonusTitle:'БОНУСЫ',
+tipBonusText:'Подбирай бонусы: монеты, лечение, щит, заморозка, бомба.',
 tipContinue:'Нажми, чтобы продолжить', gotIt:'Понятно', deathTip:'Вы возродились на базе! Каждое возрождение стоит 1000 монет. Следите за здоровьем, используйте укрытия (стены) и улучшайте свой танк в магазине (Tab), чтобы выживать дольше.',
 enemy_artillery:'Артиллерия', enemy_artillery_d:'У этой пушки непробиваемая защита, пока она не сделает свой первый выстрел! Как только она выстрелит, щит упадёт. Она стреляет мощными снарядами по площади. Не стойте на месте!',
 enemy_spook:'Огнемётный Танк', enemy_spook_d:'Очень быстрый и агрессивный враг. Он охотится лично на вас! Стреляет огнём вблизи. Держите дистанцию!',
@@ -887,42 +963,42 @@ enemy_flanker:'Танк-Разрушитель', enemy_flanker_d:'Едет по 
 enemy_boss:'БОСС', enemy_boss_d:'Колоссальный запас здоровья, двойные пушки и разрушительная мощь. Когда его HP упадёт ниже 60%, он выпустит веер снарядов!',
 },
 en:{
-cloudSaved:'\u2705 Saved to VK', cloudSavedOK:'\u2705 Saved to OK', cloudFail:'\u26A0\uFE0F Save failed', cloudOffline:'Offline mode: progress is not synced',
-title:'🎯 Tank Frontier',
+cloudSaved:'Saved to VK', cloudSavedOK:'Saved to OK', cloudFail:'Save failed', cloudOffline:'Offline mode: progress is not synced',
+title:'Tank Frontier',
 hud_kills:'Kills:', hud_level:'Lv.', hud_wave:'Wave', hud_hp:'HP:', langLbl:'Language:',
 easy:'Easy', normal:'Normal', hard:'Hard',
 langAuto:'Auto', langRu:'Russian', langEn:'English',
-newGame:'▶ NEW GAME', continueGame:'▶ CONTINUE', achBtn:'🏆 Achievements', settingsBtn:'⚙️ Settings',
-recLevel:'🏆 Best Lv.:', recCoins:'💰 Total:', recKills:'🎯 Kills:',
-hintText:'🖱️ Mouse — turret · LMB — fire · WASD — move · Tab — shop',
+newGame:'NEW GAME', continueGame:'CONTINUE', achBtn:'Achievements', settingsBtn:'Settings',
+recLevel:'Best Lv.:', recCoins:'Total:', recKills:'Kills:',
+hintText:'Mouse — turret · LMB — fire · WASD — move · Tab — shop',
 shop:'🏗️ SHOP', statsBtn:' Stats', statsBtnHide:' Hide',
-tabTank:'🚜 Tank', tabBase:'🏰 Base', tabWeapons:'🔫 Weapons',
-btnContinue:'▶ CONTINUE', btnExit:'🚪 TO MENU',
+tabTank:'Tank', tabBase:'Base', tabWeapons:'Weapons',
+btnContinue:'CONTINUE', btnExit:'TO MENU',
 buyOnce:'Buy once',
 owned:'OWNED', lvlShort:'Lv.', maxLbl:'MAX',
-achTitle:'🏆 ACHIEVEMENTS',
+achTitle:'ACHIEVEMENTS',
 close:'CLOSE',
-settingsTitle:'⚙️ SETTINGS', tabControls:'🎮 Controls', tabSound:'🔊 Sound',
-volMaster:'🔊 Master volume:', volStreak:'🔥 Kill streak:',
+settingsTitle:'SETTINGS', tabControls:'Controls', tabSound:'Sound',
+volMaster:'Master volume:', volStreak:'Kill streak:',
 ctrl_up:'Up', ctrl_down:'Down', ctrl_left:'Left', ctrl_right:'Right', ctrl_fire:'Fire',
-lvlDone:'🏆 LEVEL COMPLETE!', chooseRelic:'Choose a relic:',
+lvlDone:'LEVEL COMPLETE!', chooseRelic:'Choose a relic:',
 nextLvl:'Next level:',
-gameOverTitle:'💀 GAME OVER', noCoinsReason:'Not enough coins to revive', reviveBtn:'🔄 Replay Wave', toMenuBtn:'🔄 To Menu',
+gameOverTitle:'GAME OVER', noCoinsReason:'Not enough coins to revive', reviveBtn:'Replay Wave', toMenuBtn:'To Menu',
 baseDestroyed:'Base destroyed',
-bossWarning:'⚠️ пёЏ BOSS ⚠️ пёЏ',
-exitConfirmTitle:'⚠️ пёЏ EXIT TO MENU?',
+bossWarning:'пёЏ BOSS пёЏ',
+exitConfirmTitle:'пёЏ EXIT TO MENU?',
 exitConfirmText:'Current battle progress will be lost forever.',
-exitConfirmYes:'🚪 EXIT', exitConfirmNo:'↩ STAY',
-s_damage:'💥 Damage +6 per level', s_fireRate:'⚡ Fire rate', s_speed:'🏃 Speed',
-s_maxHp:'❤️ HP', s_armor:'🛡️ Armor', s_bulletSpeed:'🚀 Bullet speed',
-s_pierce:'🎯 Pierce', s_crit:'⚡ Crit', s_regen:'💚 Regen',
-s_concrete:'🛑 Concrete pierce', s_water:'🏊 Water walk',
-s_baseHp:'🏰 Base HP', s_baseRegen:'💚 Base regen', s_wallHp:'🧱 Walls', s_coinBonus:'💰 Income',
-w_cannon:'💥 Cannon', w_mg:'🔫 Machine gun', w_sniper:'🎯 Sniper',
-w_flame:'🔥 Flamethrower', w_rocket:'🚀 Rocket', w_laser:'⚡ Laser',
-st_dmg:'💥 Dmg', st_fr:'⚡ Fire rate', st_spd:'🏃 Speed', st_hp:'❤️ HP',
-st_arm:'🛡️ Armor', st_crit:'⚡ Crit', st_regen:'💚 Regen', st_coin:'💰 Income',
-st_pierce:'🎯 Pierce', st_bspd:'🚀 Bullet spd',
+exitConfirmYes:'EXIT', exitConfirmNo:'STAY',
+s_damage:'Damage +6 per level', s_fireRate:'Fire rate', s_speed:'Speed',
+s_maxHp:'HP', s_armor:'Armor', s_bulletSpeed:'Bullet speed',
+s_pierce:'Pierce', s_crit:'Crit', s_regen:'Regen',
+s_concrete:'Concrete pierce', s_water:'Water walk',
+s_baseHp:'Base HP', s_baseRegen:'Base regen', s_wallHp:'Walls', s_coinBonus:'Income',
+w_cannon:'Cannon', w_mg:'Machine gun', w_sniper:'Sniper',
+w_flame:'Flamethrower', w_rocket:'Rocket', w_laser:'Laser',
+st_dmg:'Dmg', st_fr:'Fire rate', st_spd:'Speed', st_hp:'HP',
+st_arm:'Armor', st_crit:'Crit', st_regen:'Regen', st_coin:'Income',
+st_pierce:'Pierce', st_bspd:'Bullet spd',
 cdShort:' cd', pct:'%', perSec:'/s',
 r_dmg:'Bloodthirst', r_hp:'Steel nerves', r_speed:'Boost', r_coins:'Goldmine',
 r_fire:'Machine gunner', r_bullet:'Accelerator', r_regen:'Recovery', r_pierce:'AP rounds',
@@ -930,47 +1006,47 @@ r_base:'Base repair', r_crit:'Crit strike',
 r_dmg_d:'+25% damage', r_hp_d:'+30 HP', r_speed_d:'+15% speed', r_coins_d:'+25% coins',
 r_fire_d:'-15% cooldown', r_bullet_d:'+0.5 speed', r_regen_d:'+0.5 HP/s',
 r_pierce_d:'+1 pierce', r_base_d:'+25% base HP', r_crit_d:'+10% chance x2',
-ach_k1:'🗡️ First Blood', ach_k1_d:'1 kill',
-ach_k2:'🗡️ Private', ach_k2_d:'100 kills',
-ach_k3:'🗡️ Sergeant', ach_k3_d:'500 kills',
-ach_k4:'🗡️ Lieutenant', ach_k4_d:'2000 kills',
-ach_k5:'🗡️ Colonel', ach_k5_d:'10000 kills',
-ach_l1:'🏰 Base Private', ach_l1_d:'Complete level 1',
-ach_l2:'🏰 Veteran', ach_l2_d:'Complete 5 levels',
-ach_l3:'🏰 Legend', ach_l3_d:'Complete 10 levels',
-ach_d1:'⚔️ Impregnable', ach_d1_d:'Win without base damage',
-ach_d2:'⚔️ Immortal', ach_d2_d:'Win without dying',
-ach_w1:'🔫 Collector', ach_w1_d:'Buy 3 weapons',
-ach_w2:'🔫 Arsenal', ach_w2_d:'Buy all weapons',
-ach_w3:'⚡ Laser master', ach_w3_d:'100 laser kills',
-ach_w4:'🎯 Sniper', ach_w4_d:'100 sniper kills',
-ach_w5:'🔥 Flamer', ach_w5_d:'100 flamethrower kills',
-ach_m1:'💰 Rich', ach_m1_d:'Earn 100K coins',
-ach_b1:'👑 Boss slayer', ach_b1_d:'Kill 5 bosses',
-ach_b2:'👑 Dragonslayer', ach_b2_d:'Kill 20 bosses',
-ach_s1:'🔥 Godlike', ach_s1_d:'10+ kill streak',
+ach_k1:'️ First Blood', ach_k1_d:'1 kill',
+ach_k2:'️ Private', ach_k2_d:'100 kills',
+ach_k3:'️ Sergeant', ach_k3_d:'500 kills',
+ach_k4:'️ Lieutenant', ach_k4_d:'2000 kills',
+ach_k5:'️ Colonel', ach_k5_d:'10000 kills',
+ach_l1:'Base Private', ach_l1_d:'Complete level 1',
+ach_l2:'Veteran', ach_l2_d:'Complete 5 levels',
+ach_l3:'Legend', ach_l3_d:'Complete 10 levels',
+ach_d1:'Impregnable', ach_d1_d:'Win without base damage',
+ach_d2:'Immortal', ach_d2_d:'Win without dying',
+ach_w1:'Collector', ach_w1_d:'Buy 3 weapons',
+ach_w2:'Arsenal', ach_w2_d:'Buy all weapons',
+ach_w3:'Laser master', ach_w3_d:'100 laser kills',
+ach_w4:'Sniper', ach_w4_d:'100 sniper kills',
+ach_w5:'Flamer', ach_w5_d:'100 flamethrower kills',
+ach_m1:'Rich', ach_m1_d:'Earn 100K coins',
+ach_b1:'Boss slayer', ach_b1_d:'Kill 5 bosses',
+ach_b2:'Dragonslayer', ach_b2_d:'Kill 20 bosses',
+ach_s1:'Godlike', ach_s1_d:'10+ kill streak',
 introLabel:'LEVEL', introWaveLbl:'Waves:', introHint:'Get ready!',
-ngTitle:'▶ NEW GAME',
-ngDiffLbl:'⚔️ Сложность:',
+ngTitle:'NEW GAME',
+ngDiffLbl:'Сложность:',
 rateBtn:'⭐ Rate',
-buyCoinsBtn:'\u{1F4B0} Buy coins', shopCoinsTitle:'Buy coins',
+buyCoinsBtn:'Buy coins', shopCoinsTitle:'Buy coins',
 coinsPackSmall:'10,000 coins — 5 votes', coinsPackMedium:'25,000 coins — 10 votes', coinsPackLarge:'60,000 coins — 20 votes',
 buySuccess:'Coins added!', buyFail:'Purchase failed', buyCancel:'Purchase cancelled', buyOnlyVK:'Purchase is available only in VK',
-supportBtn:'\u{1F198} Support',
-trainBtn:'\u{1F393} Training',
-trainCompleteTitle:'\u{1F3AF} TRAINING COMPLETE!',
+supportBtn:'Support',
+trainBtn:'Training',
+trainCompleteTitle:'TRAINING COMPLETE!',
 trainCompleteText:'Ready for the real fight?',
 btnToLevels:'\u25B6 TO LEVELS',
-btnRetryTraining:'\u{1F501} RETRY',
-btnTrainToMenu:'\u{1F3E0} TO MENU',
+btnRetryTraining:'RETRY',
+btnTrainToMenu:'TO MENU',
 tip_move:'Welcome! Move with WASD. This panel shows your health, coins and progress.',tip_shoot:'Aim with mouse and click LMB to fire.',tip_base:'This is your base. It protects and heals you. Drive to the base and heal if needed. And this is your ally bot (BOT), he will help defend the base!',tip_shop:'Open the shop (Tab) and buy an upgrade.',tip_defend:'Enemies are coming! Defend the base.',skipTraining:'Skip tutorial',tipControlsTitle:'1/4 · CONTROLS',
 tipControlsText:'WASD — move. Mouse — turret. Click or SPACE — fire.',
 tipFireTitle:'2/4 · WEAPONS',
 tipFireText:'Tab — shop. 1-6 or mouse wheel — weapon switch.',
 tipBaseTitle:'3/4 · BASE DEFENSE',
 tipBaseText:'Protect the base. Enemies come from above.',
-tipBonusTitle:'\u{1F4A3} BONUSES',
-tipBonusText:'Pick up bonuses: 💰 coins, ❤️ health, 🛡️ shield, ❄️ freeze, 💣 bomb.',
+tipBonusTitle:'BONUSES',
+tipBonusText:'Pick up bonuses: coins, health, shield, freeze, bomb.',
 tipContinue:'Tap to continue', gotIt:'Got it', deathTip:'You respawned at the base! Each respawn costs 1000 coins. Watch your health, use cover (walls), and upgrade your tank in the shop (Tab) to survive longer!',
 enemy_artillery:'Artillery', enemy_artillery_d:'This gun is invulnerable until it fires its first shot! Once it shoots, its shield drops. It fires powerful area-damage shells. Keep moving!',
 enemy_spook:'Flamethrower Tank', enemy_spook_d:'A very fast and aggressive enemy. It hunts you personally and attacks with fire at close range. Keep your distance!',
@@ -1294,6 +1370,39 @@ const BASE_X=W/2,BASE_Y=H-100,BASE_SIZE=100;
 const FIXED_DT=1000/60;
 const RESPAWN_TIME=5.0;
 const PLAYER_COLORS=['#4fc3f7','#ff8a65'];
+/* ================= SPRITES (Kenney top-down tanks) ================= */
+const ART={};
+function art(name){ let i=ART[name]; if(!i){ i=new Image(); i.onload=()=>{i.ready=true;}; i.onerror=()=>{i.failed=true;}; i.src='assets/tanks/'+name; ART[name]=i; } return i; }
+function artReady(i){ return !!(i&&i.ready&&i.width>0); }
+const ARMOR_BODY={blue:'tankBody_blue.png',red:'tankBody_red.png',green:'tankBody_green.png',sand:'tankBody_sand.png',dark:'tankBody_dark.png',darkLarge:'tankBody_darkLarge.png',huge:'tankBody_huge.png'};
+const ARMOR_TURRET={blue:'tankBlue_barrel',red:'tankRed_barrel',green:'tankGreen_barrel',sand:'tankSand_barrel',dark:'tankDark_barrel'};
+function drawTankBody(x,y,angle,r,key){
+  const img=art(ARMOR_BODY[key]||ARMOR_BODY.dark);
+  if(!artReady(img))return false;
+  const w=r*2.6,h=w*(36/38);
+  ctx.save(); ctx.translate(x,y); ctx.rotate(angle+Math.PI/2);
+  ctx.drawImage(img,-w/2,-h/2,w,h);
+  ctx.restore(); return true;
+}
+function drawTankTurret(x,y,angle,r,key,barrel){
+  const base=ARMOR_TURRET[key]||ARMOR_TURRET.dark;
+  const img=art(base+(barrel||1)+'.png');
+  if(!artReady(img))return false;
+  const bs=(r*2.6)/38, w=12*bs, h=26*bs;
+  ctx.save(); ctx.translate(x,y); ctx.rotate(angle+Math.PI/2);
+  ctx.drawImage(img,-w/2,-h*(22/26),w,h);
+  ctx.restore(); return true;
+}
+function enemyArtKey(e){
+  if(e.isBoss)return {body:'huge',turret:'red',barrel:3};
+  if(e.isHeavy)return {body:'darkLarge',turret:'dark',barrel:2};
+  if(e.isFast)return {body:'green',turret:'green',barrel:1};
+  if(e.isFlanker)return {body:'red',turret:'red',barrel:2};
+  if(e.isArtillery)return {body:'sand',turret:'sand',barrel:2};
+  if(e.isPT)return {body:'dark',turret:'dark',barrel:1};
+  if(e.isSpook)return {body:'dark',turret:'dark',barrel:2};
+  return {body:'dark',turret:'dark',barrel:1};
+}
 const ENEMY_TIERS=[
 {color:'#e8e8e8',dark:'#a8a8a8',hp:38,speed:0.55,dmg:3,radius:14,coin:12},
 {color:'#b0b8c0',dark:'#7a828a',hp:68,speed:0.52,dmg:4,radius:14,coin:18},
@@ -1323,18 +1432,18 @@ const SKILLS_TANK=[
 {id:'water',base:600,mult:2.50,max:1}
 ];
 const VIP_WEAPONS=[
-  {id:'mg',     item:'tanks_weapon_mg',     name:'🔫 Пулемёт',     price:1, desc:'Стреляет очередями. Высокая скорострельность.'},
-  {id:'sniper', item:'tanks_weapon_sniper', name:'🎯 Снайперка',    price:2, desc:'Пробивает до 3 целей. Огромная скорость снаряда.'},
-  {id:'flame',  item:'tanks_weapon_flame',  name:'🔥 Огнемёт',      price:2, desc:'Веер из 4 струй. Урон по площади вблизи.'},
-  {id:'rocket', item:'tanks_weapon_rocket', name:'🚀 Ракетница',    price:3, desc:'Мощный взрыв по площади. Бьет по всем врагам рядом.'},
-  {id:'laser',  item:'tanks_weapon_laser',  name:'⚡ Лазер',        price:5, desc:'Уничтожает всех на линии огня. Бесконечное пробивание.'}
+  {id:'mg',     item:'tanks_weapon_mg',     name:'Пулемёт',     price:1, desc:'Стреляет очередями. Высокая скорострельность.'},
+  {id:'sniper', item:'tanks_weapon_sniper', name:'Снайперка',    price:2, desc:'Пробивает до 3 целей. Огромная скорость снаряда.'},
+  {id:'flame',  item:'tanks_weapon_flame',  name:'Огнемёт',      price:2, desc:'Веер из 4 струй. Урон по площади вблизи.'},
+  {id:'rocket', item:'tanks_weapon_rocket', name:'Ракетница',    price:3, desc:'Мощный взрыв по площади. Бьет по всем врагам рядом.'},
+  {id:'laser',  item:'tanks_weapon_laser',  name:'Лазер',        price:5, desc:'Уничтожает всех на линии огня. Бесконечное пробивание.'}
 ];
 const SKILLS_BASE=[
 {id:'baseHp',base:120,mult:1.50,max:15},{id:'baseRegen',base:160,mult:1.55,max:10},
 {id:'coinBonus',base:70,mult:1.45,max:10},{id:'wallHp',base:80,mult:1.40,max:6}
 ];
 const RELIC_IDS=['r_dmg','r_hp','r_speed','r_coins','r_fire','r_bullet','r_regen','r_pierce','r_base','r_crit'];
-const RELIC_ICONS={r_dmg:'💥',r_hp:'❤️',r_speed:'🏃',r_coins:'💰',r_fire:'🔥',r_bullet:'🚀',r_regen:'💚',r_pierce:'🎯',r_base:'🏰',r_crit:'⚡'};
+const RELIC_ICONS={r_dmg:'',r_hp:'',r_speed:'',r_coins:'',r_fire:'',r_bullet:'',r_regen:'',r_pierce:'',r_base:'',r_crit:''};
 const STREAKS=[
 {n:1,eng:'FIRST BLOOD',ru:'ПЕРВАЯ КРОВЬ',color:'#ffd700'},
 {n:2,eng:'DOUBLE KILL',ru:'ДВОЙНОЕ УБИЙСТВО',color:'#ff9800'},
@@ -1716,7 +1825,7 @@ class Bullet{
     this.radius=4+tier*0.6; this.damage=dmg; this.owner=owner; this.life=life; this.pierce=pierce; this.hits=0;
     this.tier=tier; this.crit=crit; this.aoe=aoe; this.isEnemy=(owner==='enemy'); this.isFlame=isFlame;
     this.weaponId=null; this.isRocket=false;
-    this.color=this.isEnemy?'#ff5544':(this.isFlame?'#ff4400':(['#ffe066','#ffcc44','#88ddff','#ff66ff','#ff8833','#00ff66'][tier]||'#ffe066'));
+    this.color=this.isEnemy?'#ff5544':(this.isFlame?'#ff4400':(['#2fd3ff','#ffb02e','#9ef0ff','#ff5cf0','#ff7a2e','#26ff8a'][tier]||'#2fd3ff'));
     this.trail=[];
   }
   update(dt){
@@ -1792,9 +1901,13 @@ class Bullet{
       ctx.shadowBlur=0; ctx.fillStyle='#ffd27a'; ctx.fillRect(-this.radius*0.45,-1.5,this.radius*0.9,3);
       ctx.restore();
     } else {
-      ctx.shadowColor=this.color; ctx.shadowBlur=10+this.tier*4;
+      ctx.beginPath(); ctx.arc(this.x,this.y,this.radius+2,0,Math.PI*2);
+      ctx.fillStyle='rgba(24,30,24,0.9)'; ctx.fill();
+      ctx.shadowColor=this.color; ctx.shadowBlur=9+this.tier*3;
       ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fillStyle=this.color; ctx.fill();
       ctx.shadowBlur=0;
+      ctx.beginPath(); ctx.arc(this.x,this.y,Math.max(1.2,this.radius*0.45),0,Math.PI*2);
+      ctx.fillStyle='#ffffff'; ctx.fill();
     }
   }
 }
@@ -1983,7 +2096,7 @@ class Tank{
     this.x = clamp(pos.x, this.radius + 2, W - this.radius - 2);
     this.y = clamp(pos.y, this.radius + 2, H - this.radius - 2);
     sfxRespawnCoins();
-    floaters.push(new Floater(this.x,this.y-28,'-1000💰','#ffcc44',130));
+    floaters.push(new Floater(this.x,this.y-28,'-1000','#ffcc44',130));
     this.wasFiring=false; this.input.fireHeld=false; this.input.firePressed=false;
     this.stunTimer=0; this.burstCount=0; this.burstCooldown=0;
     for(let i=0;i<30;i++)particles.push(new Particle(this.x,this.y,4,'#44ff88',0.7));
@@ -1991,7 +2104,7 @@ class Tank{
     if(!save.seenDeathTip){
       save.seenDeathTip=true;
       saveAll();
-      showTrainingTip('💀', 'Возрождение', t('deathTip'), ()=>{});
+      showTrainingTip('', 'Возрождение', t('deathTip'), ()=>{});
     }
   }
   drawCamo(){
@@ -2015,7 +2128,7 @@ class Tank{
       if(this.respawnTimer>0){
         ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.beginPath(); ctx.arc(this.spawnX,this.spawnY,20,0,Math.PI*2); ctx.fill();
         ctx.fillStyle='#ff8888'; ctx.font='bold 24px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle';
-        ctx.fillText('💀',this.spawnX,this.spawnY-2);
+        ctx.fillText('',this.spawnX,this.spawnY-2);
         ctx.font='bold 14px Arial'; ctx.fillStyle='#fff';
         ctx.fillText(this.respawnTimer.toFixed(1)+'s',this.spawnX,this.spawnY+22);
       }
@@ -2024,18 +2137,10 @@ class Tank{
     if(this.invincible>0&&Math.floor(Date.now()/100)%2===0)return;
     const stunBlink=this.stunTimer>0&&Math.floor(Date.now()/90)%2===0;
     if(stunBlink)ctx.globalAlpha=0.35;
-    ctx.save(); ctx.translate(this.x,this.y); ctx.rotate(this.bodyAngle); this.drawCamo(); ctx.restore();
-    ctx.save(); ctx.translate(this.x,this.y); ctx.rotate(this.turretAngle);
-    const w=this.weapon; const bl2=w.id==='sniper'?48:w.id==='flame'?22:w.id==='laser'?28:24;
-    ctx.fillStyle='#222'; ctx.fillRect(0,-3,this.radius+bl2,6);
-    ctx.fillStyle='#111'; ctx.fillRect(0,-3,this.radius+bl2,2);
-    ctx.fillStyle=(['#888','#aaa','#88ddff','#ff8833','#ff6600','#00ff66'][w.tier])||'#888';
-    ctx.fillRect(this.radius+bl2-4,-4,5,8);
-    if(w.isLaser){ ctx.shadowColor='#00ff66'; ctx.shadowBlur=15; ctx.fillStyle='#00ff66'; ctx.fillRect(this.radius+bl2-4,-4,5,8); ctx.shadowBlur=0; }
-    ctx.fillStyle='#444'; ctx.beginPath(); ctx.arc(0,0,9,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle='#000'; ctx.lineWidth=1.5; ctx.stroke();
-    ctx.fillStyle='#666'; ctx.beginPath(); ctx.arc(0,0,6,0,Math.PI*2); ctx.fill();
-    ctx.restore();
+    const bodyKey=this.color===PLAYER_COLORS[0]?'blue':'red';
+    const tierBarrel=Math.min(3,((this.weapon.tier|0)+1));
+    drawTankBody(this.x,this.y,this.bodyAngle,this.radius,bodyKey);
+    drawTankTurret(this.x,this.y,this.turretAngle,this.radius,bodyKey,tierBarrel);
     ctx.globalAlpha=1;
     const hpPct=this.hp/this.maxHp;
     ctx.fillStyle='rgba(0,0,0,0.6)'; ctx.fillRect(this.x-16,this.y-this.radius-10,32,4);
@@ -2344,7 +2449,7 @@ class EnemyTank{
     const coinBoost = level >= 6 ? 1.3 : 1.0;
     const r=Math.round(this.coinValue*b*1.5*coinBoost);
     coins+=r; stats.totalCoinsEarned+=r;
-    floaters.push(new Floater(this.x,this.y-15,`+${r}💰`,'#ffd700'));
+    floaters.push(new Floater(this.x,this.y-15,`+${r}`,'#ffd700'));
     kills++; stats.totalKills++;
     if(this.isBoss)stats.totalBossKills++;
     addKill();
@@ -2469,10 +2574,10 @@ class EnemyTank{
     ctx.fillRect(this.x-bw/2,this.y-this.radius-14,bw*hpPct,5);
     ctx.fillStyle='#ffcc44'; ctx.font='bold 14px Arial';
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText('🎯',this.x,this.y-this.radius-22);
+    ctx.fillText('',this.x,this.y-this.radius-22);
     if(this.isBoss){
       ctx.fillStyle='#ffd700'; ctx.font='bold 20px Arial';
-      ctx.fillText('👑',this.x,this.y-this.radius-40);
+      ctx.fillText('',this.x,this.y-this.radius-40);
       ctx.fillStyle='#fff'; ctx.font='bold 12px Arial';
       ctx.fillText('РџРў-РЎРђРЈ',this.x,this.y-this.radius-26);
     }
@@ -2487,45 +2592,21 @@ class EnemyTank{
       ctx.beginPath(); ctx.arc(this.x,this.y,rr,0,Math.PI*2); ctx.stroke(); ctx.shadowBlur=0; ctx.restore();
       return;
     }
-    if(this.isArtillery){ this.drawArtillery(); return; }
-    if(this.isPT){ this.drawPT(); return; }
     const bl=this.hitFlash>0;
-    const w=this.isHeavy?this.radius*3.2:this.radius*2.6, h=this.isHeavy?this.radius*2.2:this.radius*1.6;
+    const ak=enemyArtKey(this);
     ctx.save(); ctx.translate(this.x,this.y);
-    ctx.fillStyle='rgba(0,0,0,0.28)';
-    ctx.beginPath(); ctx.ellipse(3,4,w*0.52,h*0.48,0,0,Math.PI*2); ctx.fill();
-    ctx.save(); ctx.rotate(this.bodyAngle);
-    ctx.fillStyle='#1a1a1a'; ctx.fillRect(-w/2-3,-h/2+1,5,h-2); ctx.fillRect(w/2-2,-h/2+1,5,h-2);
-    ctx.fillStyle='#333'; const tH=(h-2)/6;
-    for(let i=0;i<6;i++){ ctx.fillRect(-w/2-3,-h/2+1+i*tH,5,2); ctx.fillRect(w/2-2,-h/2+1+i*tH,5,2); }
-    ctx.fillStyle=bl?'#fff':this.color; ctx.fillRect(-w/2,-h/2,w,h);
-    ctx.fillStyle=bl?'#fff':shadeColor(this.color,25); ctx.fillRect(-w/2,-h/2,w,2);
-    ctx.fillStyle=bl?'#fff':shadeColor(this.color,-45);
-    ctx.fillRect(-w/2,h/2-2,w,2); ctx.fillRect(-w/2,-h/2+3,5,h-6);
-    ctx.fillStyle=bl?'#fff':this.darkColor;
-    ctx.beginPath(); ctx.arc(w*0.22,-h*0.12,h*0.22,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle=bl?'#fff':this.darkColor; ctx.lineWidth=2; ctx.strokeRect(-w/2,-h/2,w,h);
-    if(this.isFlanker){ ctx.fillStyle='#ff4400'; ctx.fillRect(-w/2,-h/2,w,3); ctx.fillRect(-w/2,h/2-3,w,3); }
+    ctx.fillStyle='rgba(60,50,30,0.18)';
+    ctx.beginPath(); ctx.ellipse(3,4,this.radius*1.35,this.radius*1.1,0,0,Math.PI*2); ctx.fill();
     ctx.restore();
-    ctx.save(); ctx.rotate(this.turretAngle);
-    const bl2=this.weaponId==='sniper'?45:this.weaponId==='laser'?26:20;
-    ctx.fillStyle='#222'; ctx.fillRect(0,-2.5,this.radius+bl2,5);
-    ctx.fillStyle=bl?'#fff':(this.weaponId==='laser'?'#00ff66':'#333');
-    ctx.beginPath(); ctx.arc(0,0,7,0,Math.PI*2); ctx.fill();
-    ctx.strokeStyle='#000'; ctx.lineWidth=1; ctx.stroke();
-    if(this.weaponId==='laser'){ ctx.shadowColor='#00ff66'; ctx.shadowBlur=12; ctx.fillStyle='#00ff66'; ctx.fillRect(this.radius+bl2-3,-3,4,6); ctx.shadowBlur=0; }
-    ctx.restore();
-    if(this.isFast){ ctx.fillStyle='#ffe000'; ctx.font='bold 14px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('⚡',-this.radius,-this.radius); }
-    if(this.isFlanker){ ctx.fillStyle='#ff4400'; ctx.font='bold 14px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('⤴',this.radius,-this.radius); }
-    if(this.isSpook){ ctx.fillStyle='#ff2200'; ctx.font='bold 20px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('⚠️ ',0,-this.radius-4); }
-    if(this.isHeavy){ ctx.fillStyle='#aaa'; ctx.font='bold 18px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('🛡️',0,-this.radius-12); }
-    if(this.isBoss){ ctx.fillStyle='#ffd700'; ctx.font='bold 20px Arial'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('👑',0,-this.radius-14); }
-    ctx.restore();
+    drawTankBody(this.x,this.y,this.bodyAngle,this.radius*1.05,ak.body);
+    drawTankTurret(this.x,this.y,this.turretAngle,this.radius*1.05,ak.turret,ak.barrel);
+    if(bl){ ctx.save(); ctx.globalAlpha=0.45; ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fill(); ctx.restore(); }
+    if(this.isBoss){ ctx.fillStyle='#e8b100'; ctx.beginPath(); ctx.moveTo(this.x-11,this.y-this.radius-15); ctx.lineTo(this.x-7,this.y-this.radius-24); ctx.lineTo(this.x,this.y-this.radius-16); ctx.lineTo(this.x+7,this.y-this.radius-24); ctx.lineTo(this.x+11,this.y-this.radius-15); ctx.closePath(); ctx.fill(); }
     const hpPct=this.hp/this.maxHp; const bw=this.isBoss?100:30;
     ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(this.x-bw/2,this.y-this.radius-14,bw,5);
     ctx.fillStyle=hpPct>0.5?'#4caf50':hpPct>0.25?'#ff9800':'#f44336';
     ctx.fillRect(this.x-bw/2,this.y-this.radius-14,bw*hpPct,5);
-    if(this.isBoss){ ctx.fillStyle='#fff'; ctx.font='bold 12px Arial'; ctx.textAlign='center'; ctx.fillText('👑 BOSS',this.x,this.y-this.radius-24); }
+    if(this.isBoss){ ctx.fillStyle='#fff'; ctx.font='bold 12px Arial'; ctx.textAlign='center'; ctx.fillText('BOSS',this.x,this.y-this.radius-24); }
     if(this.frozen>0){ ctx.strokeStyle='rgba(120,200,255,0.9)'; ctx.lineWidth=2; ctx.beginPath(); ctx.arc(this.x,this.y,this.radius+4,0,Math.PI*2); ctx.stroke(); }
   }
 }
@@ -2541,7 +2622,7 @@ class Helicopter{
       this.timer+=dt;
       if(this.timer>20&&!this.dropped){
         this.dropped=true; coins+=this.reward; stats.totalCoinsEarned+=this.reward;
-        floaters.push(new Floater(this.hoverX,this.hoverY+30,`+${this.reward}💰`,'#ffd700'));
+        floaters.push(new Floater(this.hoverX,this.hoverY+30,`+${this.reward}`,'#ffd700'));
         sfxPickup();
         for(let i=0;i<12;i++)particles.push(new Particle(this.hoverX+rand(-40,40),this.hoverY,4,'#ffd700',1.4,rand(-1.5,1.5),rand(0.5,2.5)));
         saveRun();
@@ -2576,7 +2657,7 @@ class Helicopter{
     ctx.fillStyle='#ff3344'; ctx.beginPath(); ctx.arc(0,26,3,0,Math.PI*2); ctx.fill();
     ctx.restore();
     ctx.fillStyle='#ffd700'; ctx.font='bold 14px Arial'; ctx.textAlign='center';
-    ctx.fillText('🚁 '+this.reward+'💰',this.x,y-52);
+    ctx.fillText('🚁 '+this.reward+'',this.x,y-52);
   }
 }
 
@@ -2611,7 +2692,7 @@ class ArtilleryShell{
 function addKill(){
   if(!trainingMode && !trainingKillTipShown && kills >= 1){
     trainingKillTipShown = true;
-    showTrainingTip('\u{1F4A3}', t('tipBonusTitle'), t('tipBonusText'), ()=>{
+    showTrainingTip('', t('tipBonusTitle'), t('tipBonusText'), ()=>{
       gamePaused = false; lastFrameTs = 0;
     });
     return;
@@ -2629,8 +2710,8 @@ function addKill(){
 function updateStreak(dt){ if(streakTimer>0){ streakTimer-=dt; if(streakTimer<=0)streakCount=0; } }
 
 const POWERUP_DEFS={
-  coins:{icon:'💰',color:'#ffd700'}, health:{icon:'❤️',color:'#ff5566'},
-  shield:{icon:'🛡️',color:'#88ccff'}, freeze:{icon:'❄️',color:'#aaddff'}, bomb:{icon:'💣',color:'#ff3333'}
+  coins:{icon:'',color:'#ffd700'}, health:{icon:'',color:'#ff5566'},
+  shield:{icon:'',color:'#88ccff'}, freeze:{icon:'',color:'#aaddff'}, bomb:{icon:'',color:'#ff3333'}
 };
 class Powerup{
   constructor(x,y,t){ this.x=x; this.y=y; this.type=t; this.radius=16; this.life=900; this.bob=Math.random()*10; }
@@ -2643,11 +2724,11 @@ class Powerup{
     sfxPickup();
     // Каждый подобранный бонус дополнительно приносит 100 монет.
     coins+=100; stats.totalCoinsEarned+=100;
-    floaters.push(new Floater(this.x,this.y-20,'+100💰','#ffd700'));
+    floaters.push(new Floater(this.x,this.y-20,'+100','#ffd700'));
     switch(this.type){
       case 'coins':{ const b=1+(skillTree.coinBonus||0)*0.15+relicBuff.coinBonus*0.25;
         const a=Math.round(150*b); coins+=a; stats.totalCoinsEarned+=a;
-        floaters.push(new Floater(this.x,this.y,`+${a}💰`,'#ffd700')); break; }
+        floaters.push(new Floater(this.x,this.y,`+${a}`,'#ffd700')); break; }
       case 'health': p.hp=Math.min(p.hp+50,p.maxHp); break;
       case 'shield': p.effects.shield=600; break;
       case 'freeze': enemies.forEach(e=>{ if(e.hp>0&&!e.isBoss&&!e.isArtillery)e.frozen=300; }); break;
@@ -2885,35 +2966,31 @@ function spawnArtillery(){
 function drawTile(t,x,y,i,j){
   if(t===TILE.BRICK){
     const hp=brickHp[j][i];
-    ctx.fillStyle=hp>1?'#a2603a':'#7a4a2a'; ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
-    ctx.strokeStyle='rgba(0,0,0,0.5)'; ctx.lineWidth=1;
-    for(let k=1;k<3;k++){ ctx.beginPath(); ctx.moveTo(x+k*TILE_SIZE/3,y); ctx.lineTo(x+k*TILE_SIZE/3,y+TILE_SIZE); ctx.stroke(); }
-    for(let k=1;k<4;k++){ ctx.beginPath(); ctx.moveTo(x,y+k*TILE_SIZE/4); ctx.lineTo(x+TILE_SIZE,y+k*TILE_SIZE/4); ctx.stroke(); }
-    if(hp===1){ ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.fillRect(x+TILE_SIZE/2,y+TILE_SIZE/2,TILE_SIZE/2,TILE_SIZE/2); }
+    const img=art('crateWood.png');
+    ctx.save(); ctx.globalAlpha=hp>1?1:0.6;
+    if(artReady(img))ctx.drawImage(img,x+8,y+8,TILE_SIZE-16,TILE_SIZE-16);
+    else { ctx.fillStyle='#c39a67'; ctx.fillRect(x+6,y+6,TILE_SIZE-12,TILE_SIZE-12); }
+    ctx.restore();
   } else if(t===TILE.STEEL){
-    ctx.fillStyle='#b0b0b8'; ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
-    ctx.fillStyle='#e0e0e8';
-    ctx.fillRect(x+3,y+3,TILE_SIZE/2-6,TILE_SIZE/2-6);
-    ctx.fillRect(x+TILE_SIZE/2+3,y+TILE_SIZE/2+3,TILE_SIZE/2-6,TILE_SIZE/2-6);
-    ctx.strokeStyle='#666'; ctx.lineWidth=2; ctx.strokeRect(x,y,TILE_SIZE,TILE_SIZE);
+    const img=art('crateMetal.png');
+    if(artReady(img))ctx.drawImage(img,x+8,y+8,TILE_SIZE-16,TILE_SIZE-16);
+    else { ctx.fillStyle='#c2c6cc'; ctx.fillRect(x+6,y+6,TILE_SIZE-12,TILE_SIZE-12); }
   } else if(t===TILE.WATER){
     const wv=Math.sin(Date.now()/400+x*0.05)*2;
-    ctx.fillStyle='#2a5a8a'; ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
-    ctx.fillStyle='rgba(120,200,255,0.4)'; ctx.fillRect(x,y+8+wv,TILE_SIZE,5); ctx.fillRect(x,y+24-wv,TILE_SIZE,5);
+    ctx.fillStyle='#9fd4ea'; ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
+    ctx.fillStyle='rgba(255,255,255,0.55)'; ctx.fillRect(x,y+10+wv,TILE_SIZE,4); ctx.fillRect(x,y+30-wv,TILE_SIZE,4);
   } else if(t===TILE.CONCRETE){
     const hp=concreteHp[j][i];
-    ctx.fillStyle='#6a7080'; ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
-    ctx.fillStyle='#8a90a0'; ctx.fillRect(x+3,y+3,TILE_SIZE-6,TILE_SIZE-6);
-    ctx.strokeStyle='#333'; ctx.lineWidth=2; ctx.strokeRect(x,y,TILE_SIZE,TILE_SIZE);
-    for(let k=0;k<Math.min(hp,6);k++){ ctx.fillStyle='rgba(200,220,255,0.6)'; ctx.fillRect(x+6+k*7,y+TILE_SIZE-10,4,4); }
+    const img=art('sandbagBeige.png');
+    if(artReady(img))ctx.drawImage(img,x+2,y+10,TILE_SIZE-4,TILE_SIZE-20);
+    else { ctx.fillStyle='#d6c29a'; ctx.fillRect(x+4,y+8,TILE_SIZE-8,TILE_SIZE-16); }
+    for(let k=0;k<Math.min(hp,6);k++){ ctx.fillStyle='rgba(120,90,40,0.55)'; ctx.fillRect(x+7+k*7,y+TILE_SIZE-9,4,4); }
   }
 }
 function drawTreeTile(x,y){
-  ctx.fillStyle='rgba(20,70,20,0.92)'; ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
-  ctx.fillStyle='#2e7a2e';
-  for(let i=0;i<6;i++){ const cx=x+12+(i%3)*14, cy=y+12+Math.floor(i/3)*22;
-    ctx.beginPath(); ctx.arc(cx,cy,10,0,Math.PI*2); ctx.fill(); }
-  ctx.fillStyle='#3e9a3e'; ctx.beginPath(); ctx.arc(x+22,y+20,6,0,Math.PI*2); ctx.fill();
+  const img=art('treeGreen_large.png');
+  if(artReady(img)){ ctx.drawImage(img,x-2,y-6,TILE_SIZE+4,TILE_SIZE+6); return; }
+  ctx.fillStyle='rgba(90,140,70,0.9)'; ctx.fillRect(x,y,TILE_SIZE,TILE_SIZE);
 }
 
 /* ================= UI ================= */
@@ -2967,7 +3044,7 @@ function updateBonusUI(){
   UI.bonusBtn.style.display=visible?'block':'none';
   UI.bonusTimer.style.display=visible?'block':'none';
   if(!visible){ clearBonusTimer(); return; }
-  UI.bonusBtn.textContent='💰 Бонус +5000 (накоплено: '+(Number(save.pendingBonus)||0)+')';
+  UI.bonusBtn.textContent='Бонус +5000 (накоплено: '+(Number(save.pendingBonus)||0)+')';
   const refresh=()=>{
     const left=Math.max(0,Math.ceil((AD_REWARDED_COOLDOWN-(Date.now()-lastRewardedAt))/1000));
     const adLimitReached=adDailyCount>=AD_DAILY_LIMIT;
@@ -3011,7 +3088,7 @@ function endGame(reason){
   }
   let html = '';
   html += `<div>${t('hud_level')} <span>${level}</span> В· ${t('hud_wave')} <span>${wave}</span></div>`;
-  html += `<div>${t('hud_kills')} <span>${kills}</span></div><div>💰 <span>${coins}</span></div>`;
+  html += `<div>${t('hud_kills')} <span>${kills}</span></div><div><span>${coins}</span></div>`;
   UI.statsContainer.innerHTML=html;
   if(level>stats.maxLevel)stats.maxLevel=level;
   UI.adReviveBtn.style.display = adsAvailable() ? 'inline-block' : 'none';
@@ -3064,7 +3141,7 @@ function showTrainingTip(icon,title,text,cb){
   if(trainingTipCleanup)trainingTipCleanup();
   gamePaused=true;mouseFireHeld=false;keys={};
   if(players)players.forEach(p=>{p.input.fireHeld=false;p.input.firePressed=false;p.wasFiring=false;});
-  UI.introNum.textContent=icon;UI.introLbl.textContent=title;UI.introWave.textContent='';
+  UI.introNum.textContent='';UI.introNum.style.display='none';UI.introLbl.textContent=title;UI.introWave.textContent='';
   UI.introHint.textContent=text;UI.trainingTipOkBtn.textContent=t('gotIt');
   UI.trainingTipOkBtn.style.display='inline-block';UI.levelIntro.classList.add('show');
   let done=false;
@@ -3086,15 +3163,15 @@ function showNextEnemyIntro(){
   gamePaused=true;
   const {enemyType,enemyObj}=entry;
   const overlay=document.createElement('div');
-  overlay.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);padding:20px;box-sizing:border-box';
+  overlay.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(238,242,233,.92);padding:20px;box-sizing:border-box';
   const panel=document.createElement('div');
-  panel.style.cssText='width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #d5a837;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000';
+  panel.style.cssText='width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #cddcc3;border-radius:16px;background:#fff;color:#22302a;text-align:center;box-shadow:0 16px 44px rgba(50,80,50,.18)';
   const titleEl=document.createElement('h2');titleEl.textContent=t('enemy_'+enemyType);
-  titleEl.style.cssText='margin:0;color:#ffd700;font-size:clamp(22px,5vw,30px)';
+  titleEl.style.cssText='margin:0;color:#33502f;font-size:clamp(22px,5vw,30px)';
   const preview=document.createElement('canvas');preview.width=100;preview.height=100;
-  preview.style.cssText='width:100px;height:100px;background:#2d3a2d;border:1px solid #60745c;border-radius:8px';
+  preview.style.cssText='width:100px;height:100px;background:#efe7d2;border:1px solid #cddcc3;border-radius:10px';
   const description=document.createElement('p');description.textContent=t('enemy_'+enemyType+'_d');
-  description.style.cssText='margin:0;line-height:1.5;font-size:16px';
+  description.style.cssText='margin:0;line-height:1.5;font-size:15px;color:#4a5a49';
   const ok=document.createElement('button');ok.className='bigBtn';ok.textContent=t('gotIt');
   ok.style.cssText='min-width:180px;max-width:100%';
   panel.append(titleEl,preview,description,ok);overlay.appendChild(panel);document.body.appendChild(overlay);
@@ -3113,9 +3190,9 @@ function maybeShowEnemyIntro(enemy){
   showEnemyIntro(type,enemy);save.seenEnemies[type]=true;saveAll();flushCloudNow();
 }
 function showTrainingIntro(cb){
-  showTrainingTip('\u{1F3AE}', t('tipControlsTitle'), t('tipControlsText'), () => {
-    showTrainingTip('\u{1F52B}', t('tipFireTitle'), t('tipFireText'), () => {
-      showTrainingTip('\u{1F3F0}', t('tipBaseTitle'), t('tipBaseText'), () => {
+  showTrainingTip('', t('tipControlsTitle'), t('tipControlsText'), () => {
+    showTrainingTip('', t('tipFireTitle'), t('tipFireText'), () => {
+      showTrainingTip('', t('tipBaseTitle'), t('tipBaseText'), () => {
         if(cb) cb();
       });
     });
@@ -3183,6 +3260,34 @@ function updateStatsVisibility(){
   btn.classList.toggle('open',statsOpen);
   btn.textContent=statsOpen?t('statsBtnHide'):t('statsBtn');
 }
+const ICO={
+ damage:'<path d="M12 3l7 7-7 11-7-11z"/>',
+ fireRate:'<path d="M4 12h9M13 8l4 4-4 4M19 6v12"/>',
+ speed:'<path d="M4 7h8M4 12h12M4 17h6"/>',
+ maxHp:'<path d="M12 20s-7-4.5-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.5-7 9-7 9z"/>',
+ armor:'<path d="M12 3l7 3v6c0 4.4-2.9 7.4-7 9-4.1-1.6-7-4.6-7-9V6z"/>',
+ bulletSpeed:'<path d="M3 12h11M11 8l4 4-4 4M19 5v14"/>',
+ pierce:'<path d="M4 12h16M14 8l4 4-4 4"/><circle cx="8" cy="12" r="2"/>',
+ crit:'<path d="M12 3l2.5 5.5L20 11l-5.5 2.5L12 19l-2.5-5.5L4 11l5.5-2.5z"/>',
+ regen:'<path d="M12 5v14M5 12h14"/>',
+ concrete:'<path d="M4 8l8-4 8 4v8l-8 4-8-4z"/>',
+ water:'<path d="M3 9c3-2 6-2 9 0s6 2 9 0M3 15c3-2 6-2 9 0s6 2 9 0"/>',
+ baseHp:'<path d="M4 20V9l8-5 8 5v11"/><path d="M10 20v-6h4v6"/>',
+ baseRegen:'<path d="M4 20V9l8-5 8 5v11"/><path d="M12 11v5M9.5 13.5h5"/>',
+ wallHp:'<path d="M4 6h16v12H4zM10 6v12M16 6v12M4 12h16"/>',
+ coinBonus:'<circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10h4a1.6 1.6 0 0 1 0 3.2h-3a1.6 1.6 0 0 0 0 3.2H15"/>',
+ cannon:'<circle cx="11" cy="13" r="4"/><path d="M14 10l6-4M8 19h7"/>',
+ mg:'<path d="M8 6v5M12 5v6M16 6v5M6 16h12"/>',
+ sniper:'<circle cx="12" cy="12" r="6"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/>',
+ flame:'<path d="M12 3c3 4 5 6.5 5 9.5A5 5 0 0 1 7 12.5c0-1.8.8-3 1.8-4 .1 1.6.9 2.6 1.8 2.6 0-3 .4-5.6 1.4-8.1z"/>',
+ rocket:'<path d="M12 3c3 2.2 4.5 5.2 4.5 8.5L14 15h-4l-2.5-3.5C7.5 8.2 9 5.2 12 3z"/>',
+ laser:'<path d="M13 3L6 13h5l-1 8 7-10h-5l1-8z"/>',
+ vip:'<path d="M12 4l2.2 4.6 5 .7-3.6 3.5.9 5-4.5-2.4-4.5 2.4.9-5L4.8 9.3l5-.7z"/>'
+};
+function ico(name){
+  const body=ICO[name]||ICO.crit;
+  return '<span class="shop-ico"><svg viewBox="0 0 24 24" fill="none" stroke="#33502f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+body+'</svg></span>';
+}
 function renderShop(){
   UI.shopCoins.textContent=coins; renderStats();
   UI.shopTabs.querySelectorAll('.tab').forEach(tab=>{ tab.classList.remove('gp-focus'); tab.classList.toggle('active',tab.dataset.tab===currentShopTab); });
@@ -3198,7 +3303,7 @@ function skillBtn(s){
   const maxed=s.max&&lvl>=s.max; const can=coins>=cost&&!maxed;
   const b=document.createElement('button');
   b.className='skill-btn'+(maxed?' owned':can?'':' disabled');
-  b.innerHTML=`<span><span class="name">${t('s_'+s.id)}</span><span class="lvl">${t('lvlShort')} ${lvl}${maxed?' ('+t('maxLbl')+')':''}</span></span><span class="cost ${maxed?'max':''}">${maxed?t('maxLbl'):cost+'💰'}</span>`;
+  b.innerHTML=ico(s.id)+`<span><span class="name">${t('s_'+s.id)}</span><span class="lvl">${t('lvlShort')} ${lvl}${maxed?' ('+t('maxLbl')+')':''}</span></span><span class="cost ${maxed?'max':''}">${maxed?t('maxLbl'):cost+''}</span>`;
   if(!maxed)b.addEventListener('click',()=>buySkill(s));
   return b;
 }
@@ -3217,7 +3322,7 @@ function vipWeaponBtn(vw){
   const b = document.createElement('button');
   b.className = 'skill-btn' + (owned ? ' owned' : '');
   const currency = isOK() ? 'ОКов' : 'голосов';
-  b.innerHTML = '<span><span class="name">' + vw.name + '</span><span class="lvl" style="font-size:10px;opacity:0.8;line-height:1.2">' + (vw.desc||'') + '</span></span><span class="cost ' + (owned ? 'max' : '') + '">' + (owned ? 'КУПЛЕНО' : vw.price + ' ' + currency) + '</span>';
+  b.innerHTML = ico('vip') + '<span><span class="name">' + vw.name + '</span><span class="lvl" style="font-size:10px;opacity:0.8;line-height:1.2">' + (vw.desc||'') + '</span></span><span class="cost ' + (owned ? 'max' : '') + '">' + (owned ? 'КУПЛЕНО' : vw.price + ' ' + currency) + '</span>';
   if(!owned){
     b.addEventListener('click', () => buyVipWeapon(vw, b));
   }
@@ -3250,7 +3355,7 @@ function weaponBtn(w){
   const b=document.createElement('button');
   const sel1=currentWeaponIds[0]===w.id;
   b.className='skill-btn'+(owned?' owned':'')+(sel1?' selected':'');
-  b.innerHTML=`<span><span class="name">${t('w_'+w.id)}</span><span class="lvl" style="font-size:10px;opacity:0.8;line-height:1.2">${w.desc||''}</span></span><span class="cost ${owned?'max':''}">${owned?t('owned'):w.price+'💰'}</span>`;
+  b.innerHTML=`${ico(w.id)}<span><span class="name">${t('w_'+w.id)}</span><span class="lvl" style="font-size:10px;opacity:0.8;line-height:1.2">${w.desc||''}</span></span><span class="cost ${owned?'max':''}">${owned?t('owned'):w.price+''}</span>`;
   b.addEventListener('click',()=>{
     if(!owned){ if(coins<w.price)return; coins-=w.price; unlockedWeapons[w.id]=true; sfxUpgrade(); playUpgradeEffect(); }
     currentWeaponIds[currentShopOwner]=w.id;
@@ -3280,7 +3385,7 @@ function checkAch(){
     else if(ach.cat==='def'){ if(ach.id==='d1')prog=stats.noDamageWins; else if(ach.id==='d2')prog=stats.noDeathWins; }
     if(prog>=ach.goal){
       achievements[ach.id]=true; metaCoins+=ach.reward; stats.totalCoinsEarned+=ach.reward;
-      sfxAch(); floaters.push(new Floater(W/2,220,`🏆 +${ach.reward}💰`,'#ffd700'));
+      sfxAch(); floaters.push(new Floater(W/2,220,`+${ach.reward}`,'#ffd700'));
     }
   }
 }
@@ -3306,7 +3411,7 @@ function renderAchievements(){
     html+=`<div class="ach-item ${unlocked?'unlocked':''}">
   <span class="ach-name">${t('ach_'+ach.id)}</span>
   <span class="ach-progress">${unlocked?'✓':progBadge}</span>
-  <span class="ach-reward ${unlocked?'done':''}">${ach.reward} 💰</span>
+  <span class="ach-reward ${unlocked?'done':''}">${ach.reward} </span>
 </div>`;
   }
   UI.achList.innerHTML=html;
@@ -3418,7 +3523,7 @@ function renderDaily(){
     const dayLabel=t('dayLbl')+' '+(i+1);
     const isClaimed=i<daily.streak;
     const isToday=i===daily.streak&&isTodayClaimable;
-    html+=`<div class="daily-cell ${isClaimed?'claimed':''} ${isToday?'today':''}"><div class="day">${dayLabel}</div><span class="icon">💰</span><div class="amount">${DAILY_REWARDS[i]}</div></div>`;
+    html+=`<div class="daily-cell ${isClaimed?'claimed':''} ${isToday?'today':''}"><div class="day">${dayLabel}</div><span class="icon"></span><div class="amount">${DAILY_REWARDS[i]}</div></div>`;
   }
   UI.dailyGrid.innerHTML=html;
 }
@@ -3943,35 +4048,44 @@ function update(dt){
 function drawBaseAt(c, bx, by, withBar){
   const pulse=0.7+Math.sin(Date.now()/300)*0.15;
   const grad=c.createRadialGradient(bx,by,10,bx,by,80);
-  grad.addColorStop(0,`rgba(80,255,80,${0.15*pulse})`); grad.addColorStop(1,'rgba(80,255,80,0.01)');
+  grad.addColorStop(0,`rgba(140,200,120,${0.16*pulse})`); grad.addColorStop(1,'rgba(140,200,120,0.01)');
   c.fillStyle=grad; c.beginPath(); c.arc(bx,by,80,0,Math.PI*2); c.fill();
-  c.strokeStyle=`rgba(80,255,80,${0.6*pulse})`; c.lineWidth=3;
+  c.strokeStyle=`rgba(140,200,120,${0.5*pulse})`; c.lineWidth=3;
   c.setLineDash([6,8]); c.beginPath(); c.arc(bx,by,70,0,Math.PI*2); c.stroke(); c.setLineDash([]);
-  c.fillStyle='#8a7a5a'; c.fillRect(bx-50,by-50,100,100);
-  c.strokeStyle='#5a4a3a'; c.lineWidth=4; c.strokeRect(bx-50,by-50,100,100);
-  c.fillStyle='#6a5a4a'; c.fillRect(bx-18,by-18,36,36);
-  c.save(); c.translate(bx,by);
-  c.fillStyle='#ffffff'; c.beginPath(); c.arc(0,0,26,0,Math.PI*2); c.fill();
-  c.strokeStyle='#c00'; c.lineWidth=3; c.stroke();
-  c.fillStyle='#e60000'; c.fillRect(-7,-20,14,40); c.fillRect(-20,-7,40,14);
-  c.restore();
+  c.fillStyle='#dccaa0'; c.fillRect(bx-50,by-50,100,100);
+  c.strokeStyle='#b7a171'; c.lineWidth=4; c.strokeRect(bx-50,by-50,100,100);
+  const bag=(x,y,w,h)=>{ c.fillStyle='#e6d7ac'; c.strokeStyle='#bda97a'; c.lineWidth=2;
+    c.beginPath();
+    if(c.roundRect)c.roundRect(x-w/2,y-h/2,w,h,5); else c.rect(x-w/2,y-h/2,w,h);
+    c.fill(); c.stroke(); };
+  for(let i=0;i<5;i++){ bag(bx-40+i*20, by-41, 18,12); bag(bx-40+i*20, by+41, 18,12); }
+  for(let i=0;i<4;i++){ bag(bx-41, by-30+i*20, 12,18); bag(bx+41, by-30+i*20, 12,18); }
+  c.fillStyle='#a8b78d'; c.beginPath(); c.arc(bx,by,22,0,Math.PI*2); c.fill();
+  c.strokeStyle='#77865f'; c.lineWidth=3; c.stroke();
+  c.fillStyle='#8f9f76'; c.beginPath(); c.arc(bx,by,12,0,Math.PI*2); c.fill();
+  c.strokeStyle='#8a7a58'; c.lineWidth=3;
+  c.beginPath(); c.moveTo(bx+4,by-8); c.lineTo(bx+4,by-40); c.stroke();
+  c.fillStyle='#4f9a45'; c.beginPath(); c.moveTo(bx+4,by-40); c.lineTo(bx+28,by-33); c.lineTo(bx+4,by-25); c.closePath(); c.fill();
   if(!withBar) return;
   const bp=clamp(baseHealth/baseMaxHealth,0,1);
   const barY=by-72, barW=90, barH=12, barX=bx-barW/2;
-  c.fillStyle='rgba(0,0,0,0.78)'; c.fillRect(barX-2,barY-2,barW+4,barH+4);
+  c.fillStyle='rgba(255,255,255,0.92)'; c.fillRect(barX-2,barY-2,barW+4,barH+4);
+  c.fillStyle='#e4e9da'; c.fillRect(barX,barY,barW,barH);
   c.fillStyle=bp>0.5?'#4caf50':bp>0.25?'#ff9800':'#f44336';
   c.fillRect(barX,barY,barW*bp,barH);
-  c.strokeStyle='#000'; c.lineWidth=2; c.strokeRect(barX,barY,barW,barH);
-  c.fillStyle='#000'; c.font='bold 11px Arial'; c.textAlign='center'; c.textBaseline='middle';
+  c.strokeStyle='#5d6b52'; c.lineWidth=2; c.strokeRect(barX,barY,barW,barH);
+  c.fillStyle='#23302a'; c.font='bold 11px Arial'; c.textAlign='center'; c.textBaseline='middle';
   c.fillText(Math.max(0,Math.round(baseHealth))+' / '+Math.round(baseMaxHealth),bx,barY+barH/2);
-  c.fillStyle='#cfe8ff'; c.font='bold 13px Arial';
-  c.fillText('🛡️',barX-16,barY+barH/2);
 }
 function draw(){
-  ctx.fillStyle='#2d3a2d'; ctx.fillRect(0,0,W,H);
-  ctx.strokeStyle='rgba(0,0,0,0.08)'; ctx.lineWidth=1;
-  for(let x=0;x<W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-  for(let y=0;y<H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  ctx.fillStyle='#e7dcc2'; ctx.fillRect(0,0,W,H);
+  {
+    const gimg=art('tileSand1.png');
+    if(artReady(gimg)){
+      if(!draw._pat)draw._pat=ctx.createPattern(gimg,'repeat');
+      ctx.fillStyle=draw._pat; ctx.fillRect(0,0,W,H);
+    }
+  }
   if(tiles&&tiles.length){
     for(let j=0;j<ROWS;j++)for(let i=0;i<COLS;i++){
       const tile=tiles[j][i];
@@ -4295,15 +4409,15 @@ function tryShowBossTip(){
   const prevPause = gamePaused;
   gamePaused = true;
   const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:601;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);padding:20px;box-sizing:border-box';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:601;display:flex;align-items:center;justify-content:center;background:rgba(238,242,233,.92);padding:20px;box-sizing:border-box';
   const panel = document.createElement('div');
-  panel.style.cssText = 'width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #ff8800;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000';
+  panel.style.cssText = 'width:min(420px,100%);max-height:90vh;overflow:auto;display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px;border:2px solid #e0a54a;border-radius:16px;background:#fff;color:#22302a;text-align:center;box-shadow:0 16px 44px rgba(50,80,50,.18)';
   const title = document.createElement('h2');
-  title.textContent = '⚠️ Скоро Босс!';
-  title.style.cssText = 'margin:0;color:#ffcc44;font-size:clamp(20px,5vw,26px)';
+  title.textContent = 'Скоро Босс!';
+  title.style.cssText = 'margin:0;color:#a8631a;font-size:clamp(20px,5vw,26px)';
   const text = document.createElement('p');
   text.textContent = 'Лучше закупиться оружием или усилениями.';
-  text.style.cssText = 'margin:0;line-height:1.5;font-size:16px';
+  text.style.cssText = 'margin:0;line-height:1.5;font-size:15px;color:#4a5a49';
   const ok = document.createElement('button');
   ok.className = 'bigBtn';
   ok.textContent = 'Понятно';
@@ -4448,8 +4562,7 @@ function startLevel(resumeWave=false){
   baseMaxHealth=100+relicBuff.baseHp+baseHpSkillBonus;
   baseHealth=baseMaxHealth;
   enemies=[]; bullets=[]; enemyBullets=[]; particles=[]; floaters=[]; powerups=[]; laserBeams=[]; damageNumbers=[];
-  botAlly=new BotAlly(BASE_X+40,BASE_Y);
-  botAlly.hp=botAlly.maxHp=100+(skillTree.maxHp||0)*15+(relicBuff.maxHp||0)*30;
+  botAlly=null;
   helicopter=null; waveTimer=4; spawning=false; enemiesToSpawn=0; spawnTimer=0;
   isBossWave=false; bossSpawnedThisWave=false; damageFlashTime=0;
   streakCount=0; streakTimer=0; firstBloodDone=false; mouseFireHeld=false;
@@ -4553,20 +4666,20 @@ function showCanvasIntroTip(title, text, drawFn, callback){
   gamePaused=true; mouseFireHeld=false; keys={};
   if(players)players.forEach(p=>{p.input.fireHeld=false;p.input.firePressed=false;p.wasFiring=false;});
   const overlay=document.createElement('div');
-  overlay.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.86);padding:20px;box-sizing:border-box';
+  overlay.style.cssText='position:fixed;inset:0;z-index:600;display:flex;align-items:center;justify-content:center;background:rgba(238,242,233,.9);padding:20px;box-sizing:border-box';
   const panel=document.createElement('div');
-  panel.style.cssText='width:min(320px,92vw);display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;border:2px solid #d5a837;border-radius:14px;background:#172218;color:#fff;text-align:center;box-shadow:0 12px 40px #000;margin:auto;';
+  panel.style.cssText='width:min(320px,92vw);display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px;border:2px solid #cddcc3;border-radius:16px;background:#fff;color:#22302a;text-align:center;box-shadow:0 16px 44px rgba(50,80,50,.18);margin:auto;';
   const titleEl=document.createElement('h2');
   titleEl.textContent=title;
-  titleEl.style.cssText='margin:0;color:#ffd700;font-size:clamp(20px,5vw,26px)';
+  titleEl.style.cssText='margin:0;color:#33502f;font-size:clamp(20px,5vw,26px)';
   const preview=document.createElement('canvas');
   preview.width=90; preview.height=90;
-  preview.style.cssText='width:90px;height:90px;background:#2d3a2d;border:1px solid #60745c;border-radius:8px';
+  preview.style.cssText='width:90px;height:90px;background:#efe7d2;border:1px solid #cddcc3;border-radius:10px';
   const previewCtx=preview.getContext('2d');
   if(previewCtx){ previewCtx.save(); previewCtx.translate(45, 45); previewCtx.scale(0.5, 0.5); previewCtx.translate(-70, -70); drawFn(previewCtx); previewCtx.restore(); }
   const description=document.createElement('p');
   description.textContent=text;
-  description.style.cssText='margin:0;line-height:1.4;font-size:13px;color:#ddd;font-family:\x27Segoe UI\x27,Arial,sans-serif;';
+  description.style.cssText='margin:0;line-height:1.45;font-size:13px;color:#4a5a49;font-family:\x27Segoe UI\x27,Arial,sans-serif;';
   const ok=document.createElement('button');
   ok.className='bigBtn'; ok.textContent=t('gotIt');
   ok.style.cssText='min-width:180px;max-width:100%';
@@ -4604,7 +4717,7 @@ function startTraining(){
   updateUI(); updateWeaponBar();
   try{Stats.track('level_start',{level:0,training:true});}catch(e){}
   playBgm(bgmBattleA);
-  showCanvasIntroTip('🎮 1/5 · Управление', t('tip_move'), (ctx)=>drawPlayerTankPreview(ctx), ()=>{gamePaused=false;lastFrameTs=0;gameplayStart();});
+  showCanvasIntroTip('1/5 · Управление', t('tip_move'), (ctx)=>drawPlayerTankPreview(ctx), ()=>{gamePaused=false;lastFrameTs=0;gameplayStart();});
 }
 function spawnTrainingEnemy(x,y,hp=15,speed=0.2,damage=2){
   const e=new EnemyTank(x,y,0,false);
@@ -4623,13 +4736,13 @@ function enterTrainingStage(stage){
   if(flashInterval){ clearInterval(flashInterval); flashInterval=null; }
   const shopBtn=document.getElementById('shopOpenBtn'); if(shopBtn)shopBtn.classList.remove('flash');
   trainingStage=stage; trainingStageTimer=0;
-  if(stage===2){enemies=[]; bullets=[]; enemyBullets=[];spawnTrainingEnemy(W/2,100,15,0.2,2);showTrainingStageTip('🎯','2/5',t('tip_shoot'));}
-  else if(stage===3){enemies=[];enemyBullets=[];baseVisible=true;baseMaxHealth=100;baseHealth=100;botAlly=new BotAlly(BASE_X+40,BASE_Y);trainingBaseArrived=false;showCanvasIntroTip('\u{1F3F0} 3/5 · Защита базы', t('tip_base'), (ctx)=>drawBaseAt(ctx,70,70,false));}
+  if(stage===2){enemies=[]; bullets=[]; enemyBullets=[];spawnTrainingEnemy(W/2,100,15,0.2,2);showTrainingStageTip('','2/5',t('tip_shoot'));}
+  else if(stage===3){enemies=[];enemyBullets=[];baseVisible=true;baseMaxHealth=100;baseHealth=100;botAlly=null;trainingBaseArrived=false;showCanvasIntroTip('3/5 · Защита базы', t('tip_base'), (ctx)=>drawBaseAt(ctx,70,70,false));}
   else if(stage===4){
     coins=1000; updateUI();
     const shopBtn = document.getElementById('shopOpenBtn');
     if (shopBtn) shopBtn.style.display = 'flex';
-    showTrainingStageTip('\u{1F6D2}','4/5',t('tip_shop'), ()=>{
+    showTrainingStageTip('','4/5',t('tip_shop'), ()=>{
         if (shopBtn) {
             shopBtn.style.display = 'flex';
             shopBtn.classList.add('flash');
@@ -4644,7 +4757,7 @@ function enterTrainingStage(stage){
     if(p){ p.x = BASE_X; p.y = BASE_Y + 60; }
     enemies=[]; bullets=[]; enemyBullets=[];
     spawning=true; enemiesToSpawn=3; spawnTimer=0; waveTimer=999999; isBossWave=false;
-    showCanvasIntroTip('\u{1F6E1}\uFE0F 5/5 · Защита', t('tip_defend'), (ctx)=>drawBaseAt(ctx,70,70,false), ()=>{gamePaused=false;lastFrameTs=0;});
+    showCanvasIntroTip('\uFE0F 5/5 · Защита', t('tip_defend'), (ctx)=>drawBaseAt(ctx,70,70,false), ()=>{gamePaused=false;lastFrameTs=0;});
   }
   else if(stage===6){gameRunning=false;gamePaused=false;gameplayStop();if(UI.skipTrainingBtn)UI.skipTrainingBtn.style.display='none';const _sb=document.getElementById('shopOpenBtn'); if(_sb) _sb.style.display='none';showTrainingComplete();}
   updateUI();
@@ -5088,7 +5201,7 @@ window.addEventListener('load', async ()=>{
   window.addEventListener('pointerdown', ()=>{ initAudio(); tryFullscreen(); }, { once:true });
   window.addEventListener('keydown', ()=>{ initAudio(); tryFullscreen(); }, { once:true });
 
-  window.addEventListener('gamepadconnected',e=>log('🎮 connected:',e.gamepad.id));
+  window.addEventListener('gamepadconnected',e=>log('connected:',e.gamepad.id));
   window.addEventListener('gamepaddisconnected',()=>clearGamepadFocus());
 
   window.addEventListener('beforeunload',()=>{ try{ saveAll(); flushCloudNow(); }catch(e){} });
