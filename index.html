@@ -324,6 +324,31 @@ html,body{background:#eef2e9;color:#22302a}
 </style>
 </head>
 <body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.2"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="M9 6l9 6-9 6"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+<symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 5H5v2a3 3 0 0 0 3 3M16 5h3v2a3 3 0 0 1-3 3M12 13v4M9 20h6"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.4M12 18.6V21M3 12h2.4M18.6 12H21M5.6 5.6l1.7 1.7M16.7 16.7l1.7 1.7M18.4 5.6l-1.7 1.7M7.3 16.7l-1.7 1.7"/></symbol>
+<symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.9.6c0 1.7-2.5 2-2.5 3.6"/><circle cx="12" cy="17" r="0.7" fill="currentColor" stroke="none"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><path d="M4 10h16v9H4zM3 6h18v4H3zM12 6v13"/><path d="M12 6c-1.6 0-3-1-3-2.2S10.4 2 12 6zM12 6c1.6 0 3-1 3-2.2S13.6 2 12 6z"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.6-7 9-7 9z"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 3L6 13h5l-1 8 8-11h-5z"/></symbol>
+<symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 21c3.4 0 6-2.2 6-5.4 0-3.6-3-5.2-3.6-8.6-2 1.4-3 3-3 4.6-1-.6-1.6-1.6-1.8-2.8C8 10 6 12.4 6 15.6 6 18.8 8.6 21 12 21z"/></symbol>
+<symbol id="i-bullet" viewBox="0 0 24 24"><path d="M12 3l3 5v8l-3 3-3-3V8z"/><path d="M9 12h6"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6L3.3 9.3l6.1-.7z"/></symbol>
+<symbol id="i-pierce" viewBox="0 0 24 24"><path d="M4 12h13M14 8l5 4-5 4M8 8v8"/></symbol>
+<symbol id="i-regen" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v8M8 12h8"/></symbol>
+</svg>
+<style>
+.ico{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px}
+.bigBtn .ico,.smallBtn .ico{width:18px;height:18px;margin-right:8px;vertical-align:-3px}
+.daily-cell .ico{width:26px;height:26px;color:#b07a12}
+.relic .ico{width:26px;height:26px;color:#b07a12}
+#menu{background-image:linear-gradient(180deg,rgba(247,250,243,0.94),rgba(221,233,210,0.90)),url('assets/ui/welcome-art.jpg')!important;background-size:cover!important;background-position:center bottom!important;background-repeat:no-repeat!important}
+</style>
+
 <div id="gameContainer">
 <canvas id="gameCanvas" width="1000" height="700" tabindex="0"></canvas>
 <canvas id="uiOverlay"></canvas>
@@ -499,9 +524,9 @@ html,body{background:#eef2e9;color:#22302a}
 </div>
 </div>
 
-<div id="welcomeScreen" style="position:fixed;inset:0;z-index:500;display:none;flex-direction:column;justify-content:space-between;align-items:center;background-color:#eef2e9;background-image:linear-gradient(180deg,rgba(255,255,255,0.48),rgba(238,244,233,0.74)),url('assets/ui/welcome.jpg');background-size:cover;background-position:center;padding:10vh 20px;">
+<div id="welcomeScreen" style="position:fixed;inset:0;z-index:500;display:none;flex-direction:column;justify-content:space-between;align-items:center;background-color:#eef2e9;background-image:radial-gradient(58% 38% at 50% 44%,rgba(255,255,255,0.90),rgba(255,255,255,0) 72%),linear-gradient(180deg,rgba(255,255,255,0.24),rgba(238,244,233,0.50)),url('assets/ui/welcome-art.jpg');background-size:cover;background-position:center;padding:10vh 20px;">
   <div style="text-align:center;margin-top:auto;">
-    <h1 style="font-size:clamp(24px,6vw,40px);color:#2f4a34;text-shadow:0 2px 0 #fff,0 8px 24px rgba(255,255,255,.9);letter-spacing:2px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">Танковый Рубеж</h1>
+    <h1 style="font-size:clamp(30px,7vw,66px);color:#22302a;text-shadow:0 3px 0 rgba(255,255,255,.95),0 10px 30px rgba(255,255,255,.95);letter-spacing:1px;margin:0;font-family:'Segoe UI',Arial,sans-serif;">Танковый Рубеж</h1>
   </div>
   <div style="margin-bottom:auto;display:flex;flex-direction:column;align-items:center;">
     <button id="welcomePlayBtn" style="background:linear-gradient(180deg,#8ed07a,#4f9a45);border:2px solid #3b7233;border-radius:10px;color:#fff;font-size:16px;font-weight:900;padding:10px 36px;cursor:pointer;box-shadow:0 4px 0 #3b7233;text-transform:uppercase;letter-spacing:1px;">Играть</button>
@@ -519,11 +544,11 @@ html,body{background:#eef2e9;color:#22302a}
 
 <div id="cloudOffline" data-i18n="cloudOffline" style="display:none;font-size:11px;color:#999;padding:4px 10px;background:rgba(0,0,0,0.4);border-radius:6px;margin:4px 0"></div>
 <div class="menu-btns">
-<button class="bigBtn" id="trainBtn" data-i18n="trainBtn">Обучение</button>
-<button class="bigBtn" id="bonusBtn" style="display:none">Бонус +5000</button>
+<button class="bigBtn" id="trainBtn"><svg class="ico"><use href="#i-target"/></svg><span data-i18n="trainBtn">Обучение</span></button>
+<button class="bigBtn" id="bonusBtn" style="display:none"><svg class="ico"><use href="#i-gift"/></svg>Бонус +5000</button>
 <div id="bonusTimer" style="display:none"></div>
-<button class="bigBtn" id="startBtn" data-i18n="newGame">НОВАЯ ИГРА</button>
-<button class="bigBtn cont" id="continueGameBtn" style="display:none" data-i18n="continueGame">ПРОДОЛЖИТЬ</button>
+<button class="bigBtn" id="startBtn"><svg class="ico"><use href="#i-chevron"/></svg><span data-i18n="newGame">НОВАЯ ИГРА</span></button>
+<button class="bigBtn cont" id="continueGameBtn" style="display:none"><svg class="ico"><use href="#i-chevron"/></svg><span data-i18n="continueGame">ПРОДОЛЖИТЬ</span></button>
 </div>
 
 <div class="langRow" id="diffRow">
@@ -1372,17 +1397,40 @@ function art(name){ let i=ART[name]; if(!i){ i=new Image(); i.onload=()=>{i.read
 function artReady(i){ return !!(i&&i.ready&&i.width>0); }
 const ARMOR_BODY={blue:'tankBody_blue.png',red:'tankBody_red.png',green:'tankBody_green.png',sand:'tankBody_sand.png',dark:'tankBody_dark.png',darkLarge:'tankBody_darkLarge.png',huge:'tankBody_huge.png'};
 const ARMOR_TURRET={blue:'tankBlue_barrel',red:'tankRed_barrel',green:'tankGreen_barrel',sand:'tankSand_barrel',dark:'tankDark_barrel'};
-function drawTankBody(x,y,angle,r,key){
-  const img=art(ARMOR_BODY[key]||ARMOR_BODY.dark);
+const TINT_CACHE={};
+function tintedSprite(name,color){
+if(!color)return art(name);
+const key=name+'|'+color;
+if(TINT_CACHE[key])return TINT_CACHE[key];
+const img=art(name);
+if(!artReady(img))return img;
+const c=document.createElement('canvas'); c.width=img.width; c.height=img.height;
+const g=c.getContext('2d');
+g.drawImage(img,0,0);
+g.globalCompositeOperation='multiply';
+g.fillStyle=color; g.fillRect(0,0,c.width,c.height);
+g.globalCompositeOperation='destination-in';
+g.drawImage(img,0,0);
+c.ready=true;
+TINT_CACHE[key]=c;
+return c;
+}
+function preloadTankArt(){
+Object.keys(ARMOR_BODY).forEach(k=>art(ARMOR_BODY[k]));
+Object.keys(ARMOR_TURRET).forEach(k=>{ for(let n=1;n<=3;n++) art(ARMOR_TURRET[k]+n+'.png'); });
+}
+preloadTankArt();
+function drawTankBody(x,y,angle,r,key,tint){
+  const img=tint?tintedSprite(ARMOR_BODY[key]||ARMOR_BODY.dark,tint):art(ARMOR_BODY[key]||ARMOR_BODY.dark);
   if(!artReady(img))return false;
   const w=r*2.6,h=w*(36/38);
   ctx.save(); ctx.translate(x,y); ctx.rotate(angle+Math.PI/2);
   ctx.drawImage(img,-w/2,-h/2,w,h);
   ctx.restore(); return true;
 }
-function drawTankTurret(x,y,angle,r,key,barrel){
+function drawTankTurret(x,y,angle,r,key,barrel,tint){
   const base=ARMOR_TURRET[key]||ARMOR_TURRET.dark;
-  const img=art(base+(barrel||1)+'.png');
+  const img=tint?tintedSprite(base+(barrel||1)+'.png',tint):art(base+(barrel||1)+'.png');
   if(!artReady(img))return false;
   const bs=(r*2.6)/38, w=12*bs, h=26*bs;
   ctx.save(); ctx.translate(x,y); ctx.rotate(angle+Math.PI/2);
@@ -1390,14 +1438,14 @@ function drawTankTurret(x,y,angle,r,key,barrel){
   ctx.restore(); return true;
 }
 function enemyArtKey(e){
-  if(e.isBoss)return {body:'huge',turret:'red',barrel:3};
-  if(e.isHeavy)return {body:'darkLarge',turret:'dark',barrel:2};
-  if(e.isFast)return {body:'green',turret:'green',barrel:1};
-  if(e.isFlanker)return {body:'red',turret:'red',barrel:2};
-  if(e.isArtillery)return {body:'sand',turret:'sand',barrel:2};
-  if(e.isPT)return {body:'dark',turret:'dark',barrel:1};
-  if(e.isSpook)return {body:'dark',turret:'dark',barrel:2};
-  return {body:'dark',turret:'dark',barrel:1};
+  if(e.isBoss)return {body:'huge',turret:'red',barrel:3,tint:'#ff8a65'};
+  if(e.isHeavy)return {body:'darkLarge',turret:'dark',barrel:2,tint:'#7fa8c9'};
+  if(e.isFast)return {body:'green',turret:'green',barrel:1,tint:'#7fd18b'};
+  if(e.isFlanker)return {body:'red',turret:'red',barrel:2,tint:'#ff8a80'};
+  if(e.isArtillery)return {body:'sand',turret:'sand',barrel:2,tint:'#f0c36d'};
+  if(e.isPT)return {body:'dark',turret:'dark',barrel:1,tint:'#a5c46c'};
+  if(e.isSpook)return {body:'dark',turret:'dark',barrel:2,tint:'#b39ddb'};
+  return {body:'dark',turret:'dark',barrel:1,tint:'#c9a27e'};
 }
 const ENEMY_TIERS=[
 {color:'#e8e8e8',dark:'#a8a8a8',hp:38,speed:0.55,dmg:3,radius:14,coin:12},
@@ -1439,7 +1487,8 @@ const SKILLS_BASE=[
 {id:'coinBonus',base:70,mult:1.45,max:10},{id:'wallHp',base:80,mult:1.40,max:6}
 ];
 const RELIC_IDS=['r_dmg','r_hp','r_speed','r_coins','r_fire','r_bullet','r_regen','r_pierce','r_base','r_crit'];
-const RELIC_ICONS={r_dmg:'',r_hp:'',r_speed:'',r_coins:'',r_fire:'',r_bullet:'',r_regen:'',r_pierce:'',r_base:'',r_crit:''};
+function ico(id,cls){return '<svg class="ico '+(cls||'')+'" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'+id+'"/></svg>';}
+const RELIC_ICONS={r_dmg:ico('target'),r_hp:ico('heart'),r_speed:ico('bolt'),r_coins:ico('coin'),r_fire:ico('flame'),r_bullet:ico('bullet'),r_regen:ico('regen'),r_pierce:ico('pierce'),r_base:ico('shield'),r_crit:ico('star')};
 const STREAKS=[
 {n:1,eng:'FIRST BLOOD',ru:'ПЕРВАЯ КРОВЬ',color:'#ffd700'},
 {n:2,eng:'DOUBLE KILL',ru:'ДВОЙНОЕ УБИЙСТВО',color:'#ff9800'},
@@ -1998,8 +2047,22 @@ class Tank{
     this.x=clamp(this.x,this.radius+2,W-this.radius-2);
     this.y=clamp(this.y,this.radius+2,H-this.radius-2);
     const myCtrl=p1Control;
-    if(IS_TOUCH&&this.id===0){ this.turretAngle=mobileAimAngle; }
-    else if(myCtrl==='kb'){ this.turretAngle=Math.atan2(mouseY-this.y,mouseX-this.x); }
+    if(IS_TOUCH&&this.id===0){
+      const tgt=nearestAutoTarget(this.x,this.y);
+      if(tgt){
+        const want=Math.atan2(tgt.y-this.y,tgt.x-this.x);
+        const d=Math.atan2(Math.sin(want-this.turretAngle),Math.cos(want-this.turretAngle));
+        this.turretAngle+=d*Math.min(1,0.30*dt);
+      } else {
+        const d=Math.atan2(Math.sin(this.bodyAngle-this.turretAngle),Math.cos(this.bodyAngle-this.turretAngle));
+        this.turretAngle+=d*Math.min(1,0.16*dt);
+      }
+    }
+    else if(myCtrl==='kb'){
+      const want=Math.atan2(mouseY-this.y,mouseX-this.x);
+      const d=Math.atan2(Math.sin(want-this.turretAngle),Math.cos(want-this.turretAngle));
+      this.turretAngle+=d*Math.min(1,0.12*dt);
+    }
     else if(this.gpAimUsed){ this.turretAngle=this.gpAimAngle; }
     else { this.turretAngle=this.bodyAngle; }
     const w=this.weapon;
@@ -2594,8 +2657,8 @@ class EnemyTank{
     ctx.fillStyle='rgba(60,50,30,0.18)';
     ctx.beginPath(); ctx.ellipse(3,4,this.radius*1.35,this.radius*1.1,0,0,Math.PI*2); ctx.fill();
     ctx.restore();
-    drawTankBody(this.x,this.y,this.bodyAngle,this.radius*1.05,ak.body);
-    drawTankTurret(this.x,this.y,this.turretAngle,this.radius*1.05,ak.turret,ak.barrel);
+    drawTankBody(this.x,this.y,this.bodyAngle,this.radius*1.05,ak.body,ak.tint);
+    drawTankTurret(this.x,this.y,this.turretAngle,this.radius*1.05,ak.turret,ak.barrel,ak.tint);
     if(bl){ ctx.save(); ctx.globalAlpha=0.45; ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(this.x,this.y,this.radius,0,Math.PI*2); ctx.fill(); ctx.restore(); }
     if(this.isBoss){ ctx.fillStyle='#e8b100'; ctx.beginPath(); ctx.moveTo(this.x-11,this.y-this.radius-15); ctx.lineTo(this.x-7,this.y-this.radius-24); ctx.lineTo(this.x,this.y-this.radius-16); ctx.lineTo(this.x+7,this.y-this.radius-24); ctx.lineTo(this.x+11,this.y-this.radius-15); ctx.closePath(); ctx.fill(); }
     const hpPct=this.hp/this.maxHp; const bw=this.isBoss?100:30;
@@ -3519,7 +3582,7 @@ function renderDaily(){
     const dayLabel=t('dayLbl')+' '+(i+1);
     const isClaimed=i<daily.streak;
     const isToday=i===daily.streak&&isTodayClaimable;
-    html+=`<div class="daily-cell ${isClaimed?'claimed':''} ${isToday?'today':''}"><div class="day">${dayLabel}</div><span class="icon"></span><div class="amount">${DAILY_REWARDS[i]}</div></div>`;
+    html+=`<div class="daily-cell ${isClaimed?'claimed':''} ${isToday?'today':''}"><div class="day">${dayLabel}</div><span class="icon">${ico('coin')}</span><div class="amount">${DAILY_REWARDS[i]}</div></div>`;
   }
   UI.dailyGrid.innerHTML=html;
 }
@@ -4178,6 +4241,15 @@ function mobileVibrate(pattern){
   if(!IS_TOUCH||!navigator.vibrate)return;
   try{ navigator.vibrate(pattern); }catch(e){}
 }
+function nearestAutoTarget(x,y){
+  let best=null,bd=1e9;
+  for(const e of enemies){
+    if(!e||e.hp<=0||e.spawnTime>0)continue;
+    const d=dist(x,y,e.x,e.y);
+    if(d<540&&d<bd&&hasLineOfFire(x,y,e.x,e.y)){ bd=d; best=e; }
+  }
+  return best;
+}
 function mobileSetMove(pt){
   const dx=pt.x-MOBILE_MOVE_CENTER.x,dy=pt.y-MOBILE_MOVE_CENTER.y,len=Math.hypot(dx,dy);
   if(len<15){ mobileMoveX=0; mobileMoveY=0; return; }
@@ -4226,7 +4298,6 @@ function mobileTouchStart(e){
       }
     }
     else if(md<=80&&mobileMoveTouch===null){ mobileMoveTouch=touch.identifier; mobileEdgeVibrated=false; mobileSetMove(pt); }
-    else if(ad<=80&&mobileAimTouch===null){ mobileAimTouch=touch.identifier; mobileSetAim(pt); }
     else mobileWeaponTap(pt);
   }
 }
@@ -4289,7 +4360,6 @@ function drawMobileUI(){
   if(shopOpen||gamePaused||levelCompleteOpen||adPlaying)return;
   const mdx=mobileMoveX*52,mdy=mobileMoveY*52,adx=Math.cos(mobileAimAngle)*52,ady=Math.sin(mobileAimAngle)*52;
   drawMobileStick(MOBILE_MOVE_CENTER,{x:MOBILE_MOVE_CENTER.x+(mobileMoveTouch===null?0:mdx),y:MOBILE_MOVE_CENTER.y+(mobileMoveTouch===null?0:mdy)});
-  drawMobileStick(MOBILE_AIM_CENTER,{x:MOBILE_AIM_CENTER.x+(mobileAimTouch===null?0:adx),y:MOBILE_AIM_CENTER.y+(mobileAimTouch===null?0:ady)});
   const cx=MOBILE_FIRE_CENTER.x,cy=MOBILE_FIRE_CENTER.y;
   uiCtx.save();
   uiCtx.fillStyle='rgba(220,50,50,'+mobileFireAlpha+')'; uiCtx.strokeStyle='rgba(255,80,80,0.9)'; uiCtx.lineWidth=4;
