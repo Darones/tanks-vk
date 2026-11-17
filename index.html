@@ -1487,8 +1487,8 @@ const SKILLS_BASE=[
 {id:'coinBonus',base:70,mult:1.45,max:10},{id:'wallHp',base:80,mult:1.40,max:6}
 ];
 const RELIC_IDS=['r_dmg','r_hp','r_speed','r_coins','r_fire','r_bullet','r_regen','r_pierce','r_base','r_crit'];
-function ico(id,cls){return '<svg class="ico '+(cls||'')+'" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'+id+'"/></svg>';}
-const RELIC_ICONS={r_dmg:ico('target'),r_hp:ico('heart'),r_speed:ico('bolt'),r_coins:ico('coin'),r_fire:ico('flame'),r_bullet:ico('bullet'),r_regen:ico('regen'),r_pierce:ico('pierce'),r_base:ico('shield'),r_crit:ico('star')};
+function uiIco(id,cls){return '<svg class="ico '+(cls||'')+'" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-'+id+'"/></svg>';}
+const RELIC_ICONS={r_dmg:uiIco('target'),r_hp:uiIco('heart'),r_speed:uiIco('bolt'),r_coins:uiIco('coin'),r_fire:uiIco('flame'),r_bullet:uiIco('bullet'),r_regen:uiIco('regen'),r_pierce:uiIco('pierce'),r_base:uiIco('shield'),r_crit:uiIco('star')};
 const STREAKS=[
 {n:1,eng:'FIRST BLOOD',ru:'ПЕРВАЯ КРОВЬ',color:'#ffd700'},
 {n:2,eng:'DOUBLE KILL',ru:'ДВОЙНОЕ УБИЙСТВО',color:'#ff9800'},
@@ -3582,7 +3582,7 @@ function renderDaily(){
     const dayLabel=t('dayLbl')+' '+(i+1);
     const isClaimed=i<daily.streak;
     const isToday=i===daily.streak&&isTodayClaimable;
-    html+=`<div class="daily-cell ${isClaimed?'claimed':''} ${isToday?'today':''}"><div class="day">${dayLabel}</div><span class="icon">${ico('coin')}</span><div class="amount">${DAILY_REWARDS[i]}</div></div>`;
+    html+=`<div class="daily-cell ${isClaimed?'claimed':''} ${isToday?'today':''}"><div class="day">${dayLabel}</div><span class="icon">${uiIco('coin')}</span><div class="amount">${DAILY_REWARDS[i]}</div></div>`;
   }
   UI.dailyGrid.innerHTML=html;
 }
